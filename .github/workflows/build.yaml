@@ -38,8 +38,10 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Setup LCOV
-        uses: hrishikesh-kadam/setup-lcov@v1
+      - name: Install lcov
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install lcov
           
       - name: Install dependencies
         run: flutter pub get
