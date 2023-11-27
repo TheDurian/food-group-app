@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -55,7 +55,7 @@ jobs:
         run: flutter test --no-pub --coverage
 
       - name: Report code coverage
-        uses: zgosalvez/github-actions-report-lcov@v3
+        uses: zgosalvez/github-actions-report-lcov@v4
         with:
           coverage-files: coverage/lcov.info
           minimum-coverage: 90
@@ -70,7 +70,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -93,7 +93,7 @@ jobs:
         run: flutter build apk
       
       - name: Upload to Github
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: release-apk
           path: build/app/outputs/apk/release/app-release.apk
