@@ -48,6 +48,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       
-      - name: Build Android app
-        run: |
-          flutter build appbundle --debug --flavor dev -t lib/main.dart
+      - name: Build flutter APK
+        run: flutter build apk
+      
+      - name: Upload to Github
+        uses: actions/upload-artifact@v1
+        with:
+          name: release-apk
+          path: build/app/outputs/apk/release/app-release.apk
