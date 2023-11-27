@@ -1,0 +1,99 @@
+name: Build application
+
+permissions: write-all
+
+# If another commit is pushed, abort this run and focus on new commit
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+# Run automation only when a Pull Request is created/ready for main
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+    branches:
+      - 'main'
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  testWithCoverage:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install lcov
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install lcov
+          
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze Flutter
+        uses: zgosalvez/github-actions-analyze-dart@v3
+        with:
+          fail-on-warnings: true
+
+      - name: Run tests
+        run: flutter test --no-pub --coverage
+
+      - name: Report code coverage
+        uses: zgosalvez/github-actions-report-lcov@v3
+        with:
+          coverage-files: coverage/lcov.info
+          minimum-coverage: 90
+          artifact-name: code-coverage-report
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          update-comment: true
+
+  build:
+    name: Build Android
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: "12.x"
+          cache: 'gradle'
+        id: java
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Build flutter APK
+        run: flutter build apk
+      
+      - name: Upload to Github
+        uses: actions/upload-artifact@v1
+        with:
+          name: release-apk
+          path: build/app/outputs/apk/release/app-release.apk
