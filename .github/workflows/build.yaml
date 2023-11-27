@@ -50,6 +50,4 @@ jobs:
       
       - name: Build Android app
         run: |
-          pushd app/
           flutter build appbundle --debug --flavor dev -t lib/main.dart
-          popd
