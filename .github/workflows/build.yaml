@@ -45,9 +45,14 @@ jobs:
           
       - name: Install dependencies
         run: flutter pub get
-      
+
+      - name: Analyze Flutter
+        uses: zgosalvez/github-actions-analyze-dart@v3
+        with:
+          fail-on-warnings: true
+
       - name: Run tests
-        run: flutter test --coverage
+        run: flutter test --no-pub --coverage
 
       - name: Report code coverage
         uses: zgosalvez/github-actions-report-lcov@v3
