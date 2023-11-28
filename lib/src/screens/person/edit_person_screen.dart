@@ -1,0 +1,6 @@
+/*
+Text box for first name
+Text box for last name
+
+Save button on bottom right
+*/
