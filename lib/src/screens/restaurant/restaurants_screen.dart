@@ -30,8 +30,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body:
-          Center(), // This trailing comma makes auto-formatting nicer for build methods.
+      body: const Center(),
     );
   }
 }
