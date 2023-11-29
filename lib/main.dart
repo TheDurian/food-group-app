@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: AppThemes.getTheme(false), // TODO add saving theme selection
-      home: const RestaurantScreen(title: 'Flutter Demo Home Page'),
+      home: const RestaurantScreen(),
     );
   }
 }
