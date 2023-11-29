@@ -13,6 +13,7 @@ V2:
 */
 
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/screens/restaurant/edit_restaurant_screen.dart';
 
 class RestaurantScreen extends StatefulWidget {
   const RestaurantScreen({super.key, required this.title});
@@ -23,6 +24,8 @@ class RestaurantScreen extends StatefulWidget {
 }
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
+  void _navigateToEditScreen() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +34,13 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         title: Text(widget.title),
       ),
       body: const Center(),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    const EditRestaurantScreen(title: 'Edit')));
+      }),
     );
   }
 }
