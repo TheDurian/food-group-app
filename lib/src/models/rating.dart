@@ -1,10 +1,20 @@
-/*
-Food Rating:
-  which restaurant: id (int)
-  which person: id (int)
-  taste / 10 (double)
-  service / 10 (double)
-  ambiance / 10 (double)
-  presentation / 10 (double)
-  cost felt worth / 10 (double)
-*/
+class Rating {
+  final String restaurantId;
+  final String personId;
+
+  final double? tasteRating;
+  final double? serviceRating;
+  final double? ambianceRating;
+  final double? presentationRating;
+  final double? costWorthRating;
+
+  Rating({
+    required this.restaurantId,
+    required this.personId,
+    required this.tasteRating,
+    required this.serviceRating,
+    required this.ambianceRating,
+    required this.presentationRating,
+    required this.costWorthRating,
+  });
+}

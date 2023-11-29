@@ -1,17 +1,23 @@
-/*
-Restaraunt:
-  id (int)
-  name (string)
-  List<label> (list of strings)
-    * should have the option to add more
-    (indian)
-    (mexican)
-    (+)
-  chain (boolean [True, False])
-    * checkbox?
-  address (string)
-  date visited / time (datetime or string)
-  list of people involved (a List<Person>)
-  
-  v2: delivery checkbox
-*/
+// TODO V2 delivered/delivery details
+
+import 'package:food_group_app/src/models/person.dart';
+
+class Restaurant {
+  final String id;
+  final String name;
+  final List<String>? labels;
+  final bool? isChain;
+  final String? address;
+  final DateTime? dateVisited;
+  final List<Person>? peopleInvolved;
+
+  Restaurant({
+    required this.id,
+    required this.name,
+    this.labels,
+    this.isChain,
+    this.address,
+    this.dateVisited,
+    this.peopleInvolved,
+  });
+}

@@ -21,8 +21,6 @@ class EditRestaurantScreen extends StatefulWidget {
 }
 
 class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
-  void _navigateToEditScreen() {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
