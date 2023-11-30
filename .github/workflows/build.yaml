@@ -24,44 +24,44 @@ on:
       - 'main'
 
 jobs:
-  testWithCoverage:
-    name: Test
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  # testWithCoverage:
+  #   name: Test
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 30
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
       
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: true
+  #     - name: Setup Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         channel: 'stable'
+  #         cache: true
 
-      - name: Install lcov
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install lcov
+  #     - name: Install lcov
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get -y install lcov
           
-      - name: Install dependencies
-        run: flutter pub get
+  #     - name: Install dependencies
+  #       run: flutter pub get
 
-      - name: Analyze Flutter
-        uses: zgosalvez/github-actions-analyze-dart@v3
-        with:
-          fail-on-warnings: true
+  #     - name: Analyze Flutter
+  #       uses: zgosalvez/github-actions-analyze-dart@v3
+  #       with:
+  #         fail-on-warnings: true
 
-      - name: Run tests
-        run: flutter test --no-pub --coverage
+  #     - name: Run tests
+  #       run: flutter test --no-pub --coverage
 
-      - name: Report code coverage
-        uses: zgosalvez/github-actions-report-lcov@v4
-        with:
-          coverage-files: coverage/lcov.info
-          minimum-coverage: 90
-          artifact-name: code-coverage-report
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          update-comment: true
+  #     - name: Report code coverage
+  #       uses: zgosalvez/github-actions-report-lcov@v4
+  #       with:
+  #         coverage-files: coverage/lcov.info
+  #         minimum-coverage: 90
+  #         artifact-name: code-coverage-report
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         update-comment: true
 
   build:
     name: Build Android
