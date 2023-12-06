@@ -13,9 +13,17 @@ V2:
 */
 
 import 'package:flutter/material.dart';
-import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/screens/restaurant/edit_restaurant_screen.dart';
+import 'package:food_group_app/src/services/database.dart';
+import 'dart:math';
+
+// Just to get some random text on screen, temporary
+String generateRandomString(int len) {
+  var r = Random();
+  return String.fromCharCodes(
+      List.generate(len, (index) => r.nextInt(33) + 89));
+}
 
 class RestaurantScreen extends StatefulWidget {
   const RestaurantScreen({super.key});
@@ -25,59 +33,83 @@ class RestaurantScreen extends StatefulWidget {
 }
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
+  late List<Restaurant> restaurants;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    restaurants = [];
+    refreshRestaurants();
+  }
+
+  @override
+  void dispose() {
+    DatabaseService.instance.close();
+    super.dispose();
+  }
+
+  Future<void> refreshRestaurants() async {
+    setState(() => isLoading = true);
+    restaurants = await DatabaseService.instance.readAllRestaurants();
+    setState(() => isLoading = false);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Mock Data
-    final List<Restaurant> restaurants = [
-      Restaurant(
-        id: "id1",
-        name: "McDonalds",
-        dateVisited: DateTime.parse("2023-01-01"),
-        peopleInvolved: [
-          Person(id: "id1", firstName: "Darian", lastName: "Puka"),
-        ],
-      ),
-      Restaurant(
-        id: "id2",
-        name: "Jimmy Johns",
-        dateVisited: DateTime.parse("2023-03-01"),
-        peopleInvolved: [
-          Person(id: "id1", firstName: "Darian", lastName: "Puka"),
-          Person(id: "id2", firstName: "Ross", lastName: "Campbell"),
-          Person(id: "id3", firstName: "Louie", lastName: "Simbajon"),
-        ],
-      ),
-      Restaurant(
-        id: "id3",
-        name: "Chipotle",
-        dateVisited: DateTime.parse("2023-02-01"),
-        peopleInvolved: [
-          Person(id: "id1", firstName: "Darian", lastName: "Puka"),
-          Person(id: "id2", firstName: "Ross", lastName: "Campbell"),
-        ],
-      ),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Restaurants"),
       ),
-      body: ListView.builder(
-        itemCount: restaurants.length,
-        prototypeItem: Card(
-            child: ListTile(
-          title: Text(restaurants.first.name),
-        )),
-        itemBuilder: (context, index) {
-          return Card(
-              child: ListTile(
-            title: Text(restaurants[index].name),
-            subtitle: Text(restaurants[index].dateVisited.toString()),
-            trailing: Text(
-                restaurants[index].peopleInvolved?.length.toString() ?? ''),
-          ));
-        },
+      body: Column(
+        children: [
+          IconButton(
+              onPressed: () async {
+                DatabaseService.instance.createRestaurant(
+                  Restaurant(
+                    name: generateRandomString(10),
+                    isChain: false,
+                    dateVisited: DateTime.now(),
+                  ),
+                );
+                refreshRestaurants();
+              },
+              icon: const Icon(Icons.add)),
+          isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListView.builder(
+                  itemCount: restaurants.length,
+                  prototypeItem: restaurants.isNotEmpty
+                      ? Card(
+                          child: ListTile(
+                            title: Text(restaurants.first.name),
+                          ),
+                        )
+                      : null,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      child: Card(
+                        child: ListTile(
+                          title: Text(restaurants[index].name),
+                          subtitle:
+                              Text(restaurants[index].dateVisited.toString()),
+                          trailing: Text('${restaurants[index].id}'),
+                        ),
+                      ),
+                      onLongPress: () async {
+                        DatabaseService.instance
+                            .deleteRestaurant(restaurants[index].id!);
+                        refreshRestaurants();
+                      },
+                    );
+                  },
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -86,6 +118,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               MaterialPageRoute<void>(
                   builder: (context) =>
                       const EditRestaurantScreen(title: 'Edit')));
+          refreshRestaurants();
         },
       ),
     );
