@@ -65,62 +65,68 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       body: Column(
         children: [
           IconButton(
-              onPressed: () async {
-                DatabaseService.instance.createRestaurant(
-                  Restaurant(
-                    name: generateRandomString(10),
-                    isChain: false,
-                    dateVisited: DateTime.now(),
-                  ),
-                );
-                refreshRestaurants();
-              },
-              icon: const Icon(Icons.add)),
-          isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : ListView.builder(
-                  itemCount: restaurants.length,
-                  prototypeItem: restaurants.isNotEmpty
-                      ? Card(
-                          child: ListTile(
-                            title: Text(restaurants.first.name),
-                          ),
-                        )
-                      : null,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      child: Card(
-                        child: ListTile(
-                          title: Text(restaurants[index].name),
-                          subtitle:
-                              Text(restaurants[index].dateVisited.toString()),
-                          trailing: Text('${restaurants[index].id}'),
-                        ),
-                      ),
-                      onLongPress: () async {
-                        DatabaseService.instance
-                            .deleteRestaurant(restaurants[index].id!);
-                        refreshRestaurants();
-                      },
-                    );
-                  },
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
+            onPressed: () async {
+              DatabaseService.instance.createRestaurant(
+                Restaurant(
+                  name: generateRandomString(10),
+                  isChain: false,
+                  dateVisited: DateTime.now(),
                 ),
+              );
+              refreshRestaurants();
+            },
+            icon: const Icon(Icons.add),
+          ),
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : buildTileList(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                  builder: (context) =>
-                      const EditRestaurantScreen(title: 'Edit')));
-          refreshRestaurants();
-        },
+        onPressed: () => onAddEditClick(),
+        child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Widget buildTileList() => ListView.builder(
+        itemCount: restaurants.length,
+        prototypeItem: restaurants.isNotEmpty
+            ? Card(
+                child: ListTile(
+                  title: Text(restaurants.first.name),
+                ),
+              )
+            : null,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            child: Card(
+              child: ListTile(
+                title: Text(restaurants[index].name),
+                subtitle: Text(restaurants[index].dateVisited.toString()),
+                trailing: Text('${restaurants[index].id}'),
+              ),
+            ),
+            onLongPress: () async {
+              DatabaseService.instance.deleteRestaurant(restaurants[index].id!);
+              refreshRestaurants();
+            },
+            onTap: () => onAddEditClick(restaurants[index]),
+          );
+        },
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+      );
+
+  void onAddEditClick([Restaurant? restaurant]) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (context) => AddEditRestaurantScreen(
+          restaurant: restaurant,
+        ),
+      ),
+    );
+    refreshRestaurants();
   }
 }
