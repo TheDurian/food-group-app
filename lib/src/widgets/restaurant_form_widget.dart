@@ -100,7 +100,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         textCapitalization: TextCapitalization.words,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
-          hintText: 'Address',
+          hintText: 'Restaurant Address',
           labelText: 'Address',
         ),
         onChanged: widget.onChangedAddress,
