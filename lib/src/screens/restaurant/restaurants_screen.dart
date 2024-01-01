@@ -65,17 +65,18 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       body: Column(
         children: [
           IconButton(
-              onPressed: () async {
-                DatabaseService.instance.createRestaurant(
-                  Restaurant(
-                    name: generateRandomString(10),
-                    isChain: false,
-                    dateVisited: DateTime.now(),
-                  ),
-                );
-                refreshRestaurants();
-              },
-              icon: const Icon(Icons.add)),
+            onPressed: () async {
+              DatabaseService.instance.createRestaurant(
+                Restaurant(
+                  name: generateRandomString(10),
+                  isChain: false,
+                  dateVisited: DateTime.now(),
+                ),
+              );
+              refreshRestaurants();
+            },
+            icon: const Icon(Icons.add),
+          ),
           isLoading
               ? const Center(
                   child: CircularProgressIndicator(),
@@ -104,6 +105,17 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             .deleteRestaurant(restaurants[index].id!);
                         refreshRestaurants();
                       },
+                      onTap: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (context) => AddEditRestaurantScreen(
+                              restaurant: restaurants[index],
+                            ),
+                          ),
+                        );
+                        refreshRestaurants();
+                      },
                     );
                   },
                   shrinkWrap: true,
@@ -112,14 +124,15 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                  builder: (context) =>
-                      const EditRestaurantScreen(title: 'Edit')));
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+                builder: (context) => const AddEditRestaurantScreen()),
+          );
           refreshRestaurants();
         },
+        child: const Icon(Icons.add),
       ),
     );
   }
