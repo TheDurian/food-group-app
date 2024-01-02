@@ -44,3 +44,4 @@ flutter_launcher_icons:
   ios: true
   image_path: assets/images/icon.png
   adaptive_icon_background: assets/images/icon-background.png
+  adaptive_icon_foreground: assets/images/splash.png
