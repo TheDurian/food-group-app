@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/screens/person/edit_person_screen.dart';
 
 class RestaurantFormWidget extends StatefulWidget {
   final String? name;
@@ -66,12 +67,14 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
                 onChanged: widget.onChangedChain,
               ),
               const SizedBox(height: 32),
+              buildMultiSelectPeople(),
               buildOnSubmit(),
             ],
           ),
         ),
       );
 
+  /// Builds the name input field.
   Widget buildName() => TextFormField(
         maxLines: 1,
         initialValue: widget.name,
@@ -91,6 +94,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         textInputAction: TextInputAction.next,
       );
 
+  /// Builds the address input field.
   Widget buildAddress() => TextFormField(
         maxLines: 1,
         initialValue: widget.address,
@@ -107,6 +111,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         textInputAction: TextInputAction.done,
       );
 
+  /// Builds the date visited input field.
   Widget buildDateVisited(BuildContext context) => TextFormField(
         controller: _dateController,
         maxLines: 1,
@@ -136,6 +141,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
             : null,
       );
 
+  /// Handles logic for selecting a date in the date picker.
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? datePicked = await showDatePicker(
       context: context,
@@ -152,8 +158,23 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
     }
   }
 
+  /// Handles clicking on the save button
   Widget buildOnSubmit() => ElevatedButton(
         onPressed: widget.onSubmit,
         child: const Text("Save"),
+      );
+
+  /// Builds the multiple person selection field.
+  Widget buildMultiSelectPeople() => Container(
+        child: GestureDetector(
+          child: const Text("Add Person"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                  builder: (context) => const AddEditPersonScreen()),
+            );
+          },
+        ),
       );
 }

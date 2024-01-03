@@ -1,3 +1,4 @@
+import 'package:food_group_app/src/models/person.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:path/path.dart';
@@ -43,8 +44,42 @@ class DatabaseService {
         ${RestaurantFields.dateVisited} $textType
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE $tablePersons (
+        ${PersonFields.id} $idType,
+        ${PersonFields.firstName} $textType,
+        ${PersonFields.lastName} $textTypeNull
+      )
+    ''');
+
+    // Temporary additions for testing
+    await db.insert(
+        tablePersons,
+        Person(
+          firstName: "Louie",
+          lastName: "Simbajon",
+        ).toJson());
+    await db.insert(
+        tablePersons,
+        Person(
+          firstName: "Darian",
+          lastName: "Puka",
+        ).toJson());
+    await db.insert(
+        tablePersons,
+        Person(
+          firstName: "Ross",
+          lastName: "Campbell",
+        ).toJson());
   }
 
+  Future<void> close() async {
+    final db = await instance.database;
+    db.close();
+  }
+
+  /* RESTAURANTS */
   Future<Restaurant> createRestaurant(Restaurant restaurant) async {
     final db = await instance.database;
     final id = await db.insert(tableRestaurants, restaurant.toJson());
@@ -92,8 +127,51 @@ class DatabaseService {
     );
   }
 
-  Future<void> close() async {
+  /* PERSONS */
+  Future<Person> createPerson(Person person) async {
     final db = await instance.database;
-    db.close();
+    final id = await db.insert(tablePersons, person.toJson());
+    return person.copy(id: id);
+  }
+
+  Future<Person> readPerson(int id) async {
+    final db = await instance.database;
+    final maps = await db.query(
+      tablePersons,
+      columns: PersonFields.values,
+      where: '${PersonFields.id} = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return Person.fromJson(maps.first);
+    } else {
+      throw Exception('ID $id not found');
+    }
+  }
+
+  Future<List<Person>> readAllPersons() async {
+    final db = await instance.database;
+    final persons = await db.query(tablePersons);
+    return persons.map((json) => Person.fromJson(json)).toList();
+  }
+
+  Future<int> updatePerson(Person person) async {
+    final db = await instance.database;
+    return db.update(
+      tablePersons,
+      person.toJson(),
+      where: '${PersonFields.id} = ?',
+      whereArgs: [person.id],
+    );
+  }
+
+  Future<int> deletePerson(int id) async {
+    final db = await instance.database;
+    return await db.delete(
+      tablePersons,
+      where: '${PersonFields.id} = ?',
+      whereArgs: [id],
+    );
   }
 }

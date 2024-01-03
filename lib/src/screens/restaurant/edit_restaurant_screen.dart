@@ -1,11 +1,7 @@
 /*
 Bunch of input fields:
-1. Enter a name - box
-2. Address - box
-3. Date visited (click here for todays date) (datepicker)
-4. Dropdown of labels
-5. Is this a Chain? (checkbox)
-6. People (multiple person dropdown)
+1. Dropdown of labels
+2. People (multiple person dropdown)
 
 Next button that goes to Ratings
 */
@@ -70,6 +66,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
     );
   }
 
+  /// Attempts to add or update the restaurant.
   void _addOrUpdateRestaurant() async {
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
@@ -84,6 +81,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
     }
   }
 
+  /// Updates the current restaurant in the database.
   Future updateRestaurant() async {
     final restaurant = widget.restaurant!.copy(
       name: name,
@@ -94,6 +92,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
     await DatabaseService.instance.updateRestaurant(restaurant);
   }
 
+  /// Adds a new restaurant to database.
   Future addRestaurant() async {
     final restaurant = Restaurant(
       name: name,
