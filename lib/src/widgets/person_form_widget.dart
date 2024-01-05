@@ -6,13 +6,15 @@ class PersonFormWidget extends StatelessWidget {
 
   final ValueChanged<String> onChangedFirstName;
   final ValueChanged<String> onChangedLastName;
+  final VoidCallback onSubmit;
 
   const PersonFormWidget({
-    Key? key,
+    super.key,
     this.firstName = '',
     this.lastName = '',
     required this.onChangedFirstName,
     required this.onChangedLastName,
+    required this.onSubmit,
   });
 
   @override
@@ -25,6 +27,8 @@ class PersonFormWidget extends StatelessWidget {
               buildFirstName(),
               const SizedBox(height: 16),
               buildLastName(),
+              const SizedBox(height: 32),
+              buildSave(),
             ],
           ),
         ),
@@ -59,5 +63,17 @@ class PersonFormWidget extends StatelessWidget {
         ),
         onChanged: onChangedLastName,
         textInputAction: TextInputAction.next,
+      );
+
+  Widget buildSave() => Row(
+        children: [
+          Expanded(
+            child: Container(),
+          ),
+          ElevatedButton(
+            onPressed: onSubmit,
+            child: const Text("Save"),
+          ),
+        ],
       );
 }

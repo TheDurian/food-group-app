@@ -7,6 +7,7 @@ Next button that goes to Ratings
 */
 
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/services/database.dart';
 import 'package:food_group_app/src/widgets/restaurant_form_widget.dart';
@@ -15,9 +16,9 @@ class AddEditRestaurantScreen extends StatefulWidget {
   final Restaurant? restaurant;
 
   const AddEditRestaurantScreen({
-    Key? key,
+    super.key,
     this.restaurant,
-  }) : super(key: key);
+  });
 
   @override
   State<AddEditRestaurantScreen> createState() =>
@@ -30,6 +31,8 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
   late bool isChain;
   late String address;
   late DateTime dateVisited;
+  List<Person> selectedPeople = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -39,6 +42,17 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
     isChain = widget.restaurant?.isChain ?? false;
     address = widget.restaurant?.address ?? '';
     dateVisited = widget.restaurant?.dateVisited ?? DateTime(1900);
+    retrieveSelectedPeople();
+  }
+
+  void retrieveSelectedPeople() async {
+    setState(() => isLoading = true);
+    // TODO change this to instead only grab people related to restaurant.
+    // For now / testing, its fine that all people will be returned. it will
+    // just look like all people were involved with this restaurant each time
+    // you open the page.
+    selectedPeople = await DatabaseService.instance.readAllPersons();
+    setState(() => isLoading = false);
   }
 
   @override
@@ -55,11 +69,14 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
           isChain: isChain,
           address: address,
           dateVisited: dateVisited,
+          selectedPeople: selectedPeople,
           onChangedName: (name) => setState(() => this.name = name),
           onChangedChain: (isChain) => setState(() => this.isChain = isChain),
           onChangedAddress: (address) => setState(() => this.address = address),
           onChangedDateVisited: (dateVisited) =>
               setState(() => this.dateVisited = dateVisited),
+          onChangedSelectedPeople: (selectedPeople) =>
+              setState(() => this.selectedPeople = selectedPeople),
           onSubmit: _addOrUpdateRestaurant,
         ),
       ),
@@ -82,7 +99,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
   }
 
   /// Updates the current restaurant in the database.
-  Future updateRestaurant() async {
+  Future<void> updateRestaurant() async {
     final restaurant = widget.restaurant!.copy(
       name: name,
       isChain: isChain,
@@ -93,7 +110,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
   }
 
   /// Adds a new restaurant to database.
-  Future addRestaurant() async {
+  Future<void> addRestaurant() async {
     final restaurant = Restaurant(
       name: name,
       isChain: isChain,

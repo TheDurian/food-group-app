@@ -45,4 +45,13 @@ class Person {
         firstName: json[PersonFields.firstName] as String,
         lastName: json[PersonFields.lastName] as String?,
       );
+
+  /// Generates the full name of a person.
+  String fullName() => "$firstName $lastName";
+
+  @override
+  bool operator ==(Object other) => other is Person && other.id == id;
+
+  @override
+  int get hashCode => id ?? 0;
 }

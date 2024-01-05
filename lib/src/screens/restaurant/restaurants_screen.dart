@@ -4,6 +4,7 @@ V2:
 */
 
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/screens/restaurant/edit_restaurant_screen.dart';
 import 'package:food_group_app/src/services/database.dart';
@@ -48,7 +49,21 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : buildTileList(),
+          : Column(
+              children: [
+                Expanded(child: buildTileList()),
+                ElevatedButton(
+                  onPressed: () async {
+                    List<Person> people =
+                        await DatabaseService.instance.readAllPersons();
+                    for (var e in people) {
+                      DatabaseService.instance.deletePerson(e.id!);
+                    }
+                  },
+                  child: const Text("Temporary Button - Clear all Persons"),
+                ),
+              ],
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => onAddEditClick(),
         child: const Icon(Icons.add),
