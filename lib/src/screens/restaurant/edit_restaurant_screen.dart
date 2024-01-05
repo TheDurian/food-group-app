@@ -42,17 +42,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
     isChain = widget.restaurant?.isChain ?? false;
     address = widget.restaurant?.address ?? '';
     dateVisited = widget.restaurant?.dateVisited ?? DateTime(1900);
-    retrieveSelectedPeople();
-  }
-
-  void retrieveSelectedPeople() async {
-    setState(() => isLoading = true);
-    // TODO change this to instead only grab people related to restaurant.
-    // For now / testing, its fine that all people will be returned. it will
-    // just look like all people were involved with this restaurant each time
-    // you open the page.
-    selectedPeople = await DatabaseService.instance.readAllPersons();
-    setState(() => isLoading = false);
+    selectedPeople = widget.restaurant?.persons ?? [];
   }
 
   @override
@@ -105,6 +95,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
       isChain: isChain,
       address: address,
       dateVisited: dateVisited,
+      persons: selectedPeople,
     );
     await DatabaseService.instance.updateRestaurant(restaurant);
   }
@@ -116,6 +107,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
       isChain: isChain,
       address: address,
       dateVisited: dateVisited,
+      persons: selectedPeople,
     );
     await DatabaseService.instance.createRestaurant(restaurant);
   }

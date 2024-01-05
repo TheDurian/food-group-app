@@ -3,6 +3,8 @@
 // TODO add back later since this is a bit more complex
 // import 'package:food_group_app/src/models/person.dart';
 
+import 'package:food_group_app/src/models/person.dart';
+
 const String tableRestaurants = 'restaurants';
 
 class RestaurantFields {
@@ -19,6 +21,7 @@ class RestaurantFields {
   static const String isChain = 'isChain';
   static const String address = 'address';
   static const String dateVisited = 'dateVisited';
+  static const String persons = 'persons';
 }
 
 class Restaurant {
@@ -27,10 +30,10 @@ class Restaurant {
   final bool isChain;
   final String? address;
   final DateTime dateVisited;
+  final List<Person> persons;
 
   // TODO add back later since this is a bit more complex
   // final List<String>? labels;
-  // final List<Person>? peopleInvolved;
 
   Restaurant({
     this.id,
@@ -38,10 +41,10 @@ class Restaurant {
     required this.isChain,
     this.address,
     required this.dateVisited,
+    required this.persons,
 
     // TODO add back later since this is a bit more complex
     // this.labels,
-    // this.peopleInvolved,
   });
 
   Restaurant copy({
@@ -50,6 +53,7 @@ class Restaurant {
     final bool? isChain,
     final String? address,
     final DateTime? dateVisited,
+    final List<Person>? persons,
   }) =>
       Restaurant(
         id: id ?? this.id,
@@ -57,6 +61,7 @@ class Restaurant {
         isChain: isChain ?? this.isChain,
         address: address ?? this.address,
         dateVisited: dateVisited ?? this.dateVisited,
+        persons: persons ?? this.persons,
       );
 
   Map<String, Object?> toJson() => {
@@ -74,5 +79,9 @@ class Restaurant {
         address: json[RestaurantFields.address] as String?,
         dateVisited:
             DateTime.parse(json[RestaurantFields.dateVisited] as String),
+        persons: (json[RestaurantFields.persons] as List<dynamic>? ?? [])
+            .map((personJson) =>
+                Person.fromJson(personJson as Map<String, Object?>))
+            .toList(),
       );
 }

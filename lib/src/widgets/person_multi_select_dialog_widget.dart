@@ -81,7 +81,7 @@ class _PersonMultiSelectDialogState extends State<PersonMultiSelectDialog> {
               Person key = peopleChecked.keys.elementAt(index);
               return CheckboxListTile(
                 title: Text(
-                  key.firstName,
+                  "${key.firstName} ${key.lastName}",
                 ),
                 value: peopleChecked.values.elementAt(index),
                 onChanged: (bool? value) {
