@@ -71,22 +71,25 @@ class _PersonMultiSelectDialogState extends State<PersonMultiSelectDialog> {
   /// of people have not yet been pulled from the database.
   Widget buildContent() => isLoading
       ? const Center(child: CircularProgressIndicator())
-      : ListView.builder(
-          itemCount: peopleChecked.length,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            Person key = peopleChecked.keys.elementAt(index);
-            return CheckboxListTile(
-              title: Text(
-                key.firstName,
-              ),
-              value: peopleChecked.values.elementAt(index),
-              onChanged: (bool? value) {
-                setState(() => peopleChecked[key] = value ?? false);
-              },
-            );
-          },
+      : Container(
+          width: double.maxFinite,
+          child: ListView.builder(
+            itemCount: peopleChecked.length,
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              Person key = peopleChecked.keys.elementAt(index);
+              return CheckboxListTile(
+                title: Text(
+                  key.firstName,
+                ),
+                value: peopleChecked.values.elementAt(index),
+                onChanged: (bool? value) {
+                  setState(() => peopleChecked[key] = value ?? false);
+                },
+              );
+            },
+          ),
         );
 
   /// Builds the title section of the alert dialog
