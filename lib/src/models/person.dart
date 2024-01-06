@@ -48,6 +48,8 @@ class Person {
 
   /// Generates the full name of a person.
   String fullName() => "$firstName $lastName";
+  static String fullNameFromPerson(Person person) =>
+      "${person.firstName} ${person.lastName}";
 
   @override
   bool operator ==(Object other) => other is Person && other.id == id;

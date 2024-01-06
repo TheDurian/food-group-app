@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/screens/person/edit_person_screen.dart';
-import 'package:food_group_app/src/widgets/person_multi_select_dialog_widget.dart';
+import 'package:food_group_app/src/services/database.dart';
+import 'package:food_group_app/src/widgets/multi_select_dialog.dart';
 
 class RestaurantFormWidget extends StatefulWidget {
   final String? name;
@@ -193,8 +194,19 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         onTap: () async {
           var selectedPeople = await showDialog<List<Person>>(
             context: context,
-            builder: (BuildContext context) => PersonMultiSelectDialog(
-              selectedPeople: widget.selectedPeople,
+            builder: (BuildContext context) => MultiSelectDialog<Person>(
+              selectedItems: widget.selectedPeople,
+              titleText: "Add People",
+              onAddClick: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute<Person>(
+                    builder: (context) => const AddEditPersonScreen(),
+                  ),
+                );
+              },
+              buildSelectedItemText: Person.fullNameFromPerson,
+              refreshAllItems: DatabaseService.instance.readAllPersons,
             ),
           );
           if (selectedPeople != null) {
