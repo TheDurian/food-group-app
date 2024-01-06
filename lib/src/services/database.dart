@@ -1,4 +1,5 @@
 import 'package:food_group_app/src/models/person.dart';
+import 'package:food_group_app/src/models/restaurant_person.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:path/path.dart';
@@ -35,7 +36,7 @@ class DatabaseService {
     const textType = 'TEXT NOT NULL';
     const textTypeNull = 'TEXT';
     const boolType = 'BOOLEAN NOT NULL';
-    // const integerType = 'INTEGER NOT NULL';
+    const integerType = 'INTEGER NOT NULL';
 
     await db.execute('''
       CREATE TABLE $tableRestaurants (
@@ -54,6 +55,21 @@ class DatabaseService {
         ${PersonFields.lastName} $textTypeNull
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE $tableRestaurantPersons (
+        ${RestaurantPersonFields.restaurantId} $integerType,
+        ${RestaurantPersonFields.personId} $integerType,
+        FOREIGN KEY (${RestaurantPersonFields.restaurantId})
+          REFERENCES $tableRestaurants(${RestaurantFields.id}),
+        FOREIGN KEY (${RestaurantPersonFields.personId})
+          REFERENCES $tablePersons(${PersonFields.id}),
+        PRIMARY KEY (
+          ${RestaurantPersonFields.restaurantId},
+          ${RestaurantPersonFields.personId}
+        )
+      )
+    ''');
   }
 
   /// Closes the database connection.
@@ -70,6 +86,14 @@ class DatabaseService {
   Future<Restaurant> createRestaurant(Restaurant restaurant) async {
     final db = await instance.database;
     final id = await db.insert(tableRestaurants, restaurant.toJson());
+
+    for (final person in restaurant.persons) {
+      final personLink = RestaurantPersonLink(
+        restaurantId: id,
+        personId: person.id!,
+      );
+      await db.insert(tableRestaurantPersons, personLink.toJson());
+    }
     return restaurant.copy(id: id);
   }
 
@@ -94,27 +118,57 @@ class DatabaseService {
   Future<List<Restaurant>> readAllRestaurants() async {
     final db = await instance.database;
     final restaurants = await db.query(tableRestaurants);
-    return restaurants.map((json) => Restaurant.fromJson(json)).toList();
+
+    final List<Restaurant> restaurantsList = [];
+    for (final json in restaurants) {
+      final restaurant = Restaurant.fromJson(json);
+      final persons = await readPeopleForRestaurant(restaurant.id ?? 0);
+      restaurant.persons.addAll(persons);
+      restaurantsList.add(restaurant);
+    }
+
+    return restaurantsList;
   }
 
   /// Updates a restaurant in the database with a given record.
   Future<int> updateRestaurant(Restaurant restaurant) async {
     final db = await instance.database;
-    return db.update(
+    final restaurantId = await db.update(
       tableRestaurants,
       restaurant.toJson(),
       where: '${RestaurantFields.id} = ?',
       whereArgs: [restaurant.id],
     );
+    await db.delete(
+      tableRestaurantPersons,
+      where: '${RestaurantPersonFields.restaurantId} = ?',
+      whereArgs: [restaurant.id],
+    );
+    for (final person in restaurant.persons) {
+      final personLink = RestaurantPersonLink(
+        restaurantId: restaurant.id!,
+        personId: person.id!,
+      );
+      await db.insert(tableRestaurantPersons, personLink.toJson());
+    }
+
+    return restaurantId;
   }
 
   /// Deletes a restaurant in the database given an id.
-  Future<int> deleteRestaurant(int id) async {
+  ///
+  /// This will also delete any restaurant-person links.
+  Future<void> deleteRestaurant(int restaurantId) async {
     final db = await instance.database;
-    return await db.delete(
+    await db.delete(
       tableRestaurants,
       where: '${RestaurantFields.id} = ?',
-      whereArgs: [id],
+      whereArgs: [restaurantId],
+    );
+    await db.delete(
+      tableRestaurantPersons,
+      where: '${RestaurantPersonFields.restaurantId} = ?',
+      whereArgs: [restaurantId],
     );
   }
 
@@ -178,5 +232,19 @@ class DatabaseService {
       where: '${PersonFields.id} = ?',
       whereArgs: [id],
     );
+  }
+
+  /// Retrieves all people for a given restaurant id.
+  Future<List<Person>> readPeopleForRestaurant(int restaurantId) async {
+    final db = await instance.database;
+    final results = await db.rawQuery('''
+      SELECT $tablePersons.*
+      FROM $tablePersons
+      INNER JOIN $tableRestaurantPersons
+        ON $tablePersons.${PersonFields.id} = $tableRestaurantPersons.${RestaurantPersonFields.personId}
+      WHERE $tableRestaurantPersons.${RestaurantPersonFields.restaurantId} = ?
+    ''', [restaurantId]);
+
+    return results.map((json) => Person.fromJson(json)).toList();
   }
 }
