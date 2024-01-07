@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/services/database.dart';
+import 'package:food_group_app/src/services/restaurant_db.dart';
 import 'package:food_group_app/src/widgets/restaurant_form_widget.dart';
 
 class AddEditRestaurantScreen extends StatefulWidget {
@@ -97,7 +98,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
       dateVisited: dateVisited,
       persons: selectedPeople,
     );
-    await DatabaseService.instance.updateRestaurant(restaurant);
+    await RestaurantDatabase.updateRestaurant(restaurant);
   }
 
   /// Adds a new restaurant to database.
@@ -109,6 +110,6 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
       dateVisited: dateVisited,
       persons: selectedPeople,
     );
-    await DatabaseService.instance.createRestaurant(restaurant);
+    await RestaurantDatabase.createRestaurant(restaurant);
   }
 }

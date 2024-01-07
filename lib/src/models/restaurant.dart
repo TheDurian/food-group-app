@@ -25,11 +25,22 @@ class RestaurantFields {
 }
 
 class Restaurant {
+  /// The id for a restaurant.
   final int? id;
+
+  /// The display name for a restaurant.
   final String name;
+
+  /// Whether this restaurant is a chain or not.
   final bool isChain;
+
+  /// The address for a restaurant.
   final String? address;
+
+  /// The date this restaurant was visited.
   final DateTime dateVisited;
+
+  /// A list of people who were a part of the outing to this restaurant.
   final List<Person> persons;
 
   // TODO add back later since this is a bit more complex
@@ -79,7 +90,7 @@ class Restaurant {
         address: json[RestaurantFields.address] as String?,
         dateVisited:
             DateTime.parse(json[RestaurantFields.dateVisited] as String),
-        persons: (json[RestaurantFields.persons] as List<dynamic>? ?? [])
+        persons: (json[RestaurantFields.persons] as List<Person>? ?? [])
             .map((personJson) =>
                 Person.fromJson(personJson as Map<String, Object?>))
             .toList(),

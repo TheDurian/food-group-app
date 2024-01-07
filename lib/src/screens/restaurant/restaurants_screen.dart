@@ -8,6 +8,8 @@ import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/screens/restaurant/edit_restaurant_screen.dart';
 import 'package:food_group_app/src/services/database.dart';
+import 'package:food_group_app/src/services/person_db.dart';
+import 'package:food_group_app/src/services/restaurant_db.dart';
 
 class RestaurantScreen extends StatefulWidget {
   const RestaurantScreen({super.key});
@@ -36,7 +38,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   /// Refresh the active restaurants.
   Future<void> refreshRestaurants() async {
     setState(() => isLoading = true);
-    restaurants = await DatabaseService.instance.readAllRestaurants();
+    restaurants = await RestaurantDatabase.readAllRestaurants();
     setState(() => isLoading = false);
   }
 
@@ -54,10 +56,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 Expanded(child: buildTileList()),
                 ElevatedButton(
                   onPressed: () async {
-                    List<Person> people =
-                        await DatabaseService.instance.readAllPersons();
+                    List<Person> people = await PersonDatabase.readAllPersons();
                     for (var e in people) {
-                      DatabaseService.instance.deletePerson(e.id!);
+                      PersonDatabase.deletePerson(e.id!);
                     }
                   },
                   child: const Text("Temporary Button - Clear all Persons"),
@@ -91,7 +92,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               ),
             ),
             onLongPress: () async {
-              DatabaseService.instance.deleteRestaurant(restaurants[index].id!);
+              RestaurantDatabase.deleteRestaurant(restaurants[index].id!);
               refreshRestaurants();
             },
             onTap: () => onAddEditClick(restaurants[index]),
