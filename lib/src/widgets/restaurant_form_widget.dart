@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/screens/person/edit_person_screen.dart';
-import 'package:food_group_app/src/services/database.dart';
 import 'package:food_group_app/src/services/person_db.dart';
 import 'package:food_group_app/src/widgets/multi_select_input_widget.dart';
 

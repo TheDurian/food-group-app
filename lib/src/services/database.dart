@@ -1,4 +1,3 @@
-import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant_person.dart';
 import 'package:sqflite/sqflite.dart';
