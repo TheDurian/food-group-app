@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/screens/person/edit_person_screen.dart';
 import 'package:food_group_app/src/services/database.dart';
-import 'package:food_group_app/src/widgets/multi_select_dialog.dart';
+import 'package:food_group_app/src/widgets/multi_select_input_widget.dart';
 
 class RestaurantFormWidget extends StatefulWidget {
   final String? name;
@@ -33,7 +33,7 @@ class RestaurantFormWidget extends StatefulWidget {
   });
 
   @override
-  _RestaurantFormWidgetState createState() => _RestaurantFormWidgetState();
+  State<RestaurantFormWidget> createState() => _RestaurantFormWidgetState();
 }
 
 class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
@@ -68,7 +68,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
               const SizedBox(height: 16),
               buildDateVisited(context),
               const SizedBox(height: 16),
-              buildMultiSelectPeople(),
+              buildSelectPeople(),
               const SizedBox(height: 16),
               SwitchListTile(
                 title: const Text("Is this a chain?"),
@@ -166,119 +166,32 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
     }
   }
 
+  Widget buildSelectPeople() => MultiSelectInput<Person>(
+        inputHintText: "Anyone involved?",
+        selectedItems: widget.selectedPeople,
+        onChangedSelectedItems: widget.onChangedSelectedPeople,
+        buildSelectedItemText: Person.fullNameFromPerson,
+        onChipLongPress: (person) => Navigator.push(
+          context,
+          MaterialPageRoute<Person>(
+            builder: (context) => AddEditPersonScreen(
+              person: person,
+            ),
+          ),
+        ),
+        titleText: "Select People",
+        onAddClick: () async => await Navigator.push(
+          context,
+          MaterialPageRoute<Person>(
+            builder: (context) => const AddEditPersonScreen(),
+          ),
+        ),
+        refreshAllItems: DatabaseService.instance.readAllPersons,
+      );
+
   /// Handles clicking on the save button
   Widget buildOnSubmit() => ElevatedButton(
         onPressed: widget.onSubmit,
         child: const Text("Save"),
-      );
-
-  /// Builds the input selection for a person list
-  Widget buildSelectPeople() => InkWell(
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(5),
-            ),
-          ),
-          padding: const EdgeInsets.all(16),
-          child: const Row(
-            children: [
-              Expanded(
-                child: Text("Add People"),
-              ),
-              Icon(Icons.arrow_drop_down)
-            ],
-          ),
-        ),
-        onTap: () async {
-          var selectedPeople = await showDialog<List<Person>>(
-            context: context,
-            builder: (BuildContext context) => MultiSelectDialog<Person>(
-              selectedItems: widget.selectedPeople,
-              titleText: "Add People",
-              onAddClick: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute<Person>(
-                    builder: (context) => const AddEditPersonScreen(),
-                  ),
-                );
-              },
-              buildSelectedItemText: Person.fullNameFromPerson,
-              refreshAllItems: DatabaseService.instance.readAllPersons,
-            ),
-          );
-          if (selectedPeople != null) {
-            widget.onChangedSelectedPeople(selectedPeople);
-          }
-        },
-      );
-
-  /// Handles the long press functionality on a person chip.
-  void _handleLongPressOnPersonChip(Person person) async {
-    var newPerson = await Navigator.push(
-      context,
-      MaterialPageRoute<Person>(
-        builder: (context) => AddEditPersonScreen(
-          person: person,
-        ),
-      ),
-    );
-    if (newPerson != null) {
-      // Probably really hacky solution
-      var personToUpdate =
-          widget.selectedPeople.indexWhere((e) => e.id == newPerson.id);
-      var newList = List<Person>.from(widget.selectedPeople);
-      newList[personToUpdate] = newPerson;
-      setState(() {
-        widget.onChangedSelectedPeople(newList);
-      });
-    }
-  }
-
-  /// Handles building the list of chips representing selected people.
-  Widget buildPersonChips() => Align(
-        alignment: Alignment.centerLeft,
-        child: Wrap(
-          spacing: 5,
-          runSpacing: -2,
-          alignment: WrapAlignment.start,
-          children: widget.selectedPeople
-              .map((person) => InkWell(
-                    onLongPress: () => _handleLongPressOnPersonChip(person),
-                    child: Chip(
-                      label: Text(person.fullName()),
-                      avatar: const Icon(Icons.person_2_outlined),
-                      deleteIcon: const Icon(Icons.close),
-                      onDeleted: () {
-                        var selectedPeople = widget.selectedPeople
-                            .where((e) => e != person)
-                            .toList();
-                        setState(() {
-                          widget.onChangedSelectedPeople(selectedPeople);
-                        });
-                      },
-                    ),
-                  ))
-              .toList(),
-        ),
-      );
-
-  /// Builds the person selection with items.
-  Widget buildMultiSelectPeople() => Column(
-        children: [
-          FormField(
-            builder: (state) {
-              return Column(
-                children: [
-                  buildSelectPeople(),
-                  const SizedBox(height: 8),
-                  buildPersonChips(),
-                ],
-              );
-            },
-          ),
-        ],
       );
 }
