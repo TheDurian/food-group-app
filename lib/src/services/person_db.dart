@@ -5,11 +5,6 @@ class PersonDatabase {
   static final DatabaseService _dbHelper = DatabaseService.instance;
 
   /// Creates a person in the database if the person does not already exist.
-  ///
-  /// The id of an existing Person will be returned if the firstName
-  /// and lastName matches to an already created person. This is to
-  /// avoid creating duplicate people. If the first/last name is not found,
-  /// a new Person will be created.
   static Future<Person> createPerson(Person person) async {
     final db = await _dbHelper.database;
     final id = await db.insert(tablePersons, person.toJson());

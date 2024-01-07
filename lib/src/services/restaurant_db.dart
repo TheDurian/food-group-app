@@ -1,5 +1,7 @@
+import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
+import 'package:food_group_app/src/models/restaurant_label.dart';
 import 'package:food_group_app/src/models/restaurant_person.dart';
 import 'package:food_group_app/src/services/database.dart';
 
@@ -47,7 +49,9 @@ class RestaurantDatabase {
     for (final json in restaurants) {
       final restaurant = Restaurant.fromJson(json);
       final persons = await readPeopleForRestaurant(restaurant.id ?? 0);
+      final labels = await readLabelsForRestaurant(restaurant.id ?? 0);
       restaurant.persons.addAll(persons);
+      restaurant.labels.addAll(labels);
       restaurantsList.add(restaurant);
     }
 
@@ -108,5 +112,19 @@ class RestaurantDatabase {
     ''', [restaurantId]);
 
     return results.map((json) => Person.fromJson(json)).toList();
+  }
+
+  /// Retrieves all labels for a given restaurant id.
+  static Future<List<Label>> readLabelsForRestaurant(int restaurantId) async {
+    final db = await _dbHelper.database;
+    final results = await db.rawQuery('''
+      SELECT $tableLabels.*
+      FROM $tableLabels
+      INNER JOIN $tableRestaurantLabels
+        ON $tableLabels.${LabelFields.id} = $tableRestaurantLabels.${RestaurantLabelFields.labelId}
+      WHERE $tableRestaurantLabels.${RestaurantLabelFields.restaurantId} = ?
+    ''', [restaurantId]);
+
+    return results.map((json) => Label.fromJson(json)).toList();
   }
 }

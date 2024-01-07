@@ -19,7 +19,10 @@ class RestaurantScreen extends StatefulWidget {
 }
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
+  /// A list of restaurants to show.
   late List<Restaurant> restaurants;
+
+  /// A flag for whether a database call is ongoing or not.
   bool isLoading = false;
 
   @override
