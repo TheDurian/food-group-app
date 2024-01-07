@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 
 class PersonFormWidget extends StatelessWidget {
+  /// The first name of a person.
   final String? firstName;
+
+  /// The last name of a person.
   final String? lastName;
 
+  /// A function to call when the first name has changed.
   final ValueChanged<String> onChangedFirstName;
+
+  /// A function to call when the last name has changed.
   final ValueChanged<String> onChangedLastName;
+
+  /// A function to call when the submit button is clicked.
   final VoidCallback onSubmit;
 
   const PersonFormWidget({

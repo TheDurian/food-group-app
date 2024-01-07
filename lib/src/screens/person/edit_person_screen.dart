@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
-import 'package:food_group_app/src/services/database.dart';
+import 'package:food_group_app/src/services/person_db.dart';
 import 'package:food_group_app/src/widgets/person_form_widget.dart';
 
 class AddEditPersonScreen extends StatefulWidget {
@@ -75,7 +75,7 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
       lastName: lastName,
     );
 
-    var dbPerson = await DatabaseService.instance.createPerson(person);
+    var dbPerson = await PersonDatabase.createPerson(person);
     return dbPerson;
   }
 
@@ -86,7 +86,7 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
       lastName: lastName,
     );
 
-    var dbPerson = await DatabaseService.instance.updatePerson(person);
+    var dbPerson = await PersonDatabase.updatePerson(person);
     return dbPerson;
   }
 }
