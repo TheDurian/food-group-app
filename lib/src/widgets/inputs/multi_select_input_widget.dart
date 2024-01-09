@@ -28,6 +28,14 @@ class MultiSelectInput<T> extends StatefulWidget {
   /// A function to be called to regenerate all existing items of type T.
   final Future<List<T>> Function() refreshAllItems;
 
+  /// A function to be called to get the color for each chip.
+  ///
+  /// If no function is specified, no background color will be set.
+  final Color? Function(T)? chipColor;
+
+  /// A widget to display on the left side of each label.
+  final Widget? labelAvatar;
+
   const MultiSelectInput({
     super.key,
     required this.inputHintText,
@@ -38,6 +46,8 @@ class MultiSelectInput<T> extends StatefulWidget {
     required this.titleText,
     required this.onAddClick,
     required this.refreshAllItems,
+    this.labelAvatar,
+    this.chipColor,
   });
 
   @override
@@ -123,8 +133,11 @@ class _MultiSelectInputState<T> extends State<MultiSelectInput<T>> {
                     onLongPress: () => _handleLongPressOnChip(chipItem),
                     child: Chip(
                       label: Text(widget.buildSelectedItemText(chipItem)),
-                      avatar: const Icon(Icons.person_2_outlined),
+                      avatar: widget.labelAvatar,
                       deleteIcon: const Icon(Icons.close),
+                      backgroundColor: widget.chipColor != null
+                          ? widget.chipColor!(chipItem)
+                          : null,
                       onDeleted: () =>
                           setState(() => widget.onChangedSelectedItems(
                                 widget.selectedItems

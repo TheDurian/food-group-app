@@ -203,6 +203,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
   /// Builds the select people input field.
   Widget buildSelectPeople() => MultiSelectInput<Person>(
         inputHintText: "Anyone involved?",
+        labelAvatar: const Icon(Icons.person_2_outlined),
         selectedItems: widget.selectedPeople,
         onChangedSelectedItems: widget.onChangedSelectedPeople,
         buildSelectedItemText: Person.fullNameFromPerson,
@@ -245,6 +246,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
             builder: (context) => const AddEditLabelScreen(),
           ),
         ),
+        chipColor: (label) => label.color,
         refreshAllItems: LabelDatabase.readAllLabels,
       );
 
