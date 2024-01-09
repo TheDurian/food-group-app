@@ -40,16 +40,33 @@ class _AddEditLabelScreenState extends State<AddEditLabelScreen> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(labelName),
         ),
-        body: Form(
-          key: _formKey,
-          child: LabelFormWidget(
-            labelName: labelName,
-            color: color,
-            onChangedLabelName: (labelName) =>
-                setState(() => this.labelName = labelName),
-            onChangedColor: (color) => setState(() => this.color = color),
-            onSubmit: _addOrUpdateLabel,
-          ),
+        body: Column(
+          children: [
+            Form(
+              key: _formKey,
+              child: LabelFormWidget(
+                labelName: labelName,
+                color: color,
+                onChangedLabelName: (labelName) =>
+                    setState(() => this.labelName = labelName),
+                onChangedColor: (color) => setState(() => this.color = color),
+                onSubmit: _addOrUpdateLabel,
+              ),
+            ),
+            Expanded(child: Container()),
+            if (widget.label != null)
+              Column(
+                children: [
+                  Text(
+                    "Label Added: ${widget.label!.dateAdded}",
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 32),
+                  )
+                ],
+              )
+          ],
         ),
       );
 

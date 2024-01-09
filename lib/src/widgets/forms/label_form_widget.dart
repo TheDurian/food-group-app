@@ -36,14 +36,14 @@ class LabelFormWidget extends StatelessWidget {
               buildFirstName(),
               const SizedBox(height: 16),
               buildColorPicker(),
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
               buildSave(),
             ],
           ),
         ),
       );
 
-  /// Builds the label name input field
+  /// Builds the label name input field.
   Widget buildFirstName() => TextFormField(
         maxLines: 1,
         initialValue: labelName,
@@ -60,21 +60,19 @@ class LabelFormWidget extends StatelessWidget {
         textInputAction: TextInputAction.next,
       );
 
+  /// Builds the color input field.
   Widget buildColorPicker() => ColorInput(
         inputLabel: 'Label Color:',
         color: color,
         onChangedColor: onChangedColor,
       );
 
-  Widget buildSave() => Row(
-        children: [
-          Expanded(
-            child: Container(),
-          ),
-          ElevatedButton(
-            onPressed: onSubmit,
-            child: const Text("Save"),
-          ),
-        ],
+  /// Builds the save button.
+  Widget buildSave() => Align(
+        alignment: Alignment.bottomRight,
+        child: ElevatedButton(
+          onPressed: onSubmit,
+          child: const Text("Save"),
+        ),
       );
 }
