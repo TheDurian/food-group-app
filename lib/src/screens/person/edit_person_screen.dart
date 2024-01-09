@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/services/person_db.dart';
-import 'package:food_group_app/src/widgets/person_form_widget.dart';
+import 'package:food_group_app/src/widgets/forms/person_form_widget.dart';
 
 class AddEditPersonScreen extends StatefulWidget {
   final Person? person;

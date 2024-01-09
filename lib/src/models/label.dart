@@ -42,7 +42,7 @@ class Label {
     final Color? color,
   }) =>
       Label(
-        id: id ?? id,
+        id: id ?? this.id,
         label: label ?? this.label,
         color: color ?? this.color,
       );
@@ -61,4 +61,10 @@ class Label {
             ? Color(json[LabelFields.color] as int)
             : null,
       );
+
+  @override
+  bool operator ==(Object other) => other is Label && other.id == id;
+
+  @override
+  int get hashCode => id ?? 0;
 }
