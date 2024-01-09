@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
+import 'package:food_group_app/src/screens/label/edit_label_screen.dart';
 import 'package:food_group_app/src/screens/person/edit_person_screen.dart';
 import 'package:food_group_app/src/services/label_db.dart';
 import 'package:food_group_app/src/services/person_db.dart';
-import 'package:food_group_app/src/widgets/multi_select_input_widget.dart';
+import 'package:food_group_app/src/widgets/inputs/multi_select_input_widget.dart';
 
 class RestaurantFormWidget extends StatefulWidget {
   /// The name of a restaurant.
@@ -229,37 +230,21 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         selectedItems: widget.selectedLabels,
         onChangedSelectedItems: widget.onChangedSelectedLabels,
         buildSelectedItemText: (e) => e.label,
-        // TODO: uncomment once add/edit label screen exists
-        // onChipLongPress: (label) => Navigator.push(
-        //   context,
-        //   MaterialPageRoute<Label>(
-        //     builder: (context) => AddEditLabelScreen(
-        //       label: label,
-        //     ),
-        //   ),
-        // ),
-        onChipLongPress: (label) async {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Not implemented'),
+        onChipLongPress: (label) => Navigator.push(
+          context,
+          MaterialPageRoute<Label>(
+            builder: (context) => AddEditLabelScreen(
+              label: label,
             ),
-          );
-        },
+          ),
+        ),
         titleText: "Select Labels",
-        // TODO: uncomment once add/edit label screen exists
-        // onAddClick: () async => await Navigator.push(
-        //   context,
-        //   MaterialPageRoute<Label>(
-        //     builder: (context) => const AddEditLabelScreen(),
-        //   ),
-        // ),
-        onAddClick: () async {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Not implemented yet'),
-            ),
-          );
-        },
+        onAddClick: () async => await Navigator.push(
+          context,
+          MaterialPageRoute<Label>(
+            builder: (context) => const AddEditLabelScreen(),
+          ),
+        ),
         refreshAllItems: LabelDatabase.readAllLabels,
       );
 

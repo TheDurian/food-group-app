@@ -3,7 +3,7 @@ import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/services/restaurant_db.dart';
-import 'package:food_group_app/src/widgets/restaurant_form_widget.dart';
+import 'package:food_group_app/src/widgets/forms/restaurant_form_widget.dart';
 
 class AddEditRestaurantScreen extends StatefulWidget {
   /// A restaurant to prefill data on the edit screen.
@@ -40,9 +40,6 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
 
   /// A list of labels defining the visit to the restaurant.
   List<Label> selectedLabels = [];
-
-  /// A flag for whether a database call is ongoing or not.
-  bool isLoading = false;
 
   @override
   void initState() {

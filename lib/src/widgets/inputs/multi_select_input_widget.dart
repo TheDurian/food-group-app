@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_group_app/src/widgets/multi_select_dialog.dart';
+import 'package:food_group_app/src/widgets/dialogs/multi_select_dialog.dart';
 
 class MultiSelectInput<T> extends StatefulWidget {
   /// String to display on the text input
