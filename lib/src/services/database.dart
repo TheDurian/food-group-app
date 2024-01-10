@@ -40,6 +40,7 @@ class DatabaseService {
     const textTypeNull = 'TEXT';
     const boolType = 'BOOLEAN NOT NULL';
     const integerType = 'INTEGER NOT NULL';
+    const integerTypeNull = 'INTEGER';
 
     // Create Restaurant table
     await db.execute('''
@@ -83,7 +84,7 @@ class DatabaseService {
         ${LabelFields.id} $idType,
         ${LabelFields.label} $textType,
         ${LabelFields.dateAdded} $textType,
-        ${LabelFields.color} $textTypeNull
+        ${LabelFields.color} $integerTypeNull
       )
     ''');
 
