@@ -67,17 +67,33 @@ class RestaurantDatabase {
       where: '${RestaurantFields.id} = ?',
       whereArgs: [restaurant.id],
     );
+
+    // Delete old persons / labels mappings.
     await db.delete(
       tableRestaurantPersons,
       where: '${RestaurantPersonFields.restaurantId} = ?',
       whereArgs: [restaurant.id],
     );
+    await db.delete(
+      tableRestaurantLabels,
+      where: '${RestaurantLabelFields.restaurantId} = ?',
+      whereArgs: [restaurant.id],
+    );
+
+    // Add new persons / labels mappings.
     for (final person in restaurant.persons) {
       final personLink = RestaurantPersonLink(
         restaurantId: restaurant.id!,
         personId: person.id!,
       );
       await db.insert(tableRestaurantPersons, personLink.toJson());
+    }
+    for (final label in restaurant.labels) {
+      final labelLink = RestaurantLabelLink(
+        restaurantId: restaurant.id!,
+        labelId: label.id!,
+      );
+      await db.insert(tableRestaurantLabels, labelLink.toJson());
     }
 
     return restaurantId;

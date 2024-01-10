@@ -49,7 +49,9 @@ class DatabaseService {
         ${RestaurantFields.name} $textType,
         ${RestaurantFields.isChain} $boolType,
         ${RestaurantFields.address} $textTypeNull,
-        ${RestaurantFields.dateVisited} $textType
+        ${RestaurantFields.dateVisited} $textType,
+        ${RestaurantFields.dateAdded} $textType,
+        ${RestaurantFields.dateModified} $textType
       )
     ''');
 
@@ -58,7 +60,9 @@ class DatabaseService {
       CREATE TABLE $tablePersons (
         ${PersonFields.id} $idType,
         ${PersonFields.firstName} $textType,
-        ${PersonFields.lastName} $textTypeNull
+        ${PersonFields.lastName} $textTypeNull,
+        ${PersonFields.dateAdded} $textType,
+        ${PersonFields.dateModified} $textType
       )
     ''');
 
@@ -84,7 +88,8 @@ class DatabaseService {
         ${LabelFields.id} $idType,
         ${LabelFields.label} $textType,
         ${LabelFields.dateAdded} $textType,
-        ${LabelFields.color} $integerTypeNull
+        ${LabelFields.color} $integerTypeNull,
+        ${LabelFields.dateModified} $textType
       )
     ''');
 

@@ -26,19 +26,17 @@ class PersonFormWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildFirstName(),
-              const SizedBox(height: 16),
-              buildLastName(),
-              const SizedBox(height: 32),
-              buildSave(),
-            ],
-          ),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            buildFirstName(),
+            const SizedBox(height: 16),
+            buildLastName(),
+            const SizedBox(height: 32),
+            buildSave(context),
+          ],
         ),
       );
 
@@ -73,15 +71,15 @@ class PersonFormWidget extends StatelessWidget {
         textInputAction: TextInputAction.next,
       );
 
-  Widget buildSave() => Row(
-        children: [
-          Expanded(
-            child: Container(),
+  /// Builds the save button.
+  Widget buildSave(BuildContext context) => SizedBox(
+        width: double.maxFinite,
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            backgroundColor: Theme.of(context).hoverColor,
           ),
-          ElevatedButton(
-            onPressed: onSubmit,
-            child: const Text("Save"),
-          ),
-        ],
+          onPressed: onSubmit,
+          child: const Text("Save"),
+        ),
       );
 }

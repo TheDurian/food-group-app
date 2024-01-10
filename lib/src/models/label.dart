@@ -7,12 +7,14 @@ class LabelFields {
     id,
     label,
     dateAdded,
+    dateModified,
     color,
   ];
 
   static const String id = '_id';
   static const String label = 'label';
   static const String dateAdded = 'dateAdded';
+  static const String dateModified = 'dateModified';
   static const String color = 'color';
 }
 
@@ -23,8 +25,11 @@ class Label {
   /// The label name.
   final String label;
 
-  /// The date this label was generated.
-  final DateTime dateAdded = DateTime.now();
+  /// The date this label was added to the database.
+  final DateTime? dateAdded;
+
+  /// The date this label was last modified.
+  final DateTime? dateModified;
 
   /// The color to associate with this label.
   final Color? color;
@@ -33,24 +38,30 @@ class Label {
     this.id,
     required this.label,
     this.color,
+    this.dateAdded,
+    this.dateModified,
   });
 
   Label copy({
     final int? id,
     final String? label,
     final DateTime? dateAdded,
+    final DateTime? dateModified,
     final Color? color,
   }) =>
       Label(
         id: id ?? this.id,
         label: label ?? this.label,
         color: color ?? this.color,
+        dateAdded: dateAdded ?? this.dateAdded,
+        dateModified: dateModified ?? this.dateModified,
       );
 
   Map<String, Object?> toJson() => {
         LabelFields.id: id,
         LabelFields.label: label,
-        LabelFields.dateAdded: dateAdded.toIso8601String(),
+        LabelFields.dateAdded: dateAdded?.toIso8601String(),
+        LabelFields.dateModified: dateModified?.toIso8601String(),
         LabelFields.color: color?.value,
       };
 
@@ -60,6 +71,8 @@ class Label {
         color: (json[LabelFields.color] as int?) != null
             ? Color(json[LabelFields.color] as int)
             : null,
+        dateAdded: DateTime.parse(json[LabelFields.dateAdded] as String),
+        dateModified: DateTime.parse(json[LabelFields.dateModified] as String),
       );
 
   @override

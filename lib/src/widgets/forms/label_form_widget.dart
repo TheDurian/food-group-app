@@ -27,19 +27,17 @@ class LabelFormWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildFirstName(),
-              const SizedBox(height: 16),
-              buildColorPicker(),
-              const SizedBox(height: 32),
-              buildSave(),
-            ],
-          ),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            buildFirstName(),
+            const SizedBox(height: 16),
+            buildColorPicker(),
+            const SizedBox(height: 32),
+            buildSave(context),
+          ],
         ),
       );
 
@@ -68,9 +66,12 @@ class LabelFormWidget extends StatelessWidget {
       );
 
   /// Builds the save button.
-  Widget buildSave() => Align(
-        alignment: Alignment.bottomRight,
-        child: ElevatedButton(
+  Widget buildSave(BuildContext context) => SizedBox(
+        width: double.maxFinite,
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            backgroundColor: Theme.of(context).hoverColor,
+          ),
           onPressed: onSubmit,
           child: const Text("Save"),
         ),
