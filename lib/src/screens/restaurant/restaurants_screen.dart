@@ -6,7 +6,7 @@ V2:
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
-import 'package:food_group_app/src/screens/restaurant/edit_restaurant_screen.dart';
+import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/services/database.dart';
 import 'package:food_group_app/src/services/person_db.dart';
 import 'package:food_group_app/src/services/restaurant_db.dart';
@@ -107,13 +107,10 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   /// Handles navigating to the Add/Edit restaurant screen.
   void onAddEditClick([Restaurant? restaurant]) async {
-    await Navigator.push(
+    await Navigator.pushNamed(
       context,
-      MaterialPageRoute<void>(
-        builder: (context) => AddEditRestaurantScreen(
-          restaurant: restaurant,
-        ),
-      ),
+      AppRoutes.editRestaurant,
+      arguments: restaurant,
     );
     refreshRestaurants();
   }

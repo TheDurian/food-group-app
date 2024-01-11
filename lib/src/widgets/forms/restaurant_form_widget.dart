@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
-import 'package:food_group_app/src/screens/label/edit_label_screen.dart';
-import 'package:food_group_app/src/screens/person/edit_person_screen.dart';
+import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/services/label_db.dart';
 import 'package:food_group_app/src/services/person_db.dart';
 import 'package:food_group_app/src/widgets/inputs/multi_select_input_widget.dart';
@@ -205,20 +204,15 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         selectedItems: widget.selectedPeople,
         onChangedSelectedItems: widget.onChangedSelectedPeople,
         buildSelectedItemText: Person.fullNameFromPerson,
-        onChipLongPress: (person) => Navigator.push(
+        onChipLongPress: (person) => Navigator.pushNamed(
           context,
-          MaterialPageRoute<Person>(
-            builder: (context) => AddEditPersonScreen(
-              person: person,
-            ),
-          ),
+          AppRoutes.editPerson,
+          arguments: person,
         ),
         titleText: "Select People",
-        onAddClick: () async => await Navigator.push(
+        onAddClick: () async => await Navigator.pushNamed(
           context,
-          MaterialPageRoute<Person>(
-            builder: (context) => const AddEditPersonScreen(),
-          ),
+          AppRoutes.editPerson,
         ),
         refreshAllItems: PersonDatabase.readAllPersons,
       );
@@ -229,20 +223,15 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         selectedItems: widget.selectedLabels,
         onChangedSelectedItems: widget.onChangedSelectedLabels,
         buildSelectedItemText: (e) => e.label,
-        onChipLongPress: (label) => Navigator.push(
+        onChipLongPress: (label) => Navigator.pushNamed(
           context,
-          MaterialPageRoute<Label>(
-            builder: (context) => AddEditLabelScreen(
-              label: label,
-            ),
-          ),
+          AppRoutes.editLabel,
+          arguments: label,
         ),
         titleText: "Select Labels",
-        onAddClick: () async => await Navigator.push(
+        onAddClick: () async => await Navigator.pushNamed(
           context,
-          MaterialPageRoute<Label>(
-            builder: (context) => const AddEditLabelScreen(),
-          ),
+          AppRoutes.editLabel,
         ),
         chipColor: (label) => label.color,
         refreshAllItems: LabelDatabase.readAllLabels,

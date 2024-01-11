@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_group_app/src/screens/restaurant/restaurants_screen.dart';
+import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/themes/app_themes.dart';
 
 void main() {
@@ -15,7 +15,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: AppThemes.getTheme(false), // TODO add saving theme selection
-      home: const RestaurantScreen(),
+      onGenerateRoute: AppRoutes.onGenerateRoute,
+      routes: AppRoutes.routes,
+      onUnknownRoute: AppRoutes.onUnknownRoute,
     );
   }
 }
