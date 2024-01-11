@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/services/person_db.dart';
+import 'package:food_group_app/src/utils/datetime_helper.dart';
 import 'package:food_group_app/src/widgets/forms/person_form_widget.dart';
 
 class AddEditPersonScreen extends StatefulWidget {
@@ -35,20 +36,46 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("$firstName $lastName"),
       ),
-      body: Form(
-        key: _formKey,
-        child: PersonFormWidget(
-          firstName: firstName,
-          lastName: lastName,
-          onChangedFirstName: (firstName) =>
-              setState(() => this.firstName = firstName),
-          onChangedLastName: (lastName) =>
-              setState(() => this.lastName = lastName),
-          onSubmit: _addOrUpdatePerson,
-        ),
+      body: Column(
+        children: [
+          Form(
+            key: _formKey,
+            child: PersonFormWidget(
+              firstName: firstName,
+              lastName: lastName,
+              onChangedFirstName: (firstName) =>
+                  setState(() => this.firstName = firstName),
+              onChangedLastName: (lastName) =>
+                  setState(() => this.lastName = lastName),
+              onSubmit: _addOrUpdatePerson,
+            ),
+          ),
+          if (widget.person != null) ...showOnEditInfo(),
+        ],
       ),
     );
   }
+
+  /// Show optional fields when editing.
+  List<Widget> showOnEditInfo() => [
+        const Divider(),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+        ),
+        Text(
+          "Person Added: "
+          "${DateTimeHelper.toDateAndTime(widget.person!.dateAdded!)}",
+          style: const TextStyle(fontStyle: FontStyle.italic),
+        ),
+        Text(
+          "Person Modified: "
+          "${DateTimeHelper.toDateAndTime(widget.person!.dateModified!)}",
+          style: const TextStyle(fontStyle: FontStyle.italic),
+        ),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 16),
+        )
+      ];
 
   /// Adds a new person or updates the current person in the database.
   ///
@@ -73,6 +100,8 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
     final person = Person(
       firstName: firstName,
       lastName: lastName,
+      dateAdded: DateTime.now(),
+      dateModified: DateTime.now(),
     );
 
     var dbPerson = await PersonDatabase.createPerson(person);
@@ -84,6 +113,7 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
     final person = widget.person!.copy(
       firstName: firstName,
       lastName: lastName,
+      dateModified: DateTime.now(),
     );
 
     var dbPerson = await PersonDatabase.updatePerson(person);

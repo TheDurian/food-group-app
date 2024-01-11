@@ -88,31 +88,29 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildName(),
-              const SizedBox(height: 16),
-              buildAddress(),
-              const SizedBox(height: 16),
-              buildDateVisited(context),
-              const SizedBox(height: 16),
-              buildSelectPeople(),
-              const SizedBox(height: 16),
-              buildSelectLabels(),
-              const SizedBox(height: 16),
-              SwitchListTile(
-                title: const Text("Is this a chain?"),
-                value: widget.isChain ?? false,
-                onChanged: widget.onChangedIsChain,
-              ),
-              const SizedBox(height: 48),
-              buildOnSubmit(),
-            ],
-          ),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            buildName(),
+            const SizedBox(height: 16),
+            buildAddress(),
+            const SizedBox(height: 16),
+            buildDateVisited(context),
+            const SizedBox(height: 16),
+            buildSelectPeople(),
+            const SizedBox(height: 16),
+            buildSelectLabels(),
+            const SizedBox(height: 16),
+            SwitchListTile(
+              title: const Text("Is this a chain?"),
+              value: widget.isChain ?? false,
+              onChanged: widget.onChangedIsChain,
+            ),
+            const SizedBox(height: 48),
+            buildSave(context),
+          ],
         ),
       );
 
@@ -250,9 +248,15 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         refreshAllItems: LabelDatabase.readAllLabels,
       );
 
-  /// Handles clicking on the save button
-  Widget buildOnSubmit() => ElevatedButton(
-        onPressed: widget.onSubmit,
-        child: const Text("Save"),
+  /// Builds the save button.
+  Widget buildSave(BuildContext context) => SizedBox(
+        width: double.maxFinite,
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            backgroundColor: Theme.of(context).hoverColor,
+          ),
+          onPressed: widget.onSubmit,
+          child: const Text("Save"),
+        ),
       );
 }

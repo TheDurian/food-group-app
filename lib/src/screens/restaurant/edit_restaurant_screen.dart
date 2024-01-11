@@ -3,6 +3,7 @@ import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/services/restaurant_db.dart';
+import 'package:food_group_app/src/utils/datetime_helper.dart';
 import 'package:food_group_app/src/widgets/forms/restaurant_form_widget.dart';
 
 class AddEditRestaurantScreen extends StatefulWidget {
@@ -60,29 +61,60 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(name),
       ),
-      body: Form(
-        key: _formKey,
-        child: RestaurantFormWidget(
-          name: name,
-          isChain: isChain,
-          address: address,
-          dateVisited: dateVisited,
-          selectedPeople: selectedPeople,
-          selectedLabels: selectedLabels,
-          onChangedName: (name) => setState(() => this.name = name),
-          onChangedIsChain: (isChain) => setState(() => this.isChain = isChain),
-          onChangedAddress: (address) => setState(() => this.address = address),
-          onChangedDateVisited: (dateVisited) =>
-              setState(() => this.dateVisited = dateVisited),
-          onChangedSelectedPeople: (selectedPeople) =>
-              setState(() => this.selectedPeople = selectedPeople),
-          onChangedSelectedLabels: (selectedLabels) =>
-              setState(() => this.selectedLabels = selectedLabels),
-          onSubmit: _addOrUpdateRestaurant,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Form(
+              key: _formKey,
+              child: RestaurantFormWidget(
+                name: name,
+                isChain: isChain,
+                address: address,
+                dateVisited: dateVisited,
+                selectedPeople: selectedPeople,
+                selectedLabels: selectedLabels,
+                onChangedName: (name) => setState(() => this.name = name),
+                onChangedIsChain: (isChain) =>
+                    setState(() => this.isChain = isChain),
+                onChangedAddress: (address) =>
+                    setState(() => this.address = address),
+                onChangedDateVisited: (dateVisited) =>
+                    setState(() => this.dateVisited = dateVisited),
+                onChangedSelectedPeople: (selectedPeople) =>
+                    setState(() => this.selectedPeople = selectedPeople),
+                onChangedSelectedLabels: (selectedLabels) =>
+                    setState(() => this.selectedLabels = selectedLabels),
+                onSubmit: _addOrUpdateRestaurant,
+              ),
+            ),
+            if (widget.restaurant != null) ...showOnEditInfo(),
+          ],
         ),
       ),
     );
   }
+
+  /// Show optional fields when editing.
+  List<Widget> showOnEditInfo() => [
+        const Divider(),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+        ),
+        Text(
+          "Restaurant Added: "
+          "${DateTimeHelper.toDateAndTime(widget.restaurant!.dateAdded!)}",
+          style: const TextStyle(fontStyle: FontStyle.italic),
+        ),
+        Text(
+          "Restaurant Modified: "
+          "${DateTimeHelper.toDateAndTime(widget.restaurant!.dateModified!)}",
+          style: const TextStyle(fontStyle: FontStyle.italic),
+        ),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 16),
+        )
+      ];
 
   /// Attempts to add or update the restaurant.
   void _addOrUpdateRestaurant() async {
@@ -106,6 +138,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
       isChain: isChain,
       address: address,
       dateVisited: dateVisited,
+      dateModified: DateTime.now(),
       persons: selectedPeople,
       labels: selectedLabels,
     );
@@ -119,6 +152,8 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
       isChain: isChain,
       address: address,
       dateVisited: dateVisited,
+      dateAdded: DateTime.now(),
+      dateModified: DateTime.now(),
       persons: selectedPeople,
       labels: selectedLabels,
     );

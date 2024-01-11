@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/services/label_db.dart';
+import 'package:food_group_app/src/utils/datetime_helper.dart';
 import 'package:food_group_app/src/widgets/forms/label_form_widget.dart';
 
 class AddEditLabelScreen extends StatefulWidget {
@@ -53,22 +54,31 @@ class _AddEditLabelScreenState extends State<AddEditLabelScreen> {
                 onSubmit: _addOrUpdateLabel,
               ),
             ),
-            Expanded(child: Container()),
-            if (widget.label != null)
-              Column(
-                children: [
-                  Text(
-                    "Label Added: ${widget.label!.dateAdded}",
-                    style: const TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 32),
-                  )
-                ],
-              )
+            if (widget.label != null) ...showOnEditInfo(),
           ],
         ),
       );
+
+  /// Show optional fields when editing.
+  List<Widget> showOnEditInfo() => [
+        const Divider(),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+        ),
+        Text(
+          "Label Added: "
+          "${DateTimeHelper.toDateAndTime(widget.label!.dateAdded!)}",
+          style: const TextStyle(fontStyle: FontStyle.italic),
+        ),
+        Text(
+          "Label Modified: "
+          "${DateTimeHelper.toDateAndTime(widget.label!.dateModified!)}",
+          style: const TextStyle(fontStyle: FontStyle.italic),
+        ),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 16),
+        )
+      ];
 
   /// Attempts to add or update the label.
   void _addOrUpdateLabel() async {
@@ -91,7 +101,7 @@ class _AddEditLabelScreenState extends State<AddEditLabelScreen> {
     final label = widget.label!.copy(
       label: labelName,
       color: color,
-      // dateAdded?
+      dateModified: DateTime.now(),
     );
     return await LabelDatabase.updateLabel(label);
   }
@@ -101,6 +111,8 @@ class _AddEditLabelScreenState extends State<AddEditLabelScreen> {
     final label = Label(
       label: labelName,
       color: color,
+      dateAdded: DateTime.now(),
+      dateModified: DateTime.now(),
     );
     return await LabelDatabase.createLabel(label);
   }

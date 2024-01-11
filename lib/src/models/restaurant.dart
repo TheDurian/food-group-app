@@ -15,6 +15,8 @@ class RestaurantFields {
     isChain,
     address,
     dateVisited,
+    dateAdded,
+    dateModified,
   ];
 
   static const String id = '_id';
@@ -24,6 +26,8 @@ class RestaurantFields {
   static const String dateVisited = 'dateVisited';
   static const String persons = 'persons';
   static const String labels = 'labels';
+  static const String dateAdded = 'dateAdded';
+  static const String dateModified = 'dateModified';
 }
 
 class Restaurant {
@@ -42,6 +46,12 @@ class Restaurant {
   /// The date this restaurant was visited.
   final DateTime dateVisited;
 
+  /// The date this restaurant was added to the database.
+  final DateTime? dateAdded;
+
+  /// The date this restaurant was last modified.
+  final DateTime? dateModified;
+
   /// A list of people who were a part of the outing to this restaurant.
   final List<Person> persons;
 
@@ -54,6 +64,8 @@ class Restaurant {
     required this.isChain,
     this.address,
     required this.dateVisited,
+    this.dateAdded,
+    this.dateModified,
     required this.persons,
     required this.labels,
   });
@@ -64,6 +76,8 @@ class Restaurant {
     final bool? isChain,
     final String? address,
     final DateTime? dateVisited,
+    final DateTime? dateAdded,
+    final DateTime? dateModified,
     final List<Person>? persons,
     final List<Label>? labels,
   }) =>
@@ -73,6 +87,8 @@ class Restaurant {
         isChain: isChain ?? this.isChain,
         address: address ?? this.address,
         dateVisited: dateVisited ?? this.dateVisited,
+        dateAdded: dateAdded ?? this.dateAdded,
+        dateModified: dateModified ?? this.dateModified,
         persons: persons ?? this.persons,
         labels: labels ?? this.labels,
       );
@@ -83,6 +99,8 @@ class Restaurant {
         RestaurantFields.isChain: isChain ? 1 : 0,
         RestaurantFields.address: address,
         RestaurantFields.dateVisited: dateVisited.toIso8601String(),
+        RestaurantFields.dateAdded: dateAdded?.toIso8601String(),
+        RestaurantFields.dateModified: dateModified?.toIso8601String(),
       };
 
   static Restaurant fromJson(Map<String, Object?> json) => Restaurant(
@@ -92,6 +110,9 @@ class Restaurant {
         address: json[RestaurantFields.address] as String?,
         dateVisited:
             DateTime.parse(json[RestaurantFields.dateVisited] as String),
+        dateAdded: DateTime.parse(json[RestaurantFields.dateAdded] as String),
+        dateModified:
+            DateTime.parse(json[RestaurantFields.dateModified] as String),
         persons: (json[RestaurantFields.persons] as List<Person>? ?? [])
             .map((personJson) =>
                 Person.fromJson(personJson as Map<String, Object?>))
