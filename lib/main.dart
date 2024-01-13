@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: AppRoutes.onGenerateRoute,
       routes: AppRoutes.routes,
       onUnknownRoute: AppRoutes.onUnknownRoute,
+      initialRoute: AppRoutes.restaurants,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

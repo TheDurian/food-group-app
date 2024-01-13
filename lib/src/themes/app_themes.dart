@@ -6,7 +6,8 @@ class AppThemes {
   // static const Color accentColor = Colors.orange;
   // static const Color background = Color(0xFFF5F5F5);
   // static const Color text = Color(0xFF333333);
-  static const Color schemeColor = Color.fromRGBO(138, 110, 80, 1);
+  // static const Color schemeColor = Color.fromRGBO(46, 33, 15, 1);
+  static const Color schemeColor = Colors.brown;
 
   // Theme Data
   static final ThemeData lightTheme = ThemeData(

@@ -101,7 +101,7 @@ class _MultiSelectDialogState<T> extends State<MultiSelectDialog<T>> {
           child: Text(widget.cancelButtonText),
         ),
         if (allItems.isNotEmpty)
-          ElevatedButton(
+          FilledButton(
             onPressed: () => Navigator.pop(
                 context,
                 itemsChecked.entries
@@ -120,22 +120,24 @@ class _MultiSelectDialogState<T> extends State<MultiSelectDialog<T>> {
       ? const Center(child: CircularProgressIndicator())
       : SizedBox(
           width: double.maxFinite,
-          child: ListView.builder(
-            itemCount: itemsChecked.length,
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              T key = itemsChecked.keys.elementAt(index);
-              return CheckboxListTile(
-                title: Text(
-                  widget.buildSelectedItemText(key),
-                ),
-                value: itemsChecked.values.elementAt(index),
-                onChanged: (bool? value) {
-                  setState(() => itemsChecked[key] = value ?? false);
-                },
-              );
-            },
+          child: Scrollbar(
+            child: ListView.builder(
+              itemCount: itemsChecked.length,
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                T key = itemsChecked.keys.elementAt(index);
+                return CheckboxListTile(
+                  title: Text(
+                    widget.buildSelectedItemText(key),
+                  ),
+                  value: itemsChecked.values.elementAt(index),
+                  onChanged: (bool? value) {
+                    setState(() => itemsChecked[key] = value ?? false);
+                  },
+                );
+              },
+            ),
           ),
         );
 }

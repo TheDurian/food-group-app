@@ -13,12 +13,20 @@ class RestaurantDatabase {
     final db = await _dbHelper.database;
     final id = await db.insert(tableRestaurants, restaurant.toJson());
 
-    for (final person in restaurant.persons) {
+    for (final Person person in (restaurant.persons ?? [])) {
       final personLink = RestaurantPersonLink(
         restaurantId: id,
         personId: person.id!,
       );
       await db.insert(tableRestaurantPersons, personLink.toJson());
+    }
+
+    for (final Label label in (restaurant.labels ?? [])) {
+      final labelLink = RestaurantLabelLink(
+        restaurantId: id,
+        labelId: label.id!,
+      );
+      await db.insert(tableRestaurantLabels, labelLink.toJson());
     }
     return restaurant.copy(id: id);
   }
@@ -50,8 +58,8 @@ class RestaurantDatabase {
       final restaurant = Restaurant.fromJson(json);
       final persons = await readPeopleForRestaurant(restaurant.id ?? 0);
       final labels = await readLabelsForRestaurant(restaurant.id ?? 0);
-      restaurant.persons.addAll(persons);
-      restaurant.labels.addAll(labels);
+      restaurant.persons?.addAll(persons);
+      restaurant.labels?.addAll(labels);
       restaurantsList.add(restaurant);
     }
 
@@ -81,14 +89,14 @@ class RestaurantDatabase {
     );
 
     // Add new persons / labels mappings.
-    for (final person in restaurant.persons) {
+    for (final Person person in (restaurant.persons ?? [])) {
       final personLink = RestaurantPersonLink(
         restaurantId: restaurant.id!,
         personId: person.id!,
       );
       await db.insert(tableRestaurantPersons, personLink.toJson());
     }
-    for (final label in restaurant.labels) {
+    for (final Label label in (restaurant.labels ?? [])) {
       final labelLink = RestaurantLabelLink(
         restaurantId: restaurant.id!,
         labelId: label.id!,

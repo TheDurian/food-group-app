@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
+import 'package:food_group_app/src/screens/restaurant/add_restaurant_screen.dart';
 import 'package:food_group_app/src/services/database.dart';
 import 'package:food_group_app/src/services/person_db.dart';
 import 'package:food_group_app/src/services/restaurant_db.dart';
@@ -59,6 +60,18 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 Expanded(child: buildTileList()),
                 ElevatedButton(
                   onPressed: () async {
+                    var a = await Navigator.push(
+                      context,
+                      MaterialPageRoute<Restaurant>(
+                        builder: (context) => const AddRestaurantScreen(),
+                      ),
+                    );
+                    refreshRestaurants();
+                  },
+                  child: const Text("New Add Restaurant"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
                     List<Person> people = await PersonDatabase.readAllPersons();
                     for (var e in people) {
                       PersonDatabase.deletePerson(e.id!);
@@ -81,7 +94,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         prototypeItem: restaurants.isNotEmpty
             ? Card(
                 child: ListTile(
-                  title: Text(restaurants.first.name),
+                  title: Text(restaurants.first.name ?? ''),
                 ),
               )
             : null,
@@ -89,7 +102,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           return GestureDetector(
             child: Card(
               child: ListTile(
-                title: Text(restaurants[index].name),
+                title: Text(restaurants[index].name ?? ''),
                 subtitle: Text(restaurants[index].dateVisited.toString()),
                 trailing: Text('${restaurants[index].id}'),
               ),

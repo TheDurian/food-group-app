@@ -215,6 +215,12 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
           AppRoutes.editPerson,
         ),
         refreshAllItems: PersonDatabase.readAllPersons,
+        inputDecoration: BoxDecoration(
+          border: Border.all(),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(5),
+          ),
+        ),
       );
 
   /// Builds the select labels input field.
@@ -235,6 +241,12 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         ),
         chipColor: (label) => label.color,
         refreshAllItems: LabelDatabase.readAllLabels,
+        inputDecoration: BoxDecoration(
+          border: Border.all(),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(5),
+          ),
+        ),
       );
 
   /// Builds the save button.
