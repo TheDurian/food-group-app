@@ -34,10 +34,9 @@ class MultiSelectDialog<T> extends StatefulWidget {
     this.cancelButtonText = "Cancel",
     this.confirmButtonText = "Confirm",
     required this.titleText,
-    required this.onAddClick, // TODO: May make this optional later
+    required this.onAddClick,
     required this.buildSelectedItemText,
     required this.refreshAllItems,
-    // TODO: Maybe add a readOnly parameter which only shows items selected
   });
 
   @override
@@ -81,9 +80,15 @@ class _MultiSelectDialogState<T> extends State<MultiSelectDialog<T>> {
   Widget buildTitle() => Row(
         children: [
           Expanded(child: Text(widget.titleText)),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () async {
+          InkWell(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(width: 1),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: const Icon(Icons.add),
+            ),
+            onTap: () async {
               await widget.onAddClick();
               refreshAllItems();
             },

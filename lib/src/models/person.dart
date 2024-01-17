@@ -1,4 +1,15 @@
+import 'package:food_group_app/src/models/db_types.dart';
+
 const String tablePersons = 'persons';
+const String tablePersonsCreate = '''
+      CREATE TABLE $tablePersons (
+        ${PersonFields.id} ${DbTypes.idType},
+        ${PersonFields.firstName} ${DbTypes.textType},
+        ${PersonFields.lastName} ${DbTypes.textTypeNull},
+        ${PersonFields.dateAdded} ${DbTypes.textType},
+        ${PersonFields.dateModified} ${DbTypes.textType}
+      )
+    ''';
 
 class PersonFields {
   static final List<String> values = [
@@ -27,17 +38,17 @@ class Person {
   final String? lastName;
 
   /// The date this person was added to the database.
-  final DateTime? dateAdded;
+  final DateTime dateAdded;
 
   /// The date this person was last modified.
-  final DateTime? dateModified;
+  final DateTime dateModified;
 
   Person({
     this.id,
     required this.firstName,
     this.lastName,
-    this.dateAdded,
-    this.dateModified,
+    required this.dateAdded,
+    required this.dateModified,
   });
 
   Person copy({
@@ -59,8 +70,8 @@ class Person {
         PersonFields.id: id,
         PersonFields.firstName: firstName,
         PersonFields.lastName: lastName,
-        PersonFields.dateAdded: dateAdded?.toIso8601String(),
-        PersonFields.dateModified: dateModified?.toIso8601String(),
+        PersonFields.dateAdded: dateAdded.toIso8601String(),
+        PersonFields.dateModified: dateModified.toIso8601String(),
       };
 
   static Person fromJson(Map<String, Object?> json) => Person(

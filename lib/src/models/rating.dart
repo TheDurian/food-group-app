@@ -1,4 +1,30 @@
+import 'package:food_group_app/src/models/db_types.dart';
+import 'package:food_group_app/src/models/person.dart';
+import 'package:food_group_app/src/models/restaurant.dart';
+
 const String tableRatings = 'ratings';
+const String tableRatingsCreate = '''
+      CREATE TABLE $tableRatings (
+        ${RatingFields.restaurantId} ${DbTypes.integerType},
+        ${RatingFields.personId} ${DbTypes.integerType},
+        ${RatingFields.tasteRating} ${DbTypes.realNull},
+        ${RatingFields.serviceRating} ${DbTypes.realNull},
+        ${RatingFields.ambianceRating} ${DbTypes.realNull},
+        ${RatingFields.presentationRating} ${DbTypes.realNull},
+        ${RatingFields.costWorthRating} ${DbTypes.realNull},
+        ${RatingFields.notes} ${DbTypes.textTypeNull},
+        ${RatingFields.dateAdded} ${DbTypes.textType},
+        ${RatingFields.dateModified} ${DbTypes.textType},
+        FOREIGN KEY (${RatingFields.restaurantId})
+          REFERENCES $tableRestaurants(${RestaurantFields.id}),
+        FOREIGN KEY (${RatingFields.personId})
+          REFERENCES $tablePersons(${PersonFields.id}),
+        PRIMARY KEY (
+          ${RatingFields.restaurantId},
+          ${RatingFields.personId}
+        )
+      )
+    ''';
 
 class RatingFields {
   static final List<String> values = [
@@ -50,13 +76,12 @@ class Rating {
 
   /// Any general notes the person would like to include.
   final String? notes;
-  //TODO: add optional "overall rating" that you can do instead of multiple mini ratings
 
   /// The date this rating was added to the database.
-  final DateTime? dateAdded;
+  final DateTime dateAdded;
 
   /// The date this rating was last modified.
-  final DateTime? dateModified;
+  final DateTime dateModified;
 
   Rating({
     required this.restaurantId,
@@ -67,8 +92,9 @@ class Rating {
     this.presentationRating,
     this.costWorthRating,
     this.notes,
-    this.dateAdded,
-    this.dateModified,
+    required this.dateAdded,
+    required this.dateModified,
+    // todo would recommend
   });
 
   Rating copy({
@@ -105,19 +131,19 @@ class Rating {
         RatingFields.presentationRating: presentationRating,
         RatingFields.costWorthRating: costWorthRating,
         RatingFields.notes: notes,
-        RatingFields.dateAdded: dateAdded?.toIso8601String(),
-        RatingFields.dateModified: dateModified?.toIso8601String(),
+        RatingFields.dateAdded: dateAdded.toIso8601String(),
+        RatingFields.dateModified: dateModified.toIso8601String(),
       };
 
   static Rating fromJson(Map<String, Object?> json) => Rating(
         restaurantId: json[RatingFields.restaurantId] as int,
         personId: json[RatingFields.personId] as int,
-        tasteRating: json[RatingFields.tasteRating] as double,
-        serviceRating: json[RatingFields.serviceRating] as double,
-        ambianceRating: json[RatingFields.ambianceRating] as double,
-        presentationRating: json[RatingFields.presentationRating] as double,
-        costWorthRating: json[RatingFields.costWorthRating] as double,
-        notes: json[RatingFields.notes] as String,
+        tasteRating: json[RatingFields.tasteRating] as double?,
+        serviceRating: json[RatingFields.serviceRating] as double?,
+        ambianceRating: json[RatingFields.ambianceRating] as double?,
+        presentationRating: json[RatingFields.presentationRating] as double?,
+        costWorthRating: json[RatingFields.costWorthRating] as double?,
+        notes: json[RatingFields.notes] as String?,
         dateAdded: DateTime.parse(json[RatingFields.dateAdded] as String),
         dateModified: DateTime.parse(json[RatingFields.dateModified] as String),
       );

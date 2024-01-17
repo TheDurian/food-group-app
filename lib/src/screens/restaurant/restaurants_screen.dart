@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
-import 'package:food_group_app/src/screens/restaurant/add_restaurant_screen.dart';
 import 'package:food_group_app/src/services/database.dart';
 import 'package:food_group_app/src/services/person_db.dart';
 import 'package:food_group_app/src/services/restaurant_db.dart';
@@ -59,16 +58,23 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               children: [
                 Expanded(child: buildTileList()),
                 ElevatedButton(
-                  onPressed: () async {
-                    var a = await Navigator.push(
+                  onPressed: () {
+                    Navigator.pushNamed(
                       context,
-                      MaterialPageRoute<Restaurant>(
-                        builder: (context) => const AddRestaurantScreen(),
-                      ),
+                      AppRoutes.addRestaurantNew,
                     );
                     refreshRestaurants();
                   },
-                  child: const Text("New Add Restaurant"),
+                  child: const Text("Add restaurant scren#2"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.ratings,
+                    );
+                  },
+                  child: const Text("Show ratings"),
                 ),
                 ElevatedButton(
                   onPressed: () async {

@@ -1,4 +1,22 @@
+import 'package:food_group_app/src/models/db_types.dart';
+import 'package:food_group_app/src/models/person.dart';
+import 'package:food_group_app/src/models/restaurant.dart';
+
 const String tableRestaurantPersons = 'restaurantPersonLink';
+const String tableRestaurantPersonsCreate = '''
+      CREATE TABLE $tableRestaurantPersons (
+        ${RestaurantPersonFields.restaurantId} ${DbTypes.integerType},
+        ${RestaurantPersonFields.personId} ${DbTypes.integerType},
+        FOREIGN KEY (${RestaurantPersonFields.restaurantId})
+          REFERENCES $tableRestaurants(${RestaurantFields.id}),
+        FOREIGN KEY (${RestaurantPersonFields.personId})
+          REFERENCES $tablePersons(${PersonFields.id}),
+        PRIMARY KEY (
+          ${RestaurantPersonFields.restaurantId},
+          ${RestaurantPersonFields.personId}
+        )
+      )
+    ''';
 
 class RestaurantPersonFields {
   static final List<String> values = [

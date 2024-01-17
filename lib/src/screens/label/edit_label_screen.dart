@@ -108,11 +108,12 @@ class _AddEditLabelScreenState extends State<AddEditLabelScreen> {
 
   /// Adds a new label to database.
   Future<Label> addLabel() async {
+    final dateAdded = DateTime.now();
     final label = Label(
       label: labelName,
       color: color,
-      dateAdded: DateTime.now(),
-      dateModified: DateTime.now(),
+      dateAdded: dateAdded,
+      dateModified: dateAdded,
     );
     return await LabelDatabase.createLabel(label);
   }

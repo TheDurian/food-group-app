@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: AppThemes.getTheme(false), // TODO add saving theme selection
+      theme: AppThemes.getTheme(false),
       onGenerateRoute: AppRoutes.onGenerateRoute,
       routes: AppRoutes.routes,
       onUnknownRoute: AppRoutes.onUnknownRoute,

@@ -1,5 +1,6 @@
 import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
+import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/models/restaurant_label.dart';
 import 'package:food_group_app/src/models/restaurant_person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
@@ -35,79 +36,12 @@ class DatabaseService {
 
   /// Creates all tables that will be used.
   Future<void> _createDB(Database db, int version) async {
-    const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    const textType = 'TEXT NOT NULL';
-    const textTypeNull = 'TEXT';
-    const boolType = 'BOOLEAN NOT NULL';
-    const integerType = 'INTEGER NOT NULL';
-    const integerTypeNull = 'INTEGER';
-
-    // Create Restaurant table
-    await db.execute('''
-      CREATE TABLE $tableRestaurants (
-        ${RestaurantFields.id} $idType,
-        ${RestaurantFields.name} $textType,
-        ${RestaurantFields.isChain} $boolType,
-        ${RestaurantFields.address} $textTypeNull,
-        ${RestaurantFields.dateVisited} $textType,
-        ${RestaurantFields.dateAdded} $textType,
-        ${RestaurantFields.dateModified} $textType
-      )
-    ''');
-
-    // Create Person table
-    await db.execute('''
-      CREATE TABLE $tablePersons (
-        ${PersonFields.id} $idType,
-        ${PersonFields.firstName} $textType,
-        ${PersonFields.lastName} $textTypeNull,
-        ${PersonFields.dateAdded} $textType,
-        ${PersonFields.dateModified} $textType
-      )
-    ''');
-
-    // Create Restaurant->Persons link table
-    await db.execute('''
-      CREATE TABLE $tableRestaurantPersons (
-        ${RestaurantPersonFields.restaurantId} $integerType,
-        ${RestaurantPersonFields.personId} $integerType,
-        FOREIGN KEY (${RestaurantPersonFields.restaurantId})
-          REFERENCES $tableRestaurants(${RestaurantFields.id}),
-        FOREIGN KEY (${RestaurantPersonFields.personId})
-          REFERENCES $tablePersons(${PersonFields.id}),
-        PRIMARY KEY (
-          ${RestaurantPersonFields.restaurantId},
-          ${RestaurantPersonFields.personId}
-        )
-      )
-    ''');
-
-    // Create Label table
-    await db.execute('''
-      CREATE TABLE $tableLabels (
-        ${LabelFields.id} $idType,
-        ${LabelFields.label} $textType,
-        ${LabelFields.dateAdded} $textType,
-        ${LabelFields.color} $integerTypeNull,
-        ${LabelFields.dateModified} $textType
-      )
-    ''');
-
-    // Create Restaurant->Labels link table
-    await db.execute('''
-      CREATE TABLE $tableRestaurantLabels (
-        ${RestaurantLabelFields.restaurantId} $integerType,
-        ${RestaurantLabelFields.labelId} $integerType,
-        FOREIGN KEY (${RestaurantLabelFields.restaurantId})
-          REFERENCES $tableRestaurants(${RestaurantFields.id}),
-        FOREIGN KEY (${RestaurantLabelFields.labelId})
-          REFERENCES $tableLabels(${LabelFields.id}),
-        PRIMARY KEY (
-          ${RestaurantLabelFields.restaurantId},
-          ${RestaurantLabelFields.labelId}
-        )
-      )
-    ''');
+    await db.execute(tableRestaurantsCreate);
+    await db.execute(tablePersonsCreate);
+    await db.execute(tableRestaurantPersonsCreate);
+    await db.execute(tableLabelsCreate);
+    await db.execute(tableRestaurantLabelsCreate);
+    await db.execute(tableRatingsCreate);
   }
 
   /// Closes the database connection.

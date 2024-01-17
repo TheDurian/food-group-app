@@ -1,5 +1,6 @@
 import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
+import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/models/restaurant_label.dart';
 import 'package:food_group_app/src/models/restaurant_person.dart';
@@ -120,6 +121,16 @@ class RestaurantDatabase {
     await db.delete(
       tableRestaurantPersons,
       where: '${RestaurantPersonFields.restaurantId} = ?',
+      whereArgs: [restaurantId],
+    );
+    await db.delete(
+      tableRestaurantLabels,
+      where: '${RestaurantLabelFields.restaurantId} = ?',
+      whereArgs: [restaurantId],
+    );
+    await db.delete(
+      tableRatings,
+      where: '${RatingFields.restaurantId} = ?',
       whereArgs: [restaurantId],
     );
   }

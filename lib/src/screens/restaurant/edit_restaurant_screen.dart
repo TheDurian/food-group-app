@@ -147,13 +147,14 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
 
   /// Adds a new restaurant to database.
   Future<void> addRestaurant() async {
+    final dateAdded = DateTime.now();
     final restaurant = Restaurant(
       name: name,
       isChain: isChain,
       address: address,
       dateVisited: dateVisited,
-      dateAdded: DateTime.now(),
-      dateModified: DateTime.now(),
+      dateAdded: dateAdded,
+      dateModified: dateAdded,
       persons: selectedPeople,
       labels: selectedLabels,
     );
