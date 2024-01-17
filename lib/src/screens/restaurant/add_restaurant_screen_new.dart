@@ -45,7 +45,7 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
     controller = PageController(initialPage: 0);
     restaurantName = widget.restaurant?.name ?? '';
     address = widget.restaurant?.address ?? '';
-    dateVisited = widget.restaurant?.dateVisited?.toIso8601String() ?? '';
+    dateVisited = widget.restaurant?.dateVisited.toIso8601String() ?? '';
     labels = widget.restaurant?.labels ?? [];
     persons = widget.restaurant?.persons ?? [];
   }
@@ -60,7 +60,7 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
   Widget build(BuildContext context) => Scaffold(
         body: PageView(
           controller: controller,
-          // physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             TextView(
               inputText: 'Add a new restaurant',
@@ -180,12 +180,10 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
                 curve: curve,
               ),
               confirmButtonText: 'Next',
-              onConfirmButton: () {
-                controller.nextPage(
-                  duration: duration,
-                  curve: curve,
-                );
-              },
+              onConfirmButton: () => controller.nextPage(
+                duration: duration,
+                curve: curve,
+              ),
             ),
             MultiSelectInputView<Person>(
               inputText: 'Would you like to add any people?',

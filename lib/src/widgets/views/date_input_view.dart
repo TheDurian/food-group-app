@@ -189,7 +189,7 @@ class _DateInputViewState extends State<DateInputView> {
       initialEntryMode: DatePickerEntryMode.calendarOnly,
     );
     if (datePicked != null &&
-        DateTimeHelper.toDate(datePicked) != widget.initialValue) {
+        DateTimeHelper.toDate(datePicked) != _textController.text) {
       setState(() => _textController.text = DateTimeHelper.toDate(datePicked));
       formFieldState.didChange(_textController.text);
       widget.onChangedValue(_textController.text);

@@ -24,7 +24,7 @@ class MultiSelectInputView<T> extends StatefulWidget {
   final VoidCallback? onDeclineButton;
 
   /// A validation function to run off the input.
-  final String? Function(String?)? validator;
+  final String? Function(List<T>?)? validator;
 
   /// The text to display as a label on the input field.
   final String labelText;
@@ -115,25 +115,43 @@ class _MultiSelectInputViewState<T> extends State<MultiSelectInputView<T>> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 48),
-            child: MultiSelectInput<T>(
-              chipAlignment: Alignment.centerLeft,
-              labelAvatar: widget.labelAvatar,
-              inputHintText: widget.labelText,
-              selectedItems: selectedItems,
-              onChangedSelectedItems: (items) {
-                setState(() => selectedItems = items);
-                widget.onChangedValue(selectedItems);
-              },
-              buildSelectedItemText: widget.buildSelectedItemText,
-              titleText: widget.titleText,
-              onAddClick: widget.onAddClick,
-              refreshAllItems: widget.refreshAllItems,
-              onChipLongPress: widget.onChipLongPress,
-              chipColor: widget.chipColor,
-              inputDecoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(),
-                ),
+            child: FormField<List<T>>(
+              key: widget.formKey,
+              validator: widget.validator,
+              initialValue: widget.initialItems,
+              builder: (formFieldState) => Column(
+                children: [
+                  MultiSelectInput<T>(
+                    chipAlignment: Alignment.centerLeft,
+                    labelAvatar: widget.labelAvatar,
+                    inputHintText: widget.labelText,
+                    selectedItems: selectedItems,
+                    onChangedSelectedItems: (items) {
+                      setState(() => selectedItems = items);
+                      widget.onChangedValue(items);
+                      formFieldState.didChange(items);
+                    },
+                    buildSelectedItemText: widget.buildSelectedItemText,
+                    titleText: widget.titleText,
+                    onAddClick: widget.onAddClick,
+                    refreshAllItems: widget.refreshAllItems,
+                    onChipLongPress: widget.onChipLongPress,
+                    chipColor: widget.chipColor,
+                    inputDecoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(),
+                      ),
+                    ),
+                  ),
+                  if (formFieldState.hasError)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        formFieldState.errorText!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    )
+                ],
               ),
             ),
           ),

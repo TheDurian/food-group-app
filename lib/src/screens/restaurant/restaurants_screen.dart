@@ -108,7 +108,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           return GestureDetector(
             child: Card(
               child: ListTile(
-                title: Text(restaurants[index].name ?? ''),
+                title: Text(restaurants[index].name),
                 subtitle: Text(restaurants[index].dateVisited.toString()),
                 trailing: Text('${restaurants[index].id}'),
               ),

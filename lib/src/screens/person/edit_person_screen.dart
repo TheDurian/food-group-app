@@ -64,12 +64,12 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
         ),
         Text(
           "Person Added: "
-          "${DateTimeHelper.toDateAndTime(widget.person!.dateAdded!)}",
+          "${DateTimeHelper.toDateAndTime(widget.person!.dateAdded)}",
           style: const TextStyle(fontStyle: FontStyle.italic),
         ),
         Text(
           "Person Modified: "
-          "${DateTimeHelper.toDateAndTime(widget.person!.dateModified!)}",
+          "${DateTimeHelper.toDateAndTime(widget.person!.dateModified)}",
           style: const TextStyle(fontStyle: FontStyle.italic),
         ),
         const Padding(

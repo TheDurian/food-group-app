@@ -67,12 +67,12 @@ class _AddEditLabelScreenState extends State<AddEditLabelScreen> {
         ),
         Text(
           "Label Added: "
-          "${DateTimeHelper.toDateAndTime(widget.label!.dateAdded!)}",
+          "${DateTimeHelper.toDateAndTime(widget.label!.dateAdded)}",
           style: const TextStyle(fontStyle: FontStyle.italic),
         ),
         Text(
           "Label Modified: "
-          "${DateTimeHelper.toDateAndTime(widget.label!.dateModified!)}",
+          "${DateTimeHelper.toDateAndTime(widget.label!.dateModified)}",
           style: const TextStyle(fontStyle: FontStyle.italic),
         ),
         const Padding(
