@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TextInputView extends StatefulWidget {
+class RatingInputView extends StatefulWidget {
   /// The text to display above the center text of the page.
   ///
   /// This text will be bolded larger than the center text.
@@ -14,11 +14,11 @@ class TextInputView extends StatefulWidget {
   /// This would correspond to a hint text of some sort.
   final String? subText;
 
-  /// The initial value for the input.
-  final String initialValue;
+  /// The initial value for the slider.
+  final double initialValue;
 
-  /// A callback function when the input changes value.
-  final ValueChanged<String> onChangedValue;
+  /// A callback function when the slider changes value.
+  final ValueChanged<double> onChangedValue;
 
   /// The text to display on the confirmation button on the right side.
   final String? confirmButtonText;
@@ -32,25 +32,13 @@ class TextInputView extends StatefulWidget {
   /// A callback for when the decline button is clicked.
   final VoidCallback? onDeclineButton;
 
-  /// A validation function to run off the input.
-  final String? Function(String?)? validator;
+  /// Whether to show values as integers rather than doubles.
+  ///
+  /// The value will still be stored as a double however will
+  /// show as an integer on the UI.
+  final bool showAsInteger;
 
-  /// The text to display as a label on the input field.
-  final String labelText;
-
-  /// The capitalization to use for the input.
-  final TextCapitalization textCapitalization;
-
-  /// A function to call on submit of the keyboard.
-  final void Function(String)? onSubmit;
-
-  /// The text keyboard submit action / word.
-  final TextInputAction textInputAction;
-
-  /// A key to use for validation of the form.
-  final Key? formKey;
-
-  const TextInputView({
+  const RatingInputView({
     super.key,
     required this.centerText,
     required this.initialValue,
@@ -59,35 +47,23 @@ class TextInputView extends StatefulWidget {
     this.declineButtonText,
     this.onConfirmButton,
     this.onDeclineButton,
-    this.validator,
-    required this.labelText,
-    this.textCapitalization = TextCapitalization.words,
-    this.onSubmit,
-    this.textInputAction = TextInputAction.next,
-    this.formKey,
+    this.showAsInteger = true,
     this.subText,
     this.upperText,
   });
 
   @override
-  State<TextInputView> createState() => _TextInputViewState();
+  State<RatingInputView> createState() => _RatingInputViewState();
 }
 
-class _TextInputViewState extends State<TextInputView> {
-  late TextEditingController _textController;
+class _RatingInputViewState extends State<RatingInputView> {
+  /// The currently selected value.
+  late double value;
 
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(
-      text: widget.initialValue,
-    );
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
+    value = widget.initialValue;
   }
 
   @override
@@ -147,45 +123,27 @@ class _TextInputViewState extends State<TextInputView> {
                   const SizedBox(
                     height: 30,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 48),
-                    child: FormField<String>(
-                      key: widget.formKey,
-                      validator: widget.validator,
-                      initialValue: widget.initialValue,
-                      builder: (formFieldState) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextField(
-                            controller: _textController,
-                            decoration: InputDecoration(
-                              labelText: widget.labelText,
-                              alignLabelWithHint: true,
-                              floatingLabelAlignment:
-                                  FloatingLabelAlignment.center,
-                            ),
-                            maxLines: 1,
-                            textCapitalization: widget.textCapitalization,
-                            onSubmitted: widget.onSubmit,
-                            textInputAction: widget.textInputAction,
-                            textAlign: TextAlign.center,
-                            onChanged: (value) {
-                              formFieldState.didChange(_textController.text);
-                              widget.onChangedValue(_textController.text);
-                            },
-                          ),
-                          if (formFieldState.hasError)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Text(
-                                formFieldState.errorText!,
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                            )
-                        ],
-                      ),
+                  Slider(
+                    value: value,
+                    onChanged: (value) {
+                      setState(() => this.value = value);
+                      widget.onChangedValue(value);
+                    },
+                    max: 10,
+                    min: 1,
+                    divisions: 9,
+                    label: widget.showAsInteger ? '${value.toInt()}' : '$value',
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    widget.showAsInteger ? '${value.toInt()}' : '$value',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 26,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(
                     height: 30,
@@ -199,7 +157,8 @@ class _TextInputViewState extends State<TextInputView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (widget.declineButtonText != null)
+                if (widget.declineButtonText != null &&
+                    widget.onDeclineButton != null)
                   ElevatedButton(
                     style: widget.declineButtonText == null
                         ? ElevatedButton.styleFrom(
@@ -215,7 +174,8 @@ class _TextInputViewState extends State<TextInputView> {
                   const SizedBox(
                     width: 64,
                   ),
-                if (widget.confirmButtonText != null)
+                if (widget.confirmButtonText != null &&
+                    widget.onConfirmButton != null)
                   FilledButton(
                     style: widget.declineButtonText == null
                         ? FilledButton.styleFrom(

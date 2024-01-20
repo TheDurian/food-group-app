@@ -45,7 +45,9 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
     controller = PageController(initialPage: 0);
     restaurantName = widget.restaurant?.name ?? '';
     address = widget.restaurant?.address ?? '';
-    dateVisited = widget.restaurant?.dateVisited.toIso8601String() ?? '';
+    dateVisited = widget.restaurant?.dateVisited != null
+        ? DateTimeHelper.toDate(widget.restaurant!.dateVisited)
+        : '';
     labels = widget.restaurant?.labels ?? [];
     persons = widget.restaurant?.persons ?? [];
   }
@@ -57,197 +59,231 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: PageView(
-          controller: controller,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            TextView(
-              inputText: 'Add a new restaurant',
-              confirmButtonText: 'Start',
-              onConfirmButton: () => controller.nextPage(
-                duration: duration,
-                curve: curve,
+  Widget build(BuildContext context) => PopScope(
+        canPop: false,
+        onPopInvoked: (bool didPop) {
+          if (didPop) {
+            return;
+          }
+          _onWillPop();
+        },
+        child: Scaffold(
+          body: PageView(
+            controller: controller,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              if (widget.restaurant == null)
+                TextView(
+                  centerText: 'Add a new restaurant',
+                  confirmButtonText: 'Start',
+                  onConfirmButton: () => controller.nextPage(
+                    duration: duration,
+                    curve: curve,
+                  ),
+                ),
+              TextInputView(
+                formKey: _formKeyName,
+                centerText: 'What is the name of the restaurant you went to?',
+                initialValue: restaurantName,
+                onChangedValue: (restaurantName) =>
+                    setState(() => this.restaurantName = restaurantName),
+                labelText: 'Name',
+                declineButtonText: 'Back',
+                onDeclineButton: () => controller.previousPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+                confirmButtonText: 'Next',
+                onConfirmButton: () {
+                  if (_formKeyName.currentState!.validate()) {
+                    controller.nextPage(
+                      duration: duration,
+                      curve: curve,
+                    );
+                  }
+                },
+                validator: (name) => (name == null) || name.isEmpty
+                    ? 'The name cannot be empty'
+                    : null,
+                onSubmit: (value) {
+                  if (_formKeyName.currentState!.validate()) {
+                    controller.nextPage(
+                      duration: duration,
+                      curve: curve,
+                    );
+                  }
+                },
               ),
-              declineButtonText: 'Exit',
-              onDeclineButton: () => Navigator.popUntil(
-                context,
-                ModalRoute.withName(AppRoutes.restaurants),
+              DateInputView(
+                formKey: _formKeyDateVisited,
+                centerText: 'When did you go?',
+                initialValue: dateVisited,
+                onChangedValue: (dateVisited) =>
+                    setState(() => this.dateVisited = dateVisited),
+                labelText: 'Date Visited',
+                declineButtonText: 'Back',
+                onDeclineButton: () => controller.previousPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+                confirmButtonText: 'Next',
+                onConfirmButton: () {
+                  if (_formKeyDateVisited.currentState!.validate()) {
+                    controller.nextPage(
+                      duration: duration,
+                      curve: curve,
+                    );
+                  }
+                },
+                validator: (date) => (date == null) || date.isEmpty
+                    ? 'The date visited cannot be empty'
+                    : null,
               ),
-            ),
-            TextInputView(
-              formKey: _formKeyName,
-              inputText: 'What is the name of the restaurant you went to?',
-              initialValue: restaurantName,
-              onChangedValue: (restaurantName) =>
-                  setState(() => this.restaurantName = restaurantName),
-              labelText: 'Name',
-              declineButtonText: 'Back',
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
-              ),
-              confirmButtonText: 'Next',
-              onConfirmButton: () {
-                if (_formKeyName.currentState!.validate()) {
+              TextInputView(
+                centerText: 'Where was it located?',
+                subText: 'Note: This field is optional!',
+                initialValue: address,
+                onChangedValue: (address) =>
+                    setState(() => this.address = address),
+                labelText: 'Address',
+                declineButtonText: 'Back',
+                onDeclineButton: () => controller.previousPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+                confirmButtonText: 'Next',
+                onConfirmButton: () {
                   controller.nextPage(
                     duration: duration,
                     curve: curve,
                   );
-                }
-              },
-              validator: (name) => (name == null) || name.isEmpty
-                  ? 'The name cannot be empty'
-                  : null,
-              onSubmit: (value) {
-                if (_formKeyName.currentState!.validate()) {
+                },
+                validator: (address) => (address == null) || address.isEmpty
+                    ? 'The address cannot be empty'
+                    : null,
+                onSubmit: (value) {
                   controller.nextPage(
                     duration: duration,
                     curve: curve,
                   );
-                }
-              },
-            ),
-            DateInputView(
-              formKey: _formKeyDateVisited,
-              inputText: 'When did you go?',
-              initialValue: dateVisited,
-              onChangedValue: (dateVisited) =>
-                  setState(() => this.dateVisited = dateVisited),
-              labelText: 'Date Visited',
-              declineButtonText: 'Back',
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
+                },
               ),
-              confirmButtonText: 'Next',
-              onConfirmButton: () {
-                if (_formKeyDateVisited.currentState!.validate()) {
+              MultiSelectInputView<Label>(
+                centerText: 'Would you like to add any labels?',
+                subText: 'New labels can be added at any time by clicking '
+                    'on the input and selecting the add button on the top.',
+                initialItems: labels,
+                onChangedValue: (labels) =>
+                    setState(() => this.labels = labels),
+                labelText: 'Select Labels',
+                buildSelectedItemText: (label) => label.label,
+                onAddClick: () async => await Navigator.pushNamed(
+                  context,
+                  AppRoutes.editLabel,
+                ),
+                refreshAllItems: LabelDatabase.readAllLabels,
+                titleText: 'Select Labels',
+                chipColor: (label) => label.color,
+                declineButtonText: 'Back',
+                onDeclineButton: () => controller.previousPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+                confirmButtonText: 'Next',
+                onConfirmButton: () => controller.nextPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+              ),
+              MultiSelectInputView<Person>(
+                centerText: 'Would you like to add any people?',
+                subText: 'New people can be added at any time by clicking '
+                    'on the input and selecting the add button on the top.',
+                initialItems: persons,
+                onChangedValue: (persons) =>
+                    setState(() => this.persons = persons),
+                labelText: 'Select People',
+                buildSelectedItemText: Person.fullNameFromPerson,
+                onAddClick: () async => await Navigator.pushNamed(
+                  context,
+                  AppRoutes.editPerson,
+                ),
+                refreshAllItems: PersonDatabase.readAllPersons,
+                titleText: 'Select People',
+                declineButtonText: 'Back',
+                onDeclineButton: () => controller.previousPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+                onChipLongPress: (people) => Navigator.pushNamed(
+                  context,
+                  AppRoutes.editPerson,
+                  arguments: people,
+                ),
+                labelAvatar: const Icon(Icons.person_2_outlined),
+                confirmButtonText: 'Next',
+                onConfirmButton: () {
                   controller.nextPage(
                     duration: duration,
                     curve: curve,
                   );
-                }
-              },
-              validator: (date) => (date == null) || date.isEmpty
-                  ? 'The date visited cannot be empty'
-                  : null,
-            ),
-            TextInputView(
-              inputText: 'What is the address of the restaurant you went to?',
-              initialValue: address,
-              onChangedValue: (address) =>
-                  setState(() => this.address = address),
-              labelText: 'Address',
-              declineButtonText: 'Back',
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
+                },
               ),
-              confirmButtonText: 'Next',
-              onConfirmButton: () {
-                controller.nextPage(
+              TextView(
+                centerText: widget.restaurant == null
+                    ? 'Save restaurant and start rating?'
+                    : 'Save restaurant?',
+                subText: widget.restaurant == null
+                    ? 'Each person you add will have a chance to '
+                        'provide their own ratings.\n'
+                        'People will be selected in a random order.'
+                    : null,
+                confirmButtonText: 'Save',
+                onConfirmButton: onSave,
+                declineButtonText: 'Back',
+                onDeclineButton: () => controller.previousPage(
                   duration: duration,
                   curve: curve,
-                );
-              },
-              validator: (address) => (address == null) || address.isEmpty
-                  ? 'The address cannot be empty'
-                  : null,
-              onSubmit: (value) {
-                controller.nextPage(
-                  duration: duration,
-                  curve: curve,
-                );
-              },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  void _onWillPop() async => showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Cancel submission?"),
+          content: const Text("Any unsaved changes will be lost."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('No'),
             ),
-            MultiSelectInputView<Label>(
-              inputText: 'Would you like to add any labels?',
-              initialItems: labels,
-              onChangedValue: (labels) => setState(() => this.labels = labels),
-              labelText: 'Select Labels',
-              buildSelectedItemText: (label) => label.label,
-              onAddClick: () async => await Navigator.pushNamed(
-                context,
-                AppRoutes.editLabel,
-              ),
-              refreshAllItems: LabelDatabase.readAllLabels,
-              titleText: 'Select Labels',
-              chipColor: (label) => label.color,
-              declineButtonText: 'Back',
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
-              ),
-              confirmButtonText: 'Next',
-              onConfirmButton: () => controller.nextPage(
-                duration: duration,
-                curve: curve,
-              ),
-            ),
-            MultiSelectInputView<Person>(
-              inputText: 'Would you like to add any people?',
-              initialItems: persons,
-              onChangedValue: (persons) =>
-                  setState(() => this.persons = persons),
-              labelText: 'Select People',
-              buildSelectedItemText: Person.fullNameFromPerson,
-              onAddClick: () async => await Navigator.pushNamed(
-                context,
-                AppRoutes.editPerson,
-              ),
-              refreshAllItems: PersonDatabase.readAllPersons,
-              titleText: 'Select People',
-              declineButtonText: 'Back',
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
-              ),
-              onChipLongPress: (people) => Navigator.pushNamed(
-                context,
-                AppRoutes.editPerson,
-                arguments: people,
-              ),
-              labelAvatar: const Icon(Icons.person_2_outlined),
-              confirmButtonText: 'Next',
-              onConfirmButton: () {
-                controller.nextPage(
-                  duration: duration,
-                  curve: curve,
-                );
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
-            ),
-            TextView(
-              inputText: 'Save restaurant and start rating?',
-              confirmButtonText: 'Save',
-              onConfirmButton: onSave,
-              declineButtonText: 'Back',
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
-              ),
+              child: const Text('Yes'),
             ),
           ],
         ),
       );
 
-  void onSave() {
-    _addOrUpdateRestaurant();
-    print(widget.restaurant);
-  }
+  void onSave() async {
+    Restaurant restaurant = widget.restaurant != null
+        ? await updateRestaurant()
+        : await addRestaurant();
 
-  /// Attempts to add or update the restaurant.
-  void _addOrUpdateRestaurant() async {
-    final isUpdating = widget.restaurant != null;
-    Restaurant restaurant;
     List<Rating> ratings = [];
-
-    if (isUpdating) {
-      restaurant = await updateRestaurant();
-    } else {
-      restaurant = await addRestaurant();
-    }
-    for (Person person in restaurant.persons!) {
+    await Navigator.pushNamed(
+      context,
+      AppRoutes.loader,
+      arguments: 150,
+    );
+    for (Person person in restaurant.persons!..shuffle()) {
       Rating? rating = await RatingDatabase.readRating(
         restaurant.id!,
         person.id!,
@@ -266,6 +302,13 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
     }
 
     print(ratings);
+    // pop out so that screen doesnt break
+    await Navigator.pushNamed(
+      context,
+      AppRoutes.loader,
+      arguments: 0,
+    );
+    Navigator.popUntil(context, ModalRoute.withName(AppRoutes.restaurants));
   }
 
   /// Updates the current restaurant in the database.

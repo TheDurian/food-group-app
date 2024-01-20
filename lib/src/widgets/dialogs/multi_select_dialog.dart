@@ -101,12 +101,12 @@ class _MultiSelectDialogState<T> extends State<MultiSelectDialog<T>> {
   /// The confirmation button will not appear unless
   /// at least 1 item is already in the list.
   List<Widget> buildActionButtons() => [
-        ElevatedButton(
+        TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(widget.cancelButtonText),
         ),
         if (allItems.isNotEmpty)
-          FilledButton(
+          TextButton(
             onPressed: () => Navigator.pop(
                 context,
                 itemsChecked.entries

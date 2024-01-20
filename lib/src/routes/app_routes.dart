@@ -5,6 +5,7 @@ import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/routes/arguments.dart';
 import 'package:food_group_app/src/screens/label/edit_label_screen.dart';
+import 'package:food_group_app/src/screens/loader_screen.dart';
 import 'package:food_group_app/src/screens/person/edit_person_screen.dart';
 import 'package:food_group_app/src/screens/rating/add_rating_screen.dart';
 import 'package:food_group_app/src/screens/rating/show_ratings_screen.dart';
@@ -30,6 +31,8 @@ class AppRoutes {
   static const String ratings = '/ratings';
   static const String addRating = '/ratings/add/new';
 
+  static const String loader = '/loader';
+
   /// A map of routes that take no arguments
   static Map<String, Widget Function(BuildContext)> routes = {
     AppRoutes.restaurants: (context) => const RestaurantScreen(),
@@ -51,6 +54,13 @@ class AppRoutes {
           settings: settings,
           builder: (context) => AddEditPersonScreen(
             person: settings.arguments as Person?,
+          ),
+        );
+      case AppRoutes.loader:
+        return MaterialPageRoute<Person>(
+          settings: settings,
+          builder: (context) => LoaderScreen(
+            initialFrame: settings.arguments as int,
           ),
         );
     }

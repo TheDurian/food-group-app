@@ -4,7 +4,7 @@ import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/services/rating_db.dart';
-import 'package:food_group_app/src/widgets/views/rating_input_view.dart';
+import 'package:food_group_app/src/widgets/views/star_input_view.dart';
 import 'package:food_group_app/src/widgets/views/text_view.dart';
 
 class AddRatingScreen extends StatefulWidget {
@@ -38,11 +38,11 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
   void initState() {
     super.initState();
     controller = PageController(initialPage: 0);
-    tasteRating = widget.rating?.tasteRating ?? 5;
-    serviceRating = widget.rating?.serviceRating ?? 5;
-    ambianceRating = widget.rating?.ambianceRating ?? 5;
-    presentationRating = widget.rating?.presentationRating ?? 5;
-    costWorthRating = widget.rating?.costWorthRating ?? 5;
+    tasteRating = widget.rating?.tasteRating ?? 2.5;
+    serviceRating = widget.rating?.serviceRating ?? 2.5;
+    ambianceRating = widget.rating?.ambianceRating ?? 2.5;
+    presentationRating = widget.rating?.presentationRating ?? 2.5;
+    costWorthRating = widget.rating?.costWorthRating ?? 2.5;
   }
 
   @override
@@ -52,113 +52,158 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: PageView(
-          controller: controller,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            TextView(
-              inputText: '${widget.person.fullName()}'
-                  '\nGet ready to give your ratings!',
-              confirmButtonText: "Next",
-              declineButtonText: "Exit",
-              onConfirmButton: () => controller.nextPage(
-                duration: duration,
-                curve: curve,
+  Widget build(BuildContext context) => PopScope(
+        canPop: false,
+        onPopInvoked: (bool didPop) {
+          if (didPop) {
+            return;
+          }
+          _onWillPop();
+        },
+        child: Scaffold(
+          body: PageView(
+            controller: controller,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              TextView(
+                upperText: widget.person.fullName(),
+                centerText: 'Get ready to give your ratings!',
+                subText: 'You will be asked a couple questions about your '
+                    'meal and time at this restaurant.',
+                confirmButtonText: "Next",
+                declineButtonText: "Skip",
+                onConfirmButton: () => controller.nextPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+                onDeclineButton: () => _onWillPop(),
               ),
-              onDeclineButton: () => Navigator.popUntil(
-                context,
-                ModalRoute.withName(AppRoutes.addRestaurantOther),
+              StarInputView(
+                initialValue: tasteRating,
+                centerText: 'How good did this meal taste?',
+                subText: 'Would you order the same meal again?\n'
+                    'Were the flavors to your liking?',
+                onChangedValue: (value) => setState(() => tasteRating = value),
+                showAsInteger: false,
+                confirmButtonText: "Next",
+                declineButtonText: "Back",
+                onConfirmButton: () => controller.nextPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+                onDeclineButton: () => controller.previousPage(
+                  duration: duration,
+                  curve: curve,
+                ),
               ),
+              StarInputView(
+                initialValue: serviceRating,
+                centerText: 'How was the service?',
+                subText: 'Did the staff treat you well?\n'
+                    'Were your drinks or chips refilled often?',
+                onChangedValue: (value) =>
+                    setState(() => serviceRating = value),
+                showAsInteger: false,
+                confirmButtonText: "Next",
+                declineButtonText: "Back",
+                onConfirmButton: () => controller.nextPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+                onDeclineButton: () => controller.previousPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+              ),
+              StarInputView(
+                initialValue: ambianceRating,
+                centerText: 'How was the ambiance?',
+                subText: 'Was there a fun or unique theme?\n'
+                    'Was the atmosphere to your liking?',
+                onChangedValue: (value) =>
+                    setState(() => ambianceRating = value),
+                showAsInteger: false,
+                confirmButtonText: "Next",
+                declineButtonText: "Back",
+                onConfirmButton: () => controller.nextPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+                onDeclineButton: () => controller.previousPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+              ),
+              StarInputView(
+                initialValue: presentationRating,
+                centerText: 'How was the presentation of your food?',
+                subText: 'Was there thought put into the way your food '
+                    'was presented on your plate?\n'
+                    'Were you expecting it to?',
+                onChangedValue: (value) =>
+                    setState(() => presentationRating = value),
+                showAsInteger: false,
+                confirmButtonText: "Next",
+                declineButtonText: "Back",
+                onConfirmButton: () => controller.nextPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+                onDeclineButton: () => controller.previousPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+              ),
+              StarInputView(
+                initialValue: costWorthRating,
+                centerText: 'Was your money well spent?',
+                subText: 'Do you think you got a good deal for '
+                    'what you were served?\nDo you think you overpaid?',
+                onChangedValue: (value) =>
+                    setState(() => costWorthRating = value),
+                showAsInteger: false,
+                confirmButtonText: "Next",
+                declineButtonText: "Back",
+                onConfirmButton: onSubmit,
+                onDeclineButton: () => controller.previousPage(
+                  duration: duration,
+                  curve: curve,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  void _onWillPop() async => showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Skip rating?"),
+          content: const Text("Exiting now will skip your turn to rate. "
+              "A rating can always be added through the edit screen later."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('No, cancel'),
             ),
-            RatingInputView(
-              inputText: 'On a scale of 1 to 10, how good '
-                  'did this meal taste?',
-              initialValue: tasteRating,
-              onChangedValue: (value) => setState(() => tasteRating = value),
-              confirmButtonText: "Next",
-              declineButtonText: "Back",
-              onConfirmButton: () => controller.nextPage(
-                duration: duration,
-                curve: curve,
-              ),
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
-              ),
-            ),
-            RatingInputView(
-              inputText: 'On a scale of 1 to 10, how was the service?',
-              initialValue: serviceRating,
-              onChangedValue: (value) => setState(() => serviceRating = value),
-              confirmButtonText: "Next",
-              declineButtonText: "Back",
-              onConfirmButton: () => controller.nextPage(
-                duration: duration,
-                curve: curve,
-              ),
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
-              ),
-            ),
-            RatingInputView(
-              inputText: 'On a scale of 1 to 10, how was the ambiance?',
-              initialValue: ambianceRating,
-              onChangedValue: (value) => setState(() => ambianceRating = value),
-              confirmButtonText: "Next",
-              declineButtonText: "Back",
-              onConfirmButton: () => controller.nextPage(
-                duration: duration,
-                curve: curve,
-              ),
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
-              ),
-            ),
-            RatingInputView(
-              inputText: 'On a scale of 1 to 10, how was the '
-                  'presentation of your food?',
-              initialValue: presentationRating,
-              onChangedValue: (value) =>
-                  setState(() => presentationRating = value),
-              confirmButtonText: "Next",
-              declineButtonText: "Back",
-              onConfirmButton: () => controller.nextPage(
-                duration: duration,
-                curve: curve,
-              ),
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
-              ),
-            ),
-            RatingInputView(
-              inputText: 'On a scale of 1 to 10, how would you say your meal '
-                  'felt worth of the amount you paid?',
-              initialValue: costWorthRating,
-              onChangedValue: (value) =>
-                  setState(() => costWorthRating = value),
-              confirmButtonText: "Submit",
-              declineButtonText: "Back",
-              onConfirmButton: onSubmit,
-              onDeclineButton: () => controller.previousPage(
-                duration: duration,
-                curve: curve,
-              ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text('Yes, skip'),
             ),
           ],
         ),
       );
 
   void onSubmit() async {
-    Rating rating = await _addOrUpdateRestaurant();
+    Rating rating = await addOrUpdateRestaurant();
     Navigator.pop(context, rating);
   }
 
   /// Attempts to add or update the restaurant.
-  Future<Rating> _addOrUpdateRestaurant() async {
+  Future<Rating> addOrUpdateRestaurant() async {
     final isUpdating = widget.rating != null;
     Rating rating;
     if (isUpdating) {

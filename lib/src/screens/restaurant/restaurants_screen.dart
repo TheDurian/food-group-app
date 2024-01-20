@@ -48,48 +48,81 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Restaurants"),
-      ),
+      appBar: AppBar(),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                Expanded(child: buildTileList()),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.addRestaurantNew,
-                    );
-                    refreshRestaurants();
-                  },
-                  child: const Text("Add restaurant scren#2"),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.ratings,
-                    );
-                  },
-                  child: const Text("Show ratings"),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    List<Person> people = await PersonDatabase.readAllPersons();
-                    for (var e in people) {
-                      PersonDatabase.deletePerson(e.id!);
-                    }
-                  },
-                  child: const Text("Temporary Button - Clear all Persons"),
-                ),
-              ],
+          : SafeArea(
+              child: Column(
+                children: [
+                  Expanded(child: buildTileList()),
+                ],
+              ),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => onAddEditClick(),
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            AppRoutes.addRestaurantNew,
+          );
+          refreshRestaurants();
+        },
         child: const Icon(Icons.add),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  'Header',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Theme.of(context).canvasColor,
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text('Ratings'),
+              leading: const Icon(Icons.star_border_rounded),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.ratings,
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              title: const Text('DELETE ALL PEOPLE'),
+              leading: const Icon(Icons.person_remove_rounded),
+              onTap: () async {
+                List<Person> people = await PersonDatabase.readAllPersons();
+                for (var e in people) {
+                  PersonDatabase.deletePerson(e.id!);
+                }
+              },
+            ),
+            const Divider(),
+            ListTile(
+              title: const Text('See loader'),
+              leading: const Icon(Icons.replay_circle_filled_outlined),
+              onTap: () async {
+                await Navigator.pushNamed(
+                  context,
+                  AppRoutes.loader,
+                  arguments: 0,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -133,4 +166,6 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     );
     refreshRestaurants();
   }
+
+  /// Handles navigating to the Add restaurant screen.
 }

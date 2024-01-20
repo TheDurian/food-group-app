@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 
 class TextView extends StatelessWidget {
+  /// The text to display above the center text of the page.
+  ///
+  /// This text will be bolded larger than the center text.
+  final String? upperText;
+
   /// The text to display across the center of the page.
-  final String inputText;
+  final String centerText;
+
+  /// The text to display under the main text in a smaller font.
+  ///
+  /// This would correspond to a hint text of some sort.
+  final String? subText;
 
   /// The text to display on the confirmation button on the right side.
   final String? confirmButtonText;
@@ -18,48 +28,107 @@ class TextView extends StatelessWidget {
 
   const TextView({
     super.key,
-    required this.inputText,
+    required this.centerText,
     this.confirmButtonText,
     this.declineButtonText,
     this.onConfirmButton,
     this.onDeclineButton,
+    this.subText,
+    this.upperText,
   });
 
   @override
   Widget build(BuildContext context) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Text(
-              inputText,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 26,
+          Expanded(
+            flex: 2,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (upperText != null)
+                      Text(
+                        upperText!,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    if (upperText != null)
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    Text(
+                      centerText,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 26,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    if (subText != null)
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    if (subText != null)
+                      Text(
+                        subText!,
+                        style: const TextStyle(
+                          // fontWeight: FontWeight,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    const SizedBox(
+                      height: 120,
+                    ),
+                  ],
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (declineButtonText != null && onDeclineButton != null)
-                ElevatedButton(
-                  onPressed: onDeclineButton,
-                  child: Text(declineButtonText!),
+          Expanded(
+            flex: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (declineButtonText != null)
+                  ElevatedButton(
+                    style: declineButtonText == null
+                        ? ElevatedButton.styleFrom(
+                            textStyle: const TextStyle(fontSize: 18),
+                            minimumSize: const Size(200, 40),
+                          )
+                        : null,
+                    onPressed: onDeclineButton,
+                    child: Text(declineButtonText!),
+                  ),
+                if (declineButtonText != null && confirmButtonText != null)
+                  const SizedBox(
+                    width: 64,
+                  ),
+                if (confirmButtonText != null)
+                  FilledButton(
+                    style: declineButtonText == null
+                        ? FilledButton.styleFrom(
+                            textStyle: const TextStyle(fontSize: 18),
+                            minimumSize: const Size(200, 40),
+                          )
+                        : null,
+                    onPressed: onConfirmButton,
+                    child: Text(confirmButtonText!),
+                  ),
+                const SizedBox(
+                  height: 64,
                 ),
-              const SizedBox(
-                width: 64,
-              ),
-              if (confirmButtonText != null && onConfirmButton != null)
-                FilledButton(
-                  onPressed: onConfirmButton,
-                  child: Text(confirmButtonText!),
-                ),
-            ],
+              ],
+            ),
           )
         ],
       );
