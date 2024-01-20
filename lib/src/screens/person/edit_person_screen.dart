@@ -64,12 +64,12 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
         ),
         Text(
           "Person Added: "
-          "${DateTimeHelper.toDateAndTime(widget.person!.dateAdded!)}",
+          "${DateTimeHelper.toDateAndTime(widget.person!.dateAdded)}",
           style: const TextStyle(fontStyle: FontStyle.italic),
         ),
         Text(
           "Person Modified: "
-          "${DateTimeHelper.toDateAndTime(widget.person!.dateModified!)}",
+          "${DateTimeHelper.toDateAndTime(widget.person!.dateModified)}",
           style: const TextStyle(fontStyle: FontStyle.italic),
         ),
         const Padding(
@@ -97,26 +97,28 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
 
   /// Adds a new person to the database.
   Future<Person> _addPerson() async {
-    final person = Person(
-      firstName: firstName,
-      lastName: lastName,
-      dateAdded: DateTime.now(),
-      dateModified: DateTime.now(),
-    );
+    final dateAdded = DateTime.now();
 
-    var dbPerson = await PersonDatabase.createPerson(person);
-    return dbPerson;
+    final person = await PersonDatabase.createPerson(
+      Person(
+        firstName: firstName,
+        lastName: lastName,
+        dateAdded: dateAdded,
+        dateModified: dateAdded,
+      ),
+    );
+    return person;
   }
 
   /// Updates an existing person in the database.
   Future<Person> _updatePerson() async {
-    final person = widget.person!.copy(
-      firstName: firstName,
-      lastName: lastName,
-      dateModified: DateTime.now(),
+    var person = await PersonDatabase.updatePerson(
+      widget.person!.copy(
+        firstName: firstName,
+        lastName: lastName,
+        dateModified: DateTime.now(),
+      ),
     );
-
-    var dbPerson = await PersonDatabase.updatePerson(person);
-    return dbPerson;
+    return person;
   }
 }

@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/models/db_types.dart';
 
 const String tableLabels = 'labels';
+const String tableLabelsCreate = '''
+      CREATE TABLE $tableLabels (
+        ${LabelFields.id} ${DbTypes.idType},
+        ${LabelFields.label} ${DbTypes.textType},
+        ${LabelFields.dateAdded} ${DbTypes.textType},
+        ${LabelFields.color} ${DbTypes.integerTypeNull},
+        ${LabelFields.dateModified} ${DbTypes.textType}
+      )
+    ''';
 
 class LabelFields {
   static final List<String> values = [
@@ -26,10 +36,10 @@ class Label {
   final String label;
 
   /// The date this label was added to the database.
-  final DateTime? dateAdded;
+  final DateTime dateAdded;
 
   /// The date this label was last modified.
-  final DateTime? dateModified;
+  final DateTime dateModified;
 
   /// The color to associate with this label.
   final Color? color;
@@ -38,8 +48,8 @@ class Label {
     this.id,
     required this.label,
     this.color,
-    this.dateAdded,
-    this.dateModified,
+    required this.dateAdded,
+    required this.dateModified,
   });
 
   Label copy({
@@ -60,8 +70,8 @@ class Label {
   Map<String, Object?> toJson() => {
         LabelFields.id: id,
         LabelFields.label: label,
-        LabelFields.dateAdded: dateAdded?.toIso8601String(),
-        LabelFields.dateModified: dateModified?.toIso8601String(),
+        LabelFields.dateAdded: dateAdded.toIso8601String(),
+        LabelFields.dateModified: dateModified.toIso8601String(),
         LabelFields.color: color?.value,
       };
 

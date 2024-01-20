@@ -67,12 +67,12 @@ class _AddEditLabelScreenState extends State<AddEditLabelScreen> {
         ),
         Text(
           "Label Added: "
-          "${DateTimeHelper.toDateAndTime(widget.label!.dateAdded!)}",
+          "${DateTimeHelper.toDateAndTime(widget.label!.dateAdded)}",
           style: const TextStyle(fontStyle: FontStyle.italic),
         ),
         Text(
           "Label Modified: "
-          "${DateTimeHelper.toDateAndTime(widget.label!.dateModified!)}",
+          "${DateTimeHelper.toDateAndTime(widget.label!.dateModified)}",
           style: const TextStyle(fontStyle: FontStyle.italic),
         ),
         const Padding(
@@ -108,11 +108,12 @@ class _AddEditLabelScreenState extends State<AddEditLabelScreen> {
 
   /// Adds a new label to database.
   Future<Label> addLabel() async {
+    final dateAdded = DateTime.now();
     final label = Label(
       label: labelName,
       color: color,
-      dateAdded: DateTime.now(),
-      dateModified: DateTime.now(),
+      dateAdded: dateAdded,
+      dateModified: dateAdded,
     );
     return await LabelDatabase.createLabel(label);
   }

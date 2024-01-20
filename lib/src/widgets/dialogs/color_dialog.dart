@@ -38,11 +38,11 @@ class _ColorDialogState extends State<ColorDialog> {
               setState(() => selectedColor = hsvColor.toColor()),
         ),
         actions: [
-          ElevatedButton(
+          TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text("Cancel"),
           ),
-          ElevatedButton(
+          TextButton(
             onPressed: () =>
                 Navigator.pop(context, selectedColor.withOpacity(1)),
             child: const Text("Save"),

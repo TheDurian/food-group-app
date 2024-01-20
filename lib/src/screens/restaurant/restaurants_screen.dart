@@ -6,7 +6,7 @@ V2:
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
-import 'package:food_group_app/src/screens/restaurant/edit_restaurant_screen.dart';
+import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/services/database.dart';
 import 'package:food_group_app/src/services/person_db.dart';
 import 'package:food_group_app/src/services/restaurant_db.dart';
@@ -48,29 +48,81 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Restaurants"),
-      ),
+      appBar: AppBar(),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                Expanded(child: buildTileList()),
-                ElevatedButton(
-                  onPressed: () async {
-                    List<Person> people = await PersonDatabase.readAllPersons();
-                    for (var e in people) {
-                      PersonDatabase.deletePerson(e.id!);
-                    }
-                  },
-                  child: const Text("Temporary Button - Clear all Persons"),
-                ),
-              ],
+          : SafeArea(
+              child: Column(
+                children: [
+                  Expanded(child: buildTileList()),
+                ],
+              ),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => onAddEditClick(),
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            AppRoutes.addRestaurantNew,
+          );
+          refreshRestaurants();
+        },
         child: const Icon(Icons.add),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  'Header',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Theme.of(context).canvasColor,
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text('Ratings'),
+              leading: const Icon(Icons.star_border_rounded),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.ratings,
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              title: const Text('DELETE ALL PEOPLE'),
+              leading: const Icon(Icons.person_remove_rounded),
+              onTap: () async {
+                List<Person> people = await PersonDatabase.readAllPersons();
+                for (var e in people) {
+                  PersonDatabase.deletePerson(e.id!);
+                }
+              },
+            ),
+            const Divider(),
+            ListTile(
+              title: const Text('See loader'),
+              leading: const Icon(Icons.replay_circle_filled_outlined),
+              onTap: () async {
+                await Navigator.pushNamed(
+                  context,
+                  AppRoutes.loader,
+                  arguments: 0,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -81,7 +133,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         prototypeItem: restaurants.isNotEmpty
             ? Card(
                 child: ListTile(
-                  title: Text(restaurants.first.name),
+                  title: Text(restaurants.first.name ?? ''),
                 ),
               )
             : null,
@@ -107,14 +159,13 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   /// Handles navigating to the Add/Edit restaurant screen.
   void onAddEditClick([Restaurant? restaurant]) async {
-    await Navigator.push(
+    await Navigator.pushNamed(
       context,
-      MaterialPageRoute<void>(
-        builder: (context) => AddEditRestaurantScreen(
-          restaurant: restaurant,
-        ),
-      ),
+      AppRoutes.editRestaurant,
+      arguments: restaurant,
     );
     refreshRestaurants();
   }
+
+  /// Handles navigating to the Add restaurant screen.
 }

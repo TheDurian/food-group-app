@@ -17,7 +17,7 @@ class MultiSelectInput<T> extends StatefulWidget {
   /// A function that navigates to an edit page for an item.
   ///
   /// The function should return the newly edited item.
-  final Future<T?> Function(T) onChipLongPress;
+  final Future<T?> Function(T)? onChipLongPress;
 
   /// A function to handle clicking on the add icon.
   final Future<void> Function() onAddClick;
@@ -36,18 +36,30 @@ class MultiSelectInput<T> extends StatefulWidget {
   /// A widget to display on the left side of each label.
   final Widget? labelAvatar;
 
+  /// The alignment of the selected chips.
+  final Alignment chipAlignment;
+
+  /// The decoration on the selection field.
+  final Decoration? inputDecoration;
+
+  /// Padding to add on the sides of the input
+  final EdgeInsetsGeometry? inputPadding;
+
   const MultiSelectInput({
     super.key,
     required this.inputHintText,
     required this.selectedItems,
     required this.onChangedSelectedItems,
     required this.buildSelectedItemText,
-    required this.onChipLongPress,
+    this.onChipLongPress,
     required this.titleText,
     required this.onAddClick,
     required this.refreshAllItems,
     this.labelAvatar,
     this.chipColor,
+    this.chipAlignment = Alignment.centerLeft,
+    this.inputDecoration,
+    this.inputPadding = const EdgeInsets.all(16),
   });
 
   @override
@@ -75,17 +87,15 @@ class _MultiSelectInputState<T> extends State<MultiSelectInput<T>> {
   /// Builds the input selection for a person list
   Widget buildSelectInput() => InkWell(
         child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(5),
-            ),
-          ),
-          padding: const EdgeInsets.all(16),
+          decoration: widget.inputDecoration,
+          padding: widget.inputPadding,
           child: Row(
             children: [
               Expanded(
-                child: Text(widget.inputHintText),
+                child: Text(
+                  widget.inputHintText,
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
               const Icon(Icons.arrow_drop_down)
             ],
@@ -110,7 +120,7 @@ class _MultiSelectInputState<T> extends State<MultiSelectInput<T>> {
 
   /// Handles the long press functionality on a chip.
   void _handleLongPressOnChip(T chipData) async {
-    var newItem = await widget.onChipLongPress(chipData);
+    var newItem = await widget.onChipLongPress!(chipData);
     if (newItem != null) {
       // Probably really hacky solution
       var newList = List<T>.from(widget.selectedItems);
@@ -123,14 +133,16 @@ class _MultiSelectInputState<T> extends State<MultiSelectInput<T>> {
 
   /// Handles building the list of chips representing selected items.
   Widget buildChips() => Align(
-        alignment: Alignment.centerLeft,
+        alignment: widget.chipAlignment,
         child: Wrap(
           spacing: 5,
           runSpacing: -2,
           alignment: WrapAlignment.start,
           children: widget.selectedItems
               .map((chipItem) => InkWell(
-                    onLongPress: () => _handleLongPressOnChip(chipItem),
+                    onLongPress: widget.onChipLongPress != null
+                        ? () => _handleLongPressOnChip(chipItem)
+                        : null,
                     child: Chip(
                       label: Text(widget.buildSelectedItemText(chipItem)),
                       avatar: widget.labelAvatar,

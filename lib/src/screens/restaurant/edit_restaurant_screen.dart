@@ -103,12 +103,12 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
         ),
         Text(
           "Restaurant Added: "
-          "${DateTimeHelper.toDateAndTime(widget.restaurant!.dateAdded!)}",
+          "${DateTimeHelper.toDateAndTime(widget.restaurant!.dateAdded)}",
           style: const TextStyle(fontStyle: FontStyle.italic),
         ),
         Text(
           "Restaurant Modified: "
-          "${DateTimeHelper.toDateAndTime(widget.restaurant!.dateModified!)}",
+          "${DateTimeHelper.toDateAndTime(widget.restaurant!.dateModified)}",
           style: const TextStyle(fontStyle: FontStyle.italic),
         ),
         const Padding(
@@ -147,13 +147,14 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
 
   /// Adds a new restaurant to database.
   Future<void> addRestaurant() async {
+    final dateAdded = DateTime.now();
     final restaurant = Restaurant(
       name: name,
       isChain: isChain,
       address: address,
       dateVisited: dateVisited,
-      dateAdded: DateTime.now(),
-      dateModified: DateTime.now(),
+      dateAdded: dateAdded,
+      dateModified: dateAdded,
       persons: selectedPeople,
       labels: selectedLabels,
     );

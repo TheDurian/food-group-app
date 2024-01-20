@@ -34,10 +34,9 @@ class MultiSelectDialog<T> extends StatefulWidget {
     this.cancelButtonText = "Cancel",
     this.confirmButtonText = "Confirm",
     required this.titleText,
-    required this.onAddClick, // TODO: May make this optional later
+    required this.onAddClick,
     required this.buildSelectedItemText,
     required this.refreshAllItems,
-    // TODO: Maybe add a readOnly parameter which only shows items selected
   });
 
   @override
@@ -81,9 +80,15 @@ class _MultiSelectDialogState<T> extends State<MultiSelectDialog<T>> {
   Widget buildTitle() => Row(
         children: [
           Expanded(child: Text(widget.titleText)),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () async {
+          InkWell(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(width: 1),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: const Icon(Icons.add),
+            ),
+            onTap: () async {
               await widget.onAddClick();
               refreshAllItems();
             },
@@ -96,12 +101,12 @@ class _MultiSelectDialogState<T> extends State<MultiSelectDialog<T>> {
   /// The confirmation button will not appear unless
   /// at least 1 item is already in the list.
   List<Widget> buildActionButtons() => [
-        ElevatedButton(
+        TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(widget.cancelButtonText),
         ),
         if (allItems.isNotEmpty)
-          ElevatedButton(
+          TextButton(
             onPressed: () => Navigator.pop(
                 context,
                 itemsChecked.entries
@@ -120,22 +125,24 @@ class _MultiSelectDialogState<T> extends State<MultiSelectDialog<T>> {
       ? const Center(child: CircularProgressIndicator())
       : SizedBox(
           width: double.maxFinite,
-          child: ListView.builder(
-            itemCount: itemsChecked.length,
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              T key = itemsChecked.keys.elementAt(index);
-              return CheckboxListTile(
-                title: Text(
-                  widget.buildSelectedItemText(key),
-                ),
-                value: itemsChecked.values.elementAt(index),
-                onChanged: (bool? value) {
-                  setState(() => itemsChecked[key] = value ?? false);
-                },
-              );
-            },
+          child: Scrollbar(
+            child: ListView.builder(
+              itemCount: itemsChecked.length,
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                T key = itemsChecked.keys.elementAt(index);
+                return CheckboxListTile(
+                  title: Text(
+                    widget.buildSelectedItemText(key),
+                  ),
+                  value: itemsChecked.values.elementAt(index),
+                  onChanged: (bool? value) {
+                    setState(() => itemsChecked[key] = value ?? false);
+                  },
+                );
+              },
+            ),
           ),
         );
 }
