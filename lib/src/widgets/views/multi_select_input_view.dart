@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/themes/app_themes.dart';
 import 'package:food_group_app/src/widgets/inputs/multi_select_input_widget.dart';
 
 class MultiSelectInputView<T> extends StatefulWidget {
@@ -123,10 +124,7 @@ class _MultiSelectInputViewState<T> extends State<MultiSelectInputView<T>> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         widget.upperText!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
+                        style: AppThemes.upperTextStyle(context),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -138,10 +136,7 @@ class _MultiSelectInputViewState<T> extends State<MultiSelectInputView<T>> {
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: Text(
                       widget.centerText,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 26,
-                      ),
+                      style: AppThemes.centerTextStyle(context),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -154,10 +149,7 @@ class _MultiSelectInputViewState<T> extends State<MultiSelectInputView<T>> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         widget.subText!,
-                        style: const TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 16,
-                        ),
+                        style: AppThemes.subTextStyle(context),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -199,7 +191,9 @@ class _MultiSelectInputViewState<T> extends State<MultiSelectInputView<T>> {
                               padding: const EdgeInsets.only(top: 10),
                               child: Text(
                                 formFieldState.errorText!,
-                                style: const TextStyle(color: Colors.red),
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
                               ),
                             )
                         ],

@@ -33,8 +33,8 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("$firstName $lastName"),
+        title: const Text("Edit Person"),
+        actions: buildActions(),
       ),
       body: Column(
         children: [
@@ -55,6 +55,41 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
       ),
     );
   }
+
+  List<Widget> buildActions() => widget.person != null
+      ? [
+          IconButton(
+            onPressed: () => showDialog<void>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Confirm deletion?"),
+                content: const Text("Deleting this person will delete "
+                    " all associated ratings they have provided.\n\n"
+                    "Do you want to continue?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('No, cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await PersonDatabase.deletePerson(
+                        widget.person!.id!,
+                      );
+                      if (mounted) {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('Yes, delete'),
+                  ),
+                ],
+              ),
+            ),
+            icon: const Icon(Icons.delete),
+          )
+        ]
+      : [];
 
   /// Show optional fields when editing.
   List<Widget> showOnEditInfo() => [
@@ -91,7 +126,7 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
       } else {
         dbPerson = await _addPerson();
       }
-      Navigator.pop(context, dbPerson);
+      if (mounted) Navigator.pop(context, dbPerson);
     }
   }
 
@@ -99,7 +134,7 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
   Future<Person> _addPerson() async {
     final dateAdded = DateTime.now();
 
-    final person = await PersonDatabase.createPerson(
+    return await PersonDatabase.createPerson(
       Person(
         firstName: firstName,
         lastName: lastName,
@@ -107,18 +142,16 @@ class _AddEditPersonScreenState extends State<AddEditPersonScreen> {
         dateModified: dateAdded,
       ),
     );
-    return person;
   }
 
   /// Updates an existing person in the database.
   Future<Person> _updatePerson() async {
-    var person = await PersonDatabase.updatePerson(
+    return PersonDatabase.updatePerson(
       widget.person!.copy(
         firstName: firstName,
         lastName: lastName,
         dateModified: DateTime.now(),
       ),
     );
-    return person;
   }
 }

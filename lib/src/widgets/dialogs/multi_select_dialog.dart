@@ -79,14 +79,24 @@ class _MultiSelectDialogState<T> extends State<MultiSelectDialog<T>> {
   /// Builds the title section of the alert dialog.
   Widget buildTitle() => Row(
         children: [
-          Expanded(child: Text(widget.titleText)),
+          Expanded(
+            child: Text(
+              widget.titleText,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+            ),
+          ),
           InkWell(
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(width: 1),
                 borderRadius: BorderRadius.circular(100),
+                color: Theme.of(context).colorScheme.primary,
               ),
-              child: const Icon(Icons.add),
+              child: Icon(
+                Icons.add,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
             onTap: () async {
               await widget.onAddClick();

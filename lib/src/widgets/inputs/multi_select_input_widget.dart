@@ -94,10 +94,14 @@ class _MultiSelectInputState<T> extends State<MultiSelectInput<T>> {
               Expanded(
                 child: Text(
                   widget.inputHintText,
-                  style: const TextStyle(fontSize: 16),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
                 ),
               ),
-              const Icon(Icons.arrow_drop_down)
+              const Icon(
+                Icons.arrow_drop_down,
+              )
             ],
           ),
         ),
@@ -144,7 +148,12 @@ class _MultiSelectInputState<T> extends State<MultiSelectInput<T>> {
                         ? () => _handleLongPressOnChip(chipItem)
                         : null,
                     child: Chip(
-                      label: Text(widget.buildSelectedItemText(chipItem)),
+                      label: Text(
+                        widget.buildSelectedItemText(chipItem),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                      ),
                       avatar: widget.labelAvatar,
                       deleteIcon: const Icon(Icons.close),
                       backgroundColor: widget.chipColor != null

@@ -33,42 +33,40 @@ class _ColorInputState extends State<ColorInput> {
   }
 
   @override
-  Widget build(BuildContext context) => Container(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(64, 0, 64, 0),
-          child: Row(
-            children: [
-              Text(widget.inputLabel),
-              Expanded(child: Container()),
-              SizedBox(
-                height: 32,
-                width: 64,
-                child: InkWell(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).dividerColor),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5),
-                      ),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(64, 0, 64, 0),
+        child: Row(
+          children: [
+            Text(widget.inputLabel),
+            Expanded(child: Container()),
+            SizedBox(
+              height: 32,
+              width: 64,
+              child: InkWell(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).dividerColor),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(5),
+                    ),
+                    color: selectedColor,
+                  ),
+                ),
+                onTap: () async {
+                  var color = await showDialog<Color>(
+                    context: context,
+                    builder: (BuildContext context) => ColorDialog(
                       color: selectedColor,
                     ),
-                  ),
-                  onTap: () async {
-                    var color = await showDialog<Color>(
-                      context: context,
-                      builder: (BuildContext context) => ColorDialog(
-                        color: selectedColor,
-                      ),
-                    );
-                    if (color != null) {
-                      widget.onChangedColor(color);
-                      setState(() => selectedColor = color);
-                    }
-                  },
-                ),
+                  );
+                  if (color != null) {
+                    widget.onChangedColor(color);
+                    setState(() => selectedColor = color);
+                  }
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
 }

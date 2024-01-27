@@ -32,7 +32,7 @@ class LabelFormWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            buildFirstName(),
+            buildLabelName(context),
             const SizedBox(height: 16),
             buildColorPicker(),
             const SizedBox(height: 32),
@@ -42,10 +42,13 @@ class LabelFormWidget extends StatelessWidget {
       );
 
   /// Builds the label name input field.
-  Widget buildFirstName() => TextFormField(
+  Widget buildLabelName(BuildContext context) => TextFormField(
         maxLines: 1,
         initialValue: labelName,
         textCapitalization: TextCapitalization.words,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+        ),
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Label Name',

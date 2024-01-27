@@ -31,9 +31,9 @@ class PersonFormWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            buildFirstName(),
+            buildFirstName(context),
             const SizedBox(height: 16),
-            buildLastName(),
+            buildLastName(context),
             const SizedBox(height: 32),
             buildSave(context),
           ],
@@ -41,10 +41,13 @@ class PersonFormWidget extends StatelessWidget {
       );
 
   /// Builds the first name input field
-  Widget buildFirstName() => TextFormField(
+  Widget buildFirstName(BuildContext context) => TextFormField(
         maxLines: 1,
         initialValue: firstName,
         textCapitalization: TextCapitalization.words,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+        ),
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'First Name',
@@ -58,10 +61,13 @@ class PersonFormWidget extends StatelessWidget {
       );
 
   /// Builds the last name input field
-  Widget buildLastName() => TextFormField(
+  Widget buildLastName(BuildContext context) => TextFormField(
         maxLines: 1,
         initialValue: lastName,
         textCapitalization: TextCapitalization.words,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+        ),
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Last Name (Optional)',

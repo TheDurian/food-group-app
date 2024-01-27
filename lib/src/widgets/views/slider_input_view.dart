@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/themes/app_themes.dart';
 
 class RatingInputView extends StatefulWidget {
   /// The text to display above the center text of the page.
@@ -82,10 +83,7 @@ class _RatingInputViewState extends State<RatingInputView> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         widget.upperText!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
+                        style: AppThemes.upperTextStyle(context),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -97,10 +95,7 @@ class _RatingInputViewState extends State<RatingInputView> {
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: Text(
                       widget.centerText,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 26,
-                      ),
+                      style: AppThemes.centerTextStyle(context),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -113,10 +108,7 @@ class _RatingInputViewState extends State<RatingInputView> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         widget.subText!,
-                        style: const TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 16,
-                        ),
+                        style: AppThemes.subTextStyle(context),
                         textAlign: TextAlign.center,
                       ),
                     ),

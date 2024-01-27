@@ -58,8 +58,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(name),
+        title: const Text('Edit Restaurant'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -127,7 +126,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
       } else {
         await addRestaurant();
       }
-      Navigator.pop(context);
+      if (mounted) Navigator.pop(context);
     }
   }
 

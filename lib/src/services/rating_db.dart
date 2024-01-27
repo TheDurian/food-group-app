@@ -33,6 +33,25 @@ class RatingDatabase {
     }
   }
 
+  /// Finds a rating given an id.
+  static Future<List<Rating>> readRatingsForPerson(
+    int personId,
+  ) async {
+    final db = await _dbHelper.database;
+    final ratings = await db.query(
+      tableRatings,
+      columns: RatingFields.values,
+      where: '${RatingFields.personId} = ?',
+      whereArgs: [personId],
+    );
+
+    if (ratings.isNotEmpty) {
+      return ratings.map((json) => Rating.fromJson(json)).toList();
+    } else {
+      return [];
+    }
+  }
+
   /// Retrieves all people from the database.
   static Future<List<Rating>> readAllRatings() async {
     final db = await _dbHelper.database;

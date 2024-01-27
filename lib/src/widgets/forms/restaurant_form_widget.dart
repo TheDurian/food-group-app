@@ -92,9 +92,9 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            buildName(),
+            buildName(context),
             const SizedBox(height: 16),
-            buildAddress(),
+            buildAddress(context),
             const SizedBox(height: 16),
             buildDateVisited(context),
             const SizedBox(height: 16),
@@ -114,12 +114,13 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
       );
 
   /// Builds the name input field.
-  Widget buildName() => TextFormField(
+  Widget buildName(BuildContext context) => TextFormField(
         maxLines: 1,
         initialValue: widget.name,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 24,
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
         ),
         textCapitalization: TextCapitalization.words,
         decoration: const InputDecoration(
@@ -134,11 +135,12 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
       );
 
   /// Builds the address input field.
-  Widget buildAddress() => TextFormField(
+  Widget buildAddress(BuildContext context) => TextFormField(
         maxLines: 1,
         initialValue: widget.address,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 18,
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
         ),
         textCapitalization: TextCapitalization.words,
         decoration: const InputDecoration(
@@ -154,6 +156,9 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
   Widget buildDateVisited(BuildContext context) => TextFormField(
         controller: _dateController,
         maxLines: 1,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+        ),
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           hintText: 'Date Visited',
