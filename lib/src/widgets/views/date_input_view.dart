@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/themes/app_themes.dart';
 import 'package:food_group_app/src/utils/datetime_helper.dart';
 
 class DateInputView extends StatefulWidget {
@@ -107,10 +108,7 @@ class _DateInputViewState extends State<DateInputView> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         widget.upperText!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
+                        style: AppThemes.upperTextStyle(context),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -122,10 +120,7 @@ class _DateInputViewState extends State<DateInputView> {
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: Text(
                       widget.centerText,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 26,
-                      ),
+                      style: AppThemes.centerTextStyle(context),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -138,10 +133,7 @@ class _DateInputViewState extends State<DateInputView> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         widget.subText!,
-                        style: const TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 16,
-                        ),
+                        style: AppThemes.subTextStyle(context),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -161,10 +153,27 @@ class _DateInputViewState extends State<DateInputView> {
                           TextField(
                             controller: _textController,
                             decoration: InputDecoration(
-                              labelText: widget.labelText,
-                              focusedBorder: const UnderlineInputBorder(),
-                              floatingLabelStyle:
-                                  const TextStyle(color: Colors.black),
+                              label: Center(
+                                child: Text(
+                                  widget.labelText,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant, //todo
+                                ),
+                              ),
+                              floatingLabelStyle: const TextStyle(
+                                color: Colors.black,
+                              ),
                               prefixIcon: const Icon(Icons.calendar_month),
                               suffixIcon: _textController.text.isNotEmpty
                                   ? Tooltip(
@@ -176,13 +185,24 @@ class _DateInputViewState extends State<DateInputView> {
                                               () => _textController.text = "");
                                           formFieldState
                                               .didChange(_textController.text);
+                                          FocusScope.of(context).unfocus();
                                         },
                                       ),
                                     )
-                                  : null,
+                                  : const SizedBox(width: 24),
                               alignLabelWithHint: true,
                               floatingLabelAlignment:
                                   FloatingLabelAlignment.center,
+                              labelStyle: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer,
+                              ),
+                            ),
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer,
                             ),
                             onTap: () => _selectDate(context, formFieldState),
                             maxLines: 1,
@@ -200,7 +220,9 @@ class _DateInputViewState extends State<DateInputView> {
                               padding: const EdgeInsets.only(top: 10),
                               child: Text(
                                 formFieldState.errorText!,
-                                style: const TextStyle(color: Colors.red),
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
                               ),
                             )
                         ],
@@ -261,6 +283,9 @@ class _DateInputViewState extends State<DateInputView> {
       context: context,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
+      initialDate: _textController.text.isNotEmpty
+          ? DateTimeHelper.fromDate(_textController.text)
+          : null,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
     );
     if (datePicked != null &&
@@ -269,5 +294,6 @@ class _DateInputViewState extends State<DateInputView> {
       formFieldState.didChange(_textController.text);
       widget.onChangedValue(_textController.text);
     }
+    if (mounted) FocusScope.of(context).unfocus();
   }
 }

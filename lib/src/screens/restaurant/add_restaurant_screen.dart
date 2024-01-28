@@ -26,9 +26,8 @@ class AddRestaurantScreen2 extends StatefulWidget {
 
 class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
   late final PageController controller;
-  final _formKeyName = GlobalKey<FormFieldState>();
-  final _formKeyDateVisited = GlobalKey<FormFieldState>();
-  // final _formKeyName = GlobalKey<FormState>();
+  final _formKeyName = GlobalKey<FormFieldState<String>>();
+  final _formKeyDateVisited = GlobalKey<FormFieldState<String>>();
 
   late String restaurantName;
   late String address;
@@ -68,6 +67,12 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
           _onWillPop();
         },
         child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: _onWillPop,
+              icon: const Icon(Icons.close),
+            ),
+          ),
           body: PageView(
             controller: controller,
             physics: const NeverScrollableScrollPhysics(),
@@ -235,7 +240,7 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
                     : 'Save restaurant?',
                 subText: widget.restaurant == null
                     ? 'Each person you add will have a chance to '
-                        'provide their own ratings.\n'
+                        'provide their own ratings.\n\n'
                         'People will be selected in a random order.'
                     : null,
                 confirmButtonText: 'Save',
@@ -254,8 +259,14 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
   void _onWillPop() async => showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Cancel submission?"),
-          content: const Text("Any unsaved changes will be lost."),
+          title: Text(
+            "Cancel submission?",
+            style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+          ),
+          content: Text(
+            "Any unsaved changes will be lost.",
+            style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -278,37 +289,48 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
         : await addRestaurant();
 
     List<Rating> ratings = [];
-    await Navigator.pushNamed(
-      context,
-      AppRoutes.loader,
-      arguments: 150,
-    );
+    if (mounted) {
+      await Navigator.pushNamed(
+        context,
+        AppRoutes.loader,
+        arguments: 150,
+      );
+    }
     for (Person person in restaurant.persons!..shuffle()) {
       Rating? rating = await RatingDatabase.readRating(
         restaurant.id!,
         person.id!,
         raiseOnError: false,
       );
-      Rating? returnedRating = await Navigator.pushNamed<Rating>(
-        context,
-        AppRoutes.addRating,
-        arguments: RatingScreenArguments(
-          restaurant,
-          person,
-          rating,
-        ),
-      );
-      if (returnedRating != null) ratings.add(returnedRating);
+      if (mounted) {
+        Rating? returnedRating = await Navigator.pushNamed<Rating>(
+          context,
+          AppRoutes.addRating,
+          arguments: RatingScreenArguments(
+            restaurant,
+            person,
+            rating,
+          ),
+        );
+        if (returnedRating != null) ratings.add(returnedRating);
+      }
     }
 
-    print(ratings);
-    // pop out so that screen doesnt break
-    await Navigator.pushNamed(
-      context,
-      AppRoutes.loader,
-      arguments: 0,
-    );
-    Navigator.popUntil(context, ModalRoute.withName(AppRoutes.restaurants));
+    if (mounted) {
+      await Navigator.pushNamed(
+        context,
+        AppRoutes.loader,
+        arguments: 0,
+      );
+    }
+    if (mounted) {
+      Navigator.popUntil(
+        context,
+        ModalRoute.withName(
+          AppRoutes.home,
+        ),
+      );
+    }
   }
 
   /// Updates the current restaurant in the database.

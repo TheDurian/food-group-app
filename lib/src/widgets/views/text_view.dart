@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/themes/app_themes.dart';
 
 class TextView extends StatelessWidget {
   /// The text to display above the center text of the page.
@@ -53,10 +54,7 @@ class TextView extends StatelessWidget {
                     if (upperText != null)
                       Text(
                         upperText!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
+                        style: AppThemes.upperTextStyle(context),
                         textAlign: TextAlign.center,
                       ),
                     if (upperText != null)
@@ -65,10 +63,7 @@ class TextView extends StatelessWidget {
                       ),
                     Text(
                       centerText,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 26,
-                      ),
+                      style: AppThemes.centerTextStyle(context),
                       textAlign: TextAlign.center,
                     ),
                     if (subText != null)
@@ -78,11 +73,7 @@ class TextView extends StatelessWidget {
                     if (subText != null)
                       Text(
                         subText!,
-                        style: const TextStyle(
-                          // fontWeight: FontWeight,
-                          fontStyle: FontStyle.italic,
-                          fontSize: 16,
-                        ),
+                        style: AppThemes.subTextStyle(context),
                         textAlign: TextAlign.center,
                       ),
                     const SizedBox(

@@ -38,8 +38,7 @@ class _AddEditLabelScreenState extends State<AddEditLabelScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(labelName),
+          title: Text(widget.label == null ? 'Add Label' : 'Edit Label'),
         ),
         body: Column(
           children: [
@@ -92,7 +91,7 @@ class _AddEditLabelScreenState extends State<AddEditLabelScreen> {
       } else {
         dbLabel = await addLabel();
       }
-      Navigator.pop(context, dbLabel);
+      if (mounted) Navigator.pop(context, dbLabel);
     }
   }
 

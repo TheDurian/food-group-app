@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:food_group_app/src/themes/app_themes.dart';
 
 class StarInputView extends StatefulWidget {
   /// The text to display above the center text of the page.
@@ -83,10 +84,7 @@ class _StarInputViewState extends State<StarInputView> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         widget.upperText!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
+                        style: AppThemes.upperTextStyle(context),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -98,10 +96,7 @@ class _StarInputViewState extends State<StarInputView> {
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: Text(
                       widget.centerText,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 26,
-                      ),
+                      style: AppThemes.centerTextStyle(context),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -114,10 +109,7 @@ class _StarInputViewState extends State<StarInputView> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         widget.subText!,
-                        style: const TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 16,
-                        ),
+                        style: AppThemes.subTextStyle(context),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -125,6 +117,7 @@ class _StarInputViewState extends State<StarInputView> {
                     height: 30,
                   ),
                   RatingBar.builder(
+                    // glowColor: Theme.of(context).colorScheme.primary,
                     initialRating: widget.initialValue,
                     minRating: 1,
                     direction: Axis.horizontal,
@@ -133,7 +126,7 @@ class _StarInputViewState extends State<StarInputView> {
                     itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                     itemBuilder: (context, _) => Icon(
                       Icons.star,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     onRatingUpdate: (rating) {
                       setState(() => value = rating);
@@ -149,15 +142,15 @@ class _StarInputViewState extends State<StarInputView> {
                     children: [
                       Text(
                         'Rating: ${widget.showAsInteger ? '${value.toInt()}' : '$value'}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 26,
-                        ),
+                        style: AppThemes.centerTextStyle(context),
                         textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(
+                        width: 5,
                       ),
                       Icon(
                         Icons.star,
-                        color: Theme.of(context).primaryColor,
+                        color: Theme.of(context).colorScheme.primary,
                       )
                     ],
                   ),

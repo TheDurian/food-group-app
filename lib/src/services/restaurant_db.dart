@@ -162,4 +162,16 @@ class RestaurantDatabase {
 
     return results.map((json) => Label.fromJson(json)).toList();
   }
+
+  /// Retrieves all ratings for a given restaurant id.
+  static Future<List<Rating>> readRatingsForRestaurant(int restaurantId) async {
+    final db = await _dbHelper.database;
+    final results = await db.query(
+      tableRatings,
+      where: '${RatingFields.restaurantId} = ?',
+      whereArgs: [restaurantId],
+    );
+
+    return results.map((json) => Rating.fromJson(json)).toList();
+  }
 }

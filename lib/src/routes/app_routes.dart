@@ -4,23 +4,28 @@ import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/routes/arguments.dart';
+import 'package:food_group_app/src/screens/home_screen.dart';
 import 'package:food_group_app/src/screens/label/edit_label_screen.dart';
 import 'package:food_group_app/src/screens/loader_screen.dart';
 import 'package:food_group_app/src/screens/person/edit_person_screen.dart';
 import 'package:food_group_app/src/screens/rating/add_rating_screen.dart';
-import 'package:food_group_app/src/screens/rating/show_ratings_screen.dart';
-import 'package:food_group_app/src/screens/restaurant/add_restaurant_screen_new.dart';
+import 'package:food_group_app/src/screens/restaurant/add_restaurant_screen.dart';
 import 'package:food_group_app/src/screens/restaurant/edit_restaurant_screen.dart';
-import 'package:food_group_app/src/screens/restaurant/restaurants_screen.dart';
+import 'package:food_group_app/src/screens/settings_screen.dart';
 
 class AppRoutes {
+  static const String home = '/home';
+
+  static const String people = '/people';
+
+  static const String settings = '/settings';
+
   static const String editPerson = '/people/edit';
   static const String editLabel = '/labels/edit';
 
   static const String restaurants = '/restaurants';
   static const String editRestaurant = '/restaurants/edit';
   static const String addRestaurant = '/restaurants/add/new';
-  static const String addRestaurantNew = '/restaurants/add/new/2';
   static const String addRestaurantName = '/restaurants/add/name';
   static const String addRestaurantAddress = '/restaurants/add/address';
   static const String addRestaurantDate = '/restaurants/add/date';
@@ -35,8 +40,8 @@ class AppRoutes {
 
   /// A map of routes that take no arguments
   static Map<String, Widget Function(BuildContext)> routes = {
-    AppRoutes.restaurants: (context) => const RestaurantScreen(),
-    AppRoutes.ratings: (context) => const ShowRatingsScreen(),
+    AppRoutes.home: (context) => const HomeScreen(),
+    AppRoutes.settings: (context) => const SettingScreen(),
   };
 
   /// A mapping of available routes with logic/arguments
@@ -80,7 +85,7 @@ class AppRoutes {
             restaurant: settings.arguments as Restaurant?,
           ),
         );
-      case AppRoutes.addRestaurantNew:
+      case AppRoutes.addRestaurant:
         return MaterialPageRoute<Restaurant>(
           settings: settings,
           builder: (context) => AddRestaurantScreen2(
@@ -112,6 +117,6 @@ class AppRoutes {
 
   /// Function to handle if unknown route is provided.
   static Route<dynamic>? onUnknownRoute(context) => MaterialPageRoute(
-        builder: (context) => const RestaurantScreen(),
+        builder: (context) => const HomeScreen(),
       );
 }

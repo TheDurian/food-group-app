@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
-import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/services/rating_db.dart';
 import 'package:food_group_app/src/widgets/views/star_input_view.dart';
 import 'package:food_group_app/src/widgets/views/text_view.dart';
@@ -178,9 +177,15 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
   void _onWillPop() async => showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Skip rating?"),
-          content: const Text("Exiting now will skip your turn to rate. "
-              "A rating can always be added through the edit screen later."),
+          title: Text(
+            "Skip rating?",
+            style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+          ),
+          content: Text(
+            "Exiting now will skip your turn to rate. "
+            "A rating can always be added through the edit screen later.",
+            style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -199,7 +204,7 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
 
   void onSubmit() async {
     Rating rating = await addOrUpdateRestaurant();
-    Navigator.pop(context, rating);
+    if (mounted) Navigator.pop(context, rating);
   }
 
   /// Attempts to add or update the restaurant.
