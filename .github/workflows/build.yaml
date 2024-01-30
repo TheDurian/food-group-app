@@ -115,6 +115,12 @@ jobs:
       
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Create env file
+        run: echo "${{ secrets.APP_ENV_DEVELOPMENT }}" > .env
+      
+      - name: Create android secrets.properties file
+        run: echo "${{ secrets.APP_ANDROID_SECRETS_PROPERTIES_DEVELOPMENT }}" > android/secrets.properties
       
       - name: Build flutter APK
         run: flutter build apk
