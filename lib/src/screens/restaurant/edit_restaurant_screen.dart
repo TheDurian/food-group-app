@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
-import 'package:food_group_app/src/services/restaurant_db.dart';
+import 'package:food_group_app/src/services/database/restaurant_db.dart';
 import 'package:food_group_app/src/utils/datetime_helper.dart';
 import 'package:food_group_app/src/widgets/forms/restaurant_form_widget.dart';
 

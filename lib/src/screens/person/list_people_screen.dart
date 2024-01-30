@@ -3,8 +3,8 @@ import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/person_sort.dart';
 import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
-import 'package:food_group_app/src/services/person_db.dart';
-import 'package:food_group_app/src/services/rating_db.dart';
+import 'package:food_group_app/src/services/database/person_db.dart';
+import 'package:food_group_app/src/services/database/rating_db.dart';
 import 'package:food_group_app/src/widgets/cards/person_card.dart';
 
 class ListPeopleScreen extends StatefulWidget {

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
-import 'package:food_group_app/src/services/rating_db.dart';
+import 'package:food_group_app/src/services/database/rating_db.dart';
+import 'package:food_group_app/src/widgets/views/base_view.dart';
 import 'package:food_group_app/src/widgets/views/star_input_view.dart';
-import 'package:food_group_app/src/widgets/views/text_view.dart';
 
 class AddRatingScreen extends StatefulWidget {
   final Restaurant restaurant;
@@ -64,7 +64,7 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
             controller: controller,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              TextView(
+              BaseView(
                 upperText: widget.person.fullName(),
                 centerText: 'Get ready to give your ratings!',
                 subText: 'You will be asked a couple questions about your '

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_group_app/src/screens/person/list_people_screen.dart';
 import 'package:food_group_app/src/screens/rating/show_ratings_screen.dart';
 import 'package:food_group_app/src/screens/restaurant/list_restaurants_screen.dart';
-import 'package:food_group_app/src/services/database.dart';
+import 'package:food_group_app/src/services/database/database.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
