@@ -204,10 +204,10 @@ packages:
     dependency: "direct main"
     description:
       name: gif_view
-      sha256: "73a089a046fd1a5e63e3856cf30ef7bac1e64b78d79becde1449e955dddfb645"
+      sha256: "2e25f3f83e5b66bb0337bda52ae8aa77748fb559279cf9f68af475bf9d8baf7f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0"
+    version: "0.4.1"
   google_fonts:
     dependency: "direct main"
     description:
