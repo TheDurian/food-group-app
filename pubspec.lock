@@ -186,7 +186,7 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_native_splash
-      sha256: "9cdb5d9665dab5d098dc50feab74301c2c228cd02ca25c9b546ab572cebcd6af"
+      sha256: "558f10070f03ee71f850a78f7136ab239a67636a294a44a06b6b7345178edb1e"
       url: "https://pub.dev"
     source: hosted
     version: "2.3.9"
@@ -197,7 +197,7 @@ packages:
       sha256: b068ffc46f82a55844acfa4fdbb61fad72fa2aef0905548419d97f0f95c456da
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.17"
+    version: "2.3.10"
   flutter_rating_bar:
     dependency: "direct main"
     description:
@@ -228,10 +228,10 @@ packages:
     dependency: "direct main"
     description:
       name: gif_view
-      sha256: "73a089a046fd1a5e63e3856cf30ef7bac1e64b78d79becde1449e955dddfb645"
+      sha256: "2e25f3f83e5b66bb0337bda52ae8aa77748fb559279cf9f68af475bf9d8baf7f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0"
+    version: "0.4.1"
   google_fonts:
     dependency: "direct main"
     description:
@@ -585,10 +585,10 @@ packages:
     dependency: "direct main"
     description:
       name: sqflite
-      sha256: "591f1602816e9c31377d5f008c2d9ef7b8aca8941c3f89cc5fd9d84da0c38a9a"
+      sha256: a9016f495c927cb90557c909ff26a6d92d9bd54fc42ba92e19d4e79d61e798c6
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.2"
   sqflite_common:
     dependency: transitive
     description:
