@@ -4,7 +4,7 @@ import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/models/restaurant_label.dart';
 import 'package:food_group_app/src/models/restaurant_person.dart';
-import 'package:food_group_app/src/services/database.dart';
+import 'package:food_group_app/src/services/database/database.dart';
 
 class RestaurantDatabase {
   static final DatabaseService _dbHelper = DatabaseService.instance;

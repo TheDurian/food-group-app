@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/themes/app_themes.dart';
 import 'package:food_group_app/src/widgets/inputs/multi_select_input_widget.dart';
+import 'package:food_group_app/src/widgets/views/base_view.dart';
 
 class MultiSelectInputView<T> extends StatefulWidget {
   /// The text to display above the center text of the page.
@@ -108,142 +109,57 @@ class _MultiSelectInputViewState<T> extends State<MultiSelectInputView<T>> {
     selectedItems = widget.initialItems;
   }
 
-  @override
-  Widget build(BuildContext context) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (widget.upperText != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        widget.upperText!,
-                        style: AppThemes.upperTextStyle(context),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  if (widget.upperText != null)
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Text(
-                      widget.centerText,
-                      style: AppThemes.centerTextStyle(context),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  if (widget.subText != null)
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  if (widget.subText != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        widget.subText!,
-                        style: AppThemes.subTextStyle(context),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 48),
-                    child: FormField<List<T>>(
-                      key: widget.formKey,
-                      validator: widget.validator,
-                      initialValue: widget.initialItems,
-                      builder: (formFieldState) => Column(
-                        children: [
-                          MultiSelectInput<T>(
-                            chipAlignment: Alignment.centerLeft,
-                            labelAvatar: widget.labelAvatar,
-                            inputHintText: widget.labelText,
-                            selectedItems: selectedItems,
-                            onChangedSelectedItems: (items) {
-                              setState(() => selectedItems = items);
-                              widget.onChangedValue(items);
-                              formFieldState.didChange(items);
-                            },
-                            buildSelectedItemText: widget.buildSelectedItemText,
-                            titleText: widget.titleText,
-                            onAddClick: widget.onAddClick,
-                            refreshAllItems: widget.refreshAllItems,
-                            onChipLongPress: widget.onChipLongPress,
-                            chipColor: widget.chipColor,
-                            inputDecoration: const BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(),
-                              ),
-                            ),
-                          ),
-                          if (formFieldState.hasError)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Text(
-                                formFieldState.errorText!,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.error,
-                                ),
-                              ),
-                            )
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                ],
+  Widget buildMultiSelectInput() => FormField<List<T>>(
+        key: widget.formKey,
+        validator: widget.validator,
+        initialValue: widget.initialItems,
+        builder: (formFieldState) => Column(
+          children: [
+            MultiSelectInput<T>(
+              chipAlignment: Alignment.centerLeft,
+              labelAvatar: widget.labelAvatar,
+              inputHintText: widget.labelText,
+              selectedItems: selectedItems,
+              onChangedSelectedItems: (items) {
+                setState(() => selectedItems = items);
+                widget.onChangedValue(items);
+                formFieldState.didChange(items);
+              },
+              buildSelectedItemText: widget.buildSelectedItemText,
+              titleText: widget.titleText,
+              onAddClick: widget.onAddClick,
+              refreshAllItems: widget.refreshAllItems,
+              onChipLongPress: widget.onChipLongPress,
+              chipColor: widget.chipColor,
+              inputDecoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(),
+                ),
               ),
             ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (widget.declineButtonText != null &&
-                    widget.onDeclineButton != null)
-                  ElevatedButton(
-                    style: widget.declineButtonText == null
-                        ? ElevatedButton.styleFrom(
-                            textStyle: const TextStyle(fontSize: 18),
-                            minimumSize: const Size(200, 40),
-                          )
-                        : null,
-                    onPressed: widget.onDeclineButton,
-                    child: Text(widget.declineButtonText!),
+            if (formFieldState.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(
+                  formFieldState.errorText!,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
                   ),
-                if (widget.declineButtonText != null &&
-                    widget.confirmButtonText != null)
-                  const SizedBox(
-                    width: 64,
-                  ),
-                if (widget.confirmButtonText != null &&
-                    widget.onConfirmButton != null)
-                  FilledButton(
-                    style: widget.declineButtonText == null
-                        ? FilledButton.styleFrom(
-                            textStyle: const TextStyle(fontSize: 18),
-                            minimumSize: const Size(200, 40),
-                          )
-                        : null,
-                    onPressed: widget.onConfirmButton,
-                    child: Text(widget.confirmButtonText!),
-                  ),
-              ],
-            ),
-          )
-        ],
+                ),
+              )
+          ],
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) => BaseView(
+        confirmButtonText: widget.confirmButtonText,
+        declineButtonText: widget.declineButtonText,
+        onConfirmButton: widget.onConfirmButton,
+        onDeclineButton: widget.onDeclineButton,
+        subText: widget.subText,
+        upperText: widget.upperText,
+        centerText: widget.centerText,
+        inputWidget: buildMultiSelectInput(),
       );
 }

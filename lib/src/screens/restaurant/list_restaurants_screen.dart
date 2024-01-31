@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
-import 'package:food_group_app/src/services/restaurant_db.dart';
+import 'package:food_group_app/src/services/database/restaurant_db.dart';
 
 class RestaurantScreen extends StatefulWidget {
   const RestaurantScreen({super.key});
@@ -54,8 +54,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.pushNamed(
+        onPressed: () async {
+          await Navigator.pushNamed(
             context,
             AppRoutes.addRestaurant,
           );
@@ -65,38 +65,6 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         icon: const Icon(Icons.add),
       ),
     );
-
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: const Text('Restaurants'),
-    //     actions: [
-    //       IconButton(
-    //         icon: const Icon(Icons.settings),
-    //         onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
-    //       )
-    //     ],
-    //   ),
-    //   body: isLoading
-    //       ? const Center(child: CircularProgressIndicator())
-    //       : SafeArea(
-    //           child: Column(
-    //             children: [
-    //               Expanded(child: buildTileList()),
-    //             ],
-    //           ),
-    //         ),
-    //   floatingActionButton: FloatingActionButton.extended(
-    //     onPressed: () {
-    //       Navigator.pushNamed(
-    //         context,
-    //         AppRoutes.addRestaurant,
-    //       );
-    //       refreshRestaurants();
-    //     },
-    //     label: const Text('New Restaurant'),
-    //     icon: const Icon(Icons.add),
-    //   ),
-    // );
   }
 
   /// Builds the tiles for all saved restaurants in the database.

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/routes/arguments.dart';
-import 'package:food_group_app/src/services/person_db.dart';
-import 'package:food_group_app/src/services/rating_db.dart';
-import 'package:food_group_app/src/services/restaurant_db.dart';
+import 'package:food_group_app/src/services/database/person_db.dart';
+import 'package:food_group_app/src/services/database/rating_db.dart';
+import 'package:food_group_app/src/services/database/restaurant_db.dart';
 
 class ShowRatingsScreen extends StatefulWidget {
   const ShowRatingsScreen({

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/label.dart';
-import 'package:food_group_app/src/services/label_db.dart';
+import 'package:food_group_app/src/services/database/label_db.dart';
 import 'package:food_group_app/src/utils/datetime_helper.dart';
 import 'package:food_group_app/src/widgets/forms/label_form_widget.dart';
 

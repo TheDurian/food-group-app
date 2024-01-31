@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:food_group_app/src/themes/app_themes.dart';
+import 'package:food_group_app/src/widgets/views/base_view.dart';
 
-class TextInputView extends StatefulWidget {
+class TextInputView<T extends Object> extends StatefulWidget {
   /// The text to display above the center text of the page.
   ///
   /// This text will be bolded larger than the center text.
@@ -16,10 +16,13 @@ class TextInputView extends StatefulWidget {
   final String? subText;
 
   /// The initial value for the input.
-  final String initialValue;
+  final T initialValue;
+
+  /// A function to convert the initial value to a string.
+  final String Function(T) initialValueToString;
 
   /// A callback function when the input changes value.
-  final ValueChanged<String> onChangedValue;
+  final ValueChanged<T> onChangedValue;
 
   /// The text to display on the confirmation button on the right side.
   final String? confirmButtonText;
@@ -34,7 +37,7 @@ class TextInputView extends StatefulWidget {
   final VoidCallback? onDeclineButton;
 
   /// A validation function to run off the input.
-  final String? Function(String?)? validator;
+  final String? Function(T?)? validator;
 
   /// The text to display as a label on the input field.
   final String labelText;
@@ -51,10 +54,20 @@ class TextInputView extends StatefulWidget {
   /// A key to use for validation of the form.
   final Key? formKey;
 
+  /// A function which returns autofill options based on the current input
+  final Future<List<T>> Function(TextEditingValue) optionsBuilder;
+
+  /// A function which converts an option to the string it should display
+  final String Function(T) displayStringForOption;
+
+  /// A function which converts a selection to how it should display on field
+  final String Function(T) displayStringForValue;
+
   const TextInputView({
     super.key,
     required this.centerText,
     required this.initialValue,
+    required this.initialValueToString,
     required this.onChangedValue,
     this.confirmButtonText,
     this.declineButtonText,
@@ -68,20 +81,27 @@ class TextInputView extends StatefulWidget {
     this.formKey,
     this.subText,
     this.upperText,
+    required this.optionsBuilder,
+    required this.displayStringForOption,
+    required this.displayStringForValue,
   });
 
   @override
-  State<TextInputView> createState() => _TextInputViewState();
+  State<TextInputView<T>> createState() => _TextInputViewState();
 }
 
-class _TextInputViewState extends State<TextInputView> {
+class _TextInputViewState<T extends Object> extends State<TextInputView<T>> {
+  /// A controller for the text input.
   late TextEditingController _textController;
+
+  /// The current focus node.
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(
-      text: widget.initialValue,
+      text: widget.initialValueToString(widget.initialValue),
     );
   }
 
@@ -91,148 +111,119 @@ class _TextInputViewState extends State<TextInputView> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (widget.upperText != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+  /// Builds the autocomplete options menu items.
+  Widget buildAutocompleteOptions(
+    Iterable<T> options,
+    void Function(T) onSelected,
+  ) =>
+      Material(
+        elevation: 10.0,
+        child: Scrollbar(
+          child: ListView.separated(
+              itemBuilder: (context, index) => ListTile(
+                    title: Text(
+                      widget.displayStringForOption(
+                        options.elementAt(index),
+                      ),
+                    ),
+                    onTap: () => onSelected(
+                      options.elementAt(index),
+                    ),
+                  ),
+              separatorBuilder: (context, index) => const Divider(),
+              itemCount: options.length),
+        ),
+      );
+
+  /// Builds the central text form field.
+  Widget buildTextFormField() => FormField<T>(
+        key: widget.formKey,
+        validator: widget.validator,
+        initialValue: widget.initialValue,
+        builder: (formFieldState) => Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) => RawAutocomplete<T>(
+                onSelected: (value) {
+                  widget.onChangedValue(value);
+                  formFieldState.didChange(value);
+                },
+                focusNode: _focusNode,
+                textEditingController: _textController,
+                optionsBuilder: widget.optionsBuilder,
+                fieldViewBuilder: (
+                  context,
+                  textEditingController,
+                  focusNode,
+                  onFieldSubmitted,
+                ) =>
+                    TextField(
+                  focusNode: _focusNode,
+                  controller: textEditingController,
+                  decoration: InputDecoration(
+                    label: Center(
                       child: Text(
-                        widget.upperText!,
-                        style: AppThemes.upperTextStyle(context),
+                        widget.labelText,
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  if (widget.upperText != null)
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Text(
-                      widget.centerText,
-                      style: AppThemes.centerTextStyle(context),
-                      textAlign: TextAlign.center,
-                    ),
+                    alignLabelWithHint: true,
+                    floatingLabelAlignment: FloatingLabelAlignment.center,
                   ),
-                  if (widget.subText != null)
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  if (widget.subText != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        widget.subText!,
-                        style: AppThemes.subTextStyle(context),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 30,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 48),
-                    child: FormField<String>(
-                      key: widget.formKey,
-                      validator: widget.validator,
-                      initialValue: widget.initialValue,
-                      builder: (formFieldState) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextField(
-                            controller: _textController,
-                            decoration: InputDecoration(
-                              label: Center(
-                                child: Text(
-                                  widget.labelText,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              alignLabelWithHint: true,
-                              floatingLabelAlignment:
-                                  FloatingLabelAlignment.center,
-                            ),
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onPrimaryContainer,
-                            ),
-                            maxLines: 1,
-                            textCapitalization: widget.textCapitalization,
-                            onSubmitted: widget.onSubmit,
-                            textInputAction: widget.textInputAction,
-                            textAlign: TextAlign.center,
-                            onChanged: (value) {
-                              formFieldState.didChange(_textController.text);
-                              widget.onChangedValue(_textController.text);
-                            },
-                          ),
-                          if (formFieldState.hasError)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Text(
-                                formFieldState.errorText!,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.error,
-                                ),
-                              ),
-                            )
-                        ],
-                      ),
-                    ),
+                  maxLines: 1,
+                  textCapitalization: widget.textCapitalization,
+                  onSubmitted: widget.onSubmit,
+                  textInputAction: widget.textInputAction,
+                  textAlign: TextAlign.center,
+                  // onChanged: (value) {
+                  //   formFieldState.didChange(value);
+                  //   widget.onChangedValue(value);
+                  // },
+                ),
+                optionsViewBuilder: (
+                  context,
+                  onSelected,
+                  options,
+                ) =>
+                    Align(
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(
+                    width: constraints.maxWidth,
+                    height: 200,
+                    child: buildAutocompleteOptions(options, onSelected),
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                ],
+                ),
+                displayStringForOption: widget.displayStringForValue,
               ),
             ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (widget.declineButtonText != null)
-                  ElevatedButton(
-                    style: widget.declineButtonText == null
-                        ? ElevatedButton.styleFrom(
-                            textStyle: const TextStyle(fontSize: 18),
-                            minimumSize: const Size(200, 40),
-                          )
-                        : null,
-                    onPressed: widget.onDeclineButton,
-                    child: Text(widget.declineButtonText!),
+            if (formFieldState.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(
+                  formFieldState.errorText!,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
                   ),
-                if (widget.declineButtonText != null &&
-                    widget.confirmButtonText != null)
-                  const SizedBox(
-                    width: 64,
-                  ),
-                if (widget.confirmButtonText != null)
-                  FilledButton(
-                    style: widget.declineButtonText == null
-                        ? FilledButton.styleFrom(
-                            textStyle: const TextStyle(fontSize: 18),
-                            minimumSize: const Size(200, 40),
-                          )
-                        : null,
-                    onPressed: widget.onConfirmButton,
-                    child: Text(widget.confirmButtonText!),
-                  ),
-              ],
-            ),
-          )
-        ],
+                ),
+              )
+          ],
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) => BaseView(
+        confirmButtonText: widget.confirmButtonText,
+        declineButtonText: widget.declineButtonText,
+        onConfirmButton: widget.onConfirmButton,
+        onDeclineButton: widget.onDeclineButton,
+        subText: widget.subText,
+        upperText: widget.upperText,
+        centerText: widget.centerText,
+        inputWidget: buildTextFormField(),
       );
 }

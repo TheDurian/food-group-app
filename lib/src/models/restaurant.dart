@@ -6,7 +6,8 @@ const String tableRestaurants = 'restaurants';
 const String tableRestaurantsCreate = '''
       CREATE TABLE $tableRestaurants (
         ${RestaurantFields.id} ${DbTypes.idType},
-        ${RestaurantFields.name} ${DbTypes.textTypeNull},
+        ${RestaurantFields.placeId} ${DbTypes.textType},
+        ${RestaurantFields.name} ${DbTypes.textType},
         ${RestaurantFields.isChain} ${DbTypes.boolTypeNull},
         ${RestaurantFields.address} ${DbTypes.textTypeNull},
         ${RestaurantFields.dateVisited} ${DbTypes.textTypeNull},
@@ -18,6 +19,7 @@ const String tableRestaurantsCreate = '''
 class RestaurantFields {
   static final List<String> values = [
     id,
+    placeId,
     name,
     isChain,
     address,
@@ -27,6 +29,7 @@ class RestaurantFields {
   ];
 
   static const String id = '_id';
+  static const String placeId = 'placeId';
   static const String name = 'name';
   static const String isChain = 'isChain';
   static const String address = 'address';
@@ -40,6 +43,9 @@ class RestaurantFields {
 class Restaurant {
   /// The id for a restaurant.
   final int? id;
+
+  /// The Google Place Id for a restaurant.
+  final String placeId;
 
   /// The display name for a restaurant.
   final String name;
@@ -67,6 +73,7 @@ class Restaurant {
 
   const Restaurant({
     this.id,
+    required this.placeId,
     required this.name,
     this.isChain,
     this.address,
@@ -79,6 +86,7 @@ class Restaurant {
 
   Restaurant copy({
     final int? id,
+    final String? placeId,
     final String? name,
     final bool? isChain,
     final String? address,
@@ -90,6 +98,7 @@ class Restaurant {
   }) =>
       Restaurant(
         id: id ?? this.id,
+        placeId: placeId ?? this.placeId,
         name: name ?? this.name,
         isChain: isChain ?? this.isChain,
         address: address ?? this.address,
@@ -102,6 +111,7 @@ class Restaurant {
 
   Map<String, Object?> toJson() => {
         RestaurantFields.id: id,
+        RestaurantFields.placeId: placeId,
         RestaurantFields.name: name,
         RestaurantFields.isChain: isChain != null ? (isChain! ? 1 : 0) : null,
         RestaurantFields.address: address,
@@ -112,6 +122,7 @@ class Restaurant {
 
   static Restaurant fromJson(Map<String, Object?> json) => Restaurant(
         id: json[RestaurantFields.id] as int?,
+        placeId: json[RestaurantFields.placeId] as String,
         name: json[RestaurantFields.name] as String,
         isChain: json[RestaurantFields.isChain] != null
             ? json[RestaurantFields.isChain] == 1

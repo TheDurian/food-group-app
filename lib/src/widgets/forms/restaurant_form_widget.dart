@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
-import 'package:food_group_app/src/services/label_db.dart';
-import 'package:food_group_app/src/services/person_db.dart';
+import 'package:food_group_app/src/services/database/label_db.dart';
+import 'package:food_group_app/src/services/database/person_db.dart';
 import 'package:food_group_app/src/widgets/inputs/multi_select_input_widget.dart';
 
 class RestaurantFormWidget extends StatefulWidget {

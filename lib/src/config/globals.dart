@@ -6,4 +6,5 @@ AppTheme appTheme = AppTheme();
 
 class AppConfig {
   static const String appName = 'Food Group App';
+  static const String envGoogleMapsApiKey = 'GMAPS_PLACES_API_KEY';
 }

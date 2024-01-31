@@ -1,5 +1,5 @@
 import 'package:food_group_app/src/models/rating.dart';
-import 'package:food_group_app/src/services/database.dart';
+import 'package:food_group_app/src/services/database/database.dart';
 
 class RatingDatabase {
   static final DatabaseService _dbHelper = DatabaseService.instance;

@@ -18,6 +18,11 @@ dependencies:
   gif_view: ^0.4.1
   google_fonts: ^6.1.0
   shared_preferences: ^2.2.2
+  google_maps_flutter: ^2.5.3
+  flutter_dotenv: ^5.1.0
+  uuid: ^4.3.3
+  location: ^5.0.3
+  http: ^1.2.0
 
 
 dev_dependencies:
@@ -34,6 +39,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/rating/
+    - .env
 
 flutter_native_splash:
   android: true
