@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/models/debouncer.dart';
 import 'package:food_group_app/src/models/google/suggestion.dart';
 import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
@@ -17,7 +18,7 @@ import 'package:food_group_app/src/widgets/views/date_input_view.dart';
 import 'package:food_group_app/src/widgets/views/multi_select_input_view.dart';
 import 'package:food_group_app/src/widgets/views/text_input_view.dart';
 import 'package:location/location.dart';
-import 'package:uuid/v4.dart';
+import 'package:uuid/uuid.dart';
 
 class AddRestaurantScreen2 extends StatefulWidget {
   final Restaurant? restaurant;
@@ -29,17 +30,35 @@ class AddRestaurantScreen2 extends StatefulWidget {
 }
 
 class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
+  /// Controller to handle transitions between each page.
   late final PageController controller;
-  final _formKeyName = GlobalKey<FormFieldState<String>>();
+
+  /// Form key for the Name input field.
+  final _formKeyName = GlobalKey<FormFieldState<Suggestion>>();
+
+  /// Form key for the Date input field.
   final _formKeyDateVisited = GlobalKey<FormFieldState<String>>();
 
+  /// Current name auto complete query.
   String? placeAutocompleteQuery;
-  late UuidV4 uuid;
+
+  /// Current id to represent this input request.
+  String uuid = const Uuid().v4();
+
+  /// The current location of this device.
   late LocationData _currentLocation;
+
+  /// The last fetched restaurant options.
   late List<Suggestion> _lastRestaurantOptions = <Suggestion>[];
+
+  /// A debounced search for restaurant suggestions.
+  late final Debounceable<List<Suggestion>?, String> _debouncedSearch;
+
+  /// Whether this page is currently loading data or not.
   bool isLoading = false;
 
-  late String restaurantName;
+  /// Restaurant fields.
+  late Suggestion suggestion;
   late String address;
   late String dateVisited;
   late List<Label> labels;
@@ -52,17 +71,41 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
   void initState() {
     super.initState();
     controller = PageController(initialPage: 0);
-    restaurantName = widget.restaurant?.name ?? '';
+    suggestion = Suggestion(
+      placeId: widget.restaurant?.placeId ?? '',
+      name: widget.restaurant?.name ?? '',
+      description: '',
+    );
     address = widget.restaurant?.address ?? '';
     dateVisited = widget.restaurant?.dateVisited != null
         ? DateTimeHelper.toDate(widget.restaurant!.dateVisited)
         : '';
     labels = widget.restaurant?.labels ?? [];
     persons = widget.restaurant?.persons ?? [];
-    uuid = const UuidV4();
+    _debouncedSearch = debounce<List<Suggestion>?, String>(_search);
     fetchLocation();
   }
 
+  /// Searches for suggestions given the current query.
+  Future<List<Suggestion>?> _search(String query) async {
+    placeAutocompleteQuery = query;
+    if (query.trim().isEmpty) {
+      return [];
+    }
+    final List<Suggestion> options = await GooglePlaceService.fetchSuggestions(
+      placeAutocompleteQuery!,
+      _currentLocation.latitude!,
+      _currentLocation.longitude!,
+      uuid.toString(),
+    );
+    if (placeAutocompleteQuery != query) {
+      return null;
+    }
+    placeAutocompleteQuery = null;
+    return options;
+  }
+
+  /// Fetch the current location of this device.
   void fetchLocation() async {
     setState(() => isLoading = true);
     LocationData? location = await GooglePlaceService.getLocation();
@@ -114,9 +157,10 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
                     TextInputView<Suggestion>(
                         formKey: _formKeyName,
                         centerText: 'Where did you go?',
-                        initialValue: restaurantName,
-                        onChangedValue: (restaurantName) => setState(
-                            () => this.restaurantName = restaurantName),
+                        initialValue: suggestion,
+                        initialValueToString: (value) => value.name,
+                        onChangedValue: (suggestion) =>
+                            setState(() => this.suggestion = suggestion),
                         labelText: 'Name',
                         declineButtonText: 'Back',
                         onDeclineButton: () => controller.previousPage(
@@ -132,9 +176,10 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
                             );
                           }
                         },
-                        validator: (name) => (name == null) || name.isEmpty
-                            ? 'The name cannot be empty'
-                            : null,
+                        validator: (suggestion) =>
+                            (suggestion == null || suggestion.placeId.isEmpty)
+                                ? 'A location must be added and selected'
+                                : null,
                         onSubmit: (value) {
                           if (_formKeyName.currentState!.validate()) {
                             controller.nextPage(
@@ -144,23 +189,12 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
                           }
                         },
                         optionsBuilder: (textEditingValue) async {
-                          placeAutocompleteQuery = textEditingValue.text;
-                          if (textEditingValue.text.isEmpty) {
-                            return [];
-                          }
-
-                          final List<Suggestion> options =
-                              await GooglePlaceService.fetchSuggestions(
-                            placeAutocompleteQuery!,
-                            _currentLocation.latitude!,
-                            _currentLocation.longitude!,
-                            uuid.toString(),
-                          );
-                          if (placeAutocompleteQuery != textEditingValue.text) {
+                          final List<Suggestion>? options =
+                              await _debouncedSearch(textEditingValue.text);
+                          if (options == null) {
                             return _lastRestaurantOptions;
                           }
                           _lastRestaurantOptions = options;
-
                           return options;
                         },
                         displayStringForValue: (suggestion) => suggestion.name,
@@ -385,7 +419,8 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
   /// Updates the current restaurant in the database.
   Future<Restaurant> updateRestaurant() async {
     final restaurant = widget.restaurant!.copy(
-      name: restaurantName,
+      name: suggestion.name,
+      placeId: suggestion.placeId,
       isChain: null, //todo
       address: address,
       dateVisited: DateTimeHelper.fromDate(dateVisited),
@@ -401,7 +436,8 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
   Future<Restaurant> addRestaurant() async {
     final dateAdded = DateTime.now();
     final restaurant = await RestaurantDatabase.createRestaurant(Restaurant(
-      name: restaurantName,
+      name: suggestion.name,
+      placeId: suggestion.placeId,
       isChain: null, //todo
       address: address,
       dateVisited: DateTimeHelper.fromDate(dateVisited),

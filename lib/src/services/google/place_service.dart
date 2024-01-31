@@ -39,6 +39,33 @@ class GooglePlaceService {
     return locationData;
   }
 
+  /// Fetch suggestions given a string location (mocked data).
+  static Future<List<Suggestion>> fetchSuggestionsMock(
+    String input,
+    double latitude,
+    double longitude,
+    String token,
+  ) async {
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    return [
+      Suggestion(
+        placeId: '1111',
+        description: 'Jimmy Johns Lake Cook Road',
+        name: 'Jimmy Johns',
+      ),
+      Suggestion(
+        placeId: '222',
+        description: 'Jimmy Johns East View Road',
+        name: 'Jimmy Johns',
+      ),
+      Suggestion(
+        placeId: '333',
+        description: 'Jimmy Johns West View Road',
+        name: 'Jimmy Johns',
+      ),
+    ];
+  }
+
   /// Fetch suggestions given a string location
   static Future<List<Suggestion>> fetchSuggestions(
     String input,
@@ -47,11 +74,12 @@ class GooglePlaceService {
     String token,
   ) async {
     var query = 'https://maps.googleapis.com/maps/api/place/autocomplete/json'
-        '?input=$input'
+        '?input=${Uri.encodeComponent(input)}'
         '&location=$latitude%2C$longitude'
         '&types=restaurant'
         '&key=${dotenv.env[AppConfig.envGoogleMapsApiKey]}'
         '&sessiontoken=$token';
+    print("Invoking google place autocomplete API");
     var response = await http.get(Uri.parse(query));
     if (response.statusCode == 200) {
       var json = convert.jsonDecode(response.body);
@@ -59,9 +87,9 @@ class GooglePlaceService {
         return json['predictions']
             .map<Suggestion>(
               (p) => Suggestion(
-                p['place_id'] as String,
-                p['description'] as String,
-                p['structured_formatting']['main_text'] as String,
+                placeId: p['place_id'] as String,
+                description: p['description'] as String,
+                name: p['structured_formatting']['main_text'] as String,
               ),
             )
             .toList() as List<Suggestion>;

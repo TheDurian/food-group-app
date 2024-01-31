@@ -149,6 +149,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
     final dateAdded = DateTime.now();
     final restaurant = Restaurant(
       name: name,
+      placeId: '', //todo
       isChain: isChain,
       address: address,
       dateVisited: dateVisited,

@@ -3,7 +3,11 @@ class Suggestion {
   final String description;
   final String name;
 
-  Suggestion(this.placeId, this.description, this.name);
+  Suggestion({
+    required this.placeId,
+    required this.description,
+    required this.name,
+  });
 
   @override
   String toString() {

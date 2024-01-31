@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:food_group_app/src/models/google/suggestion.dart';
-import 'package:food_group_app/src/services/google/place_service.dart';
-import 'package:food_group_app/src/themes/app_themes.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 
 class TextInputView<T extends Object> extends StatefulWidget {
@@ -19,10 +16,13 @@ class TextInputView<T extends Object> extends StatefulWidget {
   final String? subText;
 
   /// The initial value for the input.
-  final String initialValue;
+  final T initialValue;
+
+  /// A function to convert the initial value to a string.
+  final String Function(T) initialValueToString;
 
   /// A callback function when the input changes value.
-  final ValueChanged<String> onChangedValue;
+  final ValueChanged<T> onChangedValue;
 
   /// The text to display on the confirmation button on the right side.
   final String? confirmButtonText;
@@ -37,7 +37,7 @@ class TextInputView<T extends Object> extends StatefulWidget {
   final VoidCallback? onDeclineButton;
 
   /// A validation function to run off the input.
-  final String? Function(String?)? validator;
+  final String? Function(T?)? validator;
 
   /// The text to display as a label on the input field.
   final String labelText;
@@ -67,6 +67,7 @@ class TextInputView<T extends Object> extends StatefulWidget {
     super.key,
     required this.centerText,
     required this.initialValue,
+    required this.initialValueToString,
     required this.onChangedValue,
     this.confirmButtonText,
     this.declineButtonText,
@@ -90,14 +91,17 @@ class TextInputView<T extends Object> extends StatefulWidget {
 }
 
 class _TextInputViewState<T extends Object> extends State<TextInputView<T>> {
+  /// A controller for the text input.
   late TextEditingController _textController;
+
+  /// The current focus node.
   final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(
-      text: widget.initialValue,
+      text: widget.initialValueToString(widget.initialValue),
     );
   }
 
@@ -109,7 +113,9 @@ class _TextInputViewState<T extends Object> extends State<TextInputView<T>> {
 
   /// Builds the autocomplete options menu items.
   Widget buildAutocompleteOptions(
-          Iterable<T> options, void Function(T) onSelected) =>
+    Iterable<T> options,
+    void Function(T) onSelected,
+  ) =>
       Material(
         elevation: 10.0,
         child: Scrollbar(
@@ -130,7 +136,7 @@ class _TextInputViewState<T extends Object> extends State<TextInputView<T>> {
       );
 
   /// Builds the central text form field.
-  Widget buildTextFormField() => FormField<String>(
+  Widget buildTextFormField() => FormField<T>(
         key: widget.formKey,
         validator: widget.validator,
         initialValue: widget.initialValue,
@@ -140,6 +146,10 @@ class _TextInputViewState<T extends Object> extends State<TextInputView<T>> {
           children: [
             LayoutBuilder(
               builder: (context, constraints) => RawAutocomplete<T>(
+                onSelected: (value) {
+                  widget.onChangedValue(value);
+                  formFieldState.didChange(value);
+                },
                 focusNode: _focusNode,
                 textEditingController: _textController,
                 optionsBuilder: widget.optionsBuilder,
@@ -170,10 +180,10 @@ class _TextInputViewState<T extends Object> extends State<TextInputView<T>> {
                   onSubmitted: widget.onSubmit,
                   textInputAction: widget.textInputAction,
                   textAlign: TextAlign.center,
-                  onChanged: (value) {
-                    formFieldState.didChange(_textController.text);
-                    widget.onChangedValue(_textController.text);
-                  },
+                  // onChanged: (value) {
+                  //   formFieldState.didChange(value);
+                  //   widget.onChangedValue(value);
+                  // },
                 ),
                 optionsViewBuilder: (
                   context,
