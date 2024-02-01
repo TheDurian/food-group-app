@@ -1,0 +1,88 @@
+name: Build application
+
+permissions: write-all
+
+# If another commit is pushed, abort this run and focus on new commit
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+# Run automation only when a Pull Request is created/ready for main
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+ 
+
+  build:
+    name: Build Android
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: "12.x"
+          cache: 'gradle'
+        id: java
+      
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Create env file
+        run: echo "${{ secrets.APP_ENV_DEVELOPMENT }}" > .env
+      
+      - name: Create android secrets.properties file
+        run: echo "${{ secrets.APP_ANDROID_SECRETS_PROPERTIES_DEVELOPMENT }}" > android/secrets.properties
+      
+      - name: Build Android APK
+        run: flutter build apk
+      
+      - name: Build Android AAB
+        run: flutter build appbundle
+      
+      - name: Upload to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: build/app/outputs/apk/release/app-release.apk,build/app/outputs/bundle/release/app-release.aab
+
+  version:
+    name: Create and tag Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: "5.x"
+      
+      - name: Use GitVersion
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0
+
+      - name: Create version.txt with nuGetVersion
+        run: echo ${{ steps.gitversion.outputs.nuGetVersion  }} > version.txt
+
+      - name: Tag release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/apk/release/app-release.apk"
+          tag: ${{ steps.gitversion.outputs.semVer }}
+          generateReleaseNotes: true
