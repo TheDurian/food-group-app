@@ -78,7 +78,7 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0
 
       - name: Fetch artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: build/outputs
 
