@@ -1,4 +1,4 @@
-name: Build application
+name: Build and create release
 
 permissions: write-all
 
@@ -8,19 +8,18 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - 'main'
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-release:
     name: Build Android
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -57,16 +56,7 @@ jobs:
           name: release-apk
           path: |
             build/app/outputs/apk/release/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
-
-  version:
-    name: Create and tag Release
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+            build/app/outputs/bundle/release/app-release.aab 
 
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.9.7
@@ -77,14 +67,11 @@ jobs:
         id: gitversion
         uses: gittools/actions/gitversion/execute@v0
 
-      - name: Fetch artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: build/outputs
-
       - name: Tag release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: build/outputs
+          artifacts: |
+            build/app/outputs/apk/release/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
           tag: ${{ steps.gitversion.outputs.semVer }}
           generateReleaseNotes: true
