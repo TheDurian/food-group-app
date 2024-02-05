@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/inputs/multi_select_input_widget.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 
@@ -142,7 +143,7 @@ class _MultiSelectInputViewState<T> extends State<MultiSelectInputView<T>> {
                 child: Text(
                   formFieldState.errorText!,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
+                    color: context.colorScheme.error,
                   ),
                 ),
               )

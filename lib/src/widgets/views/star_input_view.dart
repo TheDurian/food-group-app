@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 
 class StarInputView extends StatefulWidget {
@@ -78,7 +79,7 @@ class _StarInputViewState extends State<StarInputView> {
         itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
         itemBuilder: (context, _) => Icon(
           Icons.star,
-          color: Theme.of(context).colorScheme.primary,
+          color: context.colorScheme.primary,
         ),
         onRatingUpdate: (rating) {
           setState(() => value = rating);

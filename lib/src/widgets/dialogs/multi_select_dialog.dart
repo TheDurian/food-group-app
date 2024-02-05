@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 
 class MultiSelectDialog<T> extends StatefulWidget {
   /// A list of pre-existing selected items.
@@ -83,7 +84,7 @@ class _MultiSelectDialogState<T> extends State<MultiSelectDialog<T>> {
             child: Text(
               widget.titleText,
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                color: context.colorScheme.onPrimaryContainer,
               ),
             ),
           ),
@@ -91,11 +92,11 @@ class _MultiSelectDialogState<T> extends State<MultiSelectDialog<T>> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
-                color: Theme.of(context).colorScheme.primary,
+                color: context.colorScheme.primary,
               ),
               child: Icon(
                 Icons.add,
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: context.colorScheme.onPrimary,
               ),
             ),
             onTap: () async {

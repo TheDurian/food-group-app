@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 
 class PersonFormWidget extends StatelessWidget {
   /// The first name of a person.
@@ -46,7 +47,7 @@ class PersonFormWidget extends StatelessWidget {
         initialValue: firstName,
         textCapitalization: TextCapitalization.words,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          color: context.colorScheme.onPrimaryContainer,
         ),
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
@@ -66,7 +67,7 @@ class PersonFormWidget extends StatelessWidget {
         initialValue: lastName,
         textCapitalization: TextCapitalization.words,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          color: context.colorScheme.onPrimaryContainer,
         ),
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
@@ -82,7 +83,7 @@ class PersonFormWidget extends StatelessWidget {
         width: double.maxFinite,
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
-            backgroundColor: Theme.of(context).hoverColor,
+            backgroundColor: context.colorScheme.primaryContainer,
           ),
           onPressed: onSubmit,
           child: const Text("Save"),

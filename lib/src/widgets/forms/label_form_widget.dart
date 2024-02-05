@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/inputs/color_input_widget.dart';
 
 class LabelFormWidget extends StatelessWidget {
@@ -47,7 +48,7 @@ class LabelFormWidget extends StatelessWidget {
         initialValue: labelName,
         textCapitalization: TextCapitalization.words,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          color: context.colorScheme.onPrimaryContainer,
         ),
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
@@ -73,7 +74,7 @@ class LabelFormWidget extends StatelessWidget {
         width: double.maxFinite,
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
-            backgroundColor: Theme.of(context).hoverColor,
+            backgroundColor: context.colorScheme.primaryContainer,
           ),
           onPressed: onSubmit,
           child: const Text("Save"),

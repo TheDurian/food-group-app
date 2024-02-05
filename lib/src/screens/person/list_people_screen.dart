@@ -5,6 +5,7 @@ import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/services/database/person_db.dart';
 import 'package:food_group_app/src/services/database/rating_db.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/cards/person_card.dart';
 
 class ListPeopleScreen extends StatefulWidget {
@@ -94,9 +95,7 @@ class _ListPeopleScreenState extends State<ListPeopleScreen> {
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w800,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onPrimaryContainer),
+                            color: context.colorScheme.onPrimaryContainer),
                       ),
                     ),
                   ),

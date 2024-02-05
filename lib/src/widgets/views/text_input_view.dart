@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 
 class TextInputView<T extends Object> extends StatefulWidget {
@@ -173,7 +174,7 @@ class _TextInputViewState<T extends Object> extends State<TextInputView<T>> {
                     floatingLabelAlignment: FloatingLabelAlignment.center,
                   ),
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    color: context.colorScheme.onPrimaryContainer,
                   ),
                   maxLines: 1,
                   textCapitalization: widget.textCapitalization,
@@ -207,7 +208,7 @@ class _TextInputViewState<T extends Object> extends State<TextInputView<T>> {
                 child: Text(
                   formFieldState.errorText!,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
+                    color: context.colorScheme.error,
                   ),
                 ),
               )

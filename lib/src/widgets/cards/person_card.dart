@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/rating.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/multiple_stars.dart';
 
 class PersonCard extends StatelessWidget {
@@ -26,10 +27,9 @@ class PersonCard extends StatelessWidget {
                 leading: CircleAvatar(
                   child: Text(
                     person.firstName.toUpperCase().characters.first,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onPrimaryContainer,
-                        ),
+                    style: context.textTheme.titleLarge?.copyWith(
+                      color: context.colorScheme.onPrimaryContainer,
+                    ),
                   ),
                 ),
                 title: Text(
@@ -42,21 +42,14 @@ class PersonCard extends StatelessWidget {
                         children: [
                           Text(
                             '${ratings.length}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
-                                ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onPrimaryContainer,
-                                ),
+                            style: context.textTheme.titleSmall?.copyWith(
+                              color: context.colorScheme.onPrimaryContainer,
+                            ),
                           ),
                           IconTheme(
                             data: IconThemeData(
                               size: 10,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onPrimaryContainer,
+                              color: context.colorScheme.onPrimaryContainer,
                             ),
                             child: const StarWidget(),
                           ),

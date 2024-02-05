@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/utils/datetime_helper.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 
 class DateInputView extends StatefulWidget {
@@ -108,14 +109,13 @@ class _DateInputViewState extends State<DateInputView> {
                     widget.labelText,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: context.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
-                    color:
-                        Theme.of(context).colorScheme.onSurfaceVariant, //todo
+                    color: context.colorScheme.onSurfaceVariant, //todo
                   ),
                 ),
                 floatingLabelStyle: const TextStyle(
@@ -138,11 +138,11 @@ class _DateInputViewState extends State<DateInputView> {
                 alignLabelWithHint: true,
                 floatingLabelAlignment: FloatingLabelAlignment.center,
                 labelStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  color: context.colorScheme.onPrimaryContainer,
                 ),
               ),
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                color: context.colorScheme.onPrimaryContainer,
               ),
               onTap: () => _selectDate(context, formFieldState),
               maxLines: 1,
@@ -161,7 +161,7 @@ class _DateInputViewState extends State<DateInputView> {
                 child: Text(
                   formFieldState.errorText!,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
+                    color: context.colorScheme.error,
                   ),
                 ),
               )

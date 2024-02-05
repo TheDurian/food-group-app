@@ -13,6 +13,7 @@ import 'package:food_group_app/src/services/database/rating_db.dart';
 import 'package:food_group_app/src/services/database/restaurant_db.dart';
 import 'package:food_group_app/src/services/google/place_service.dart';
 import 'package:food_group_app/src/utils/datetime_helper.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 import 'package:food_group_app/src/widgets/views/date_input_view.dart';
 import 'package:food_group_app/src/widgets/views/multi_select_input_view.dart';
@@ -344,11 +345,11 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
         builder: (context) => AlertDialog(
           title: Text(
             "Cancel submission?",
-            style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+            style: TextStyle(color: context.colorScheme.onBackground),
           ),
           content: Text(
             "Any unsaved changes will be lost.",
-            style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+            style: TextStyle(color: context.colorScheme.onBackground),
           ),
           actions: [
             TextButton(

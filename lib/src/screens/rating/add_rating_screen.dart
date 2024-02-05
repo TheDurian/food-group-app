@@ -3,6 +3,7 @@ import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/services/database/rating_db.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 import 'package:food_group_app/src/widgets/views/star_input_view.dart';
 
@@ -179,12 +180,12 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
         builder: (context) => AlertDialog(
           title: Text(
             "Skip rating?",
-            style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+            style: TextStyle(color: context.colorScheme.onBackground),
           ),
           content: Text(
             "Exiting now will skip your turn to rate. "
             "A rating can always be added through the edit screen later.",
-            style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+            style: TextStyle(color: context.colorScheme.onBackground),
           ),
           actions: [
             TextButton(
