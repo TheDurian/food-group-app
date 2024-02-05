@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:food_group_app/src/themes/app_themes.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 
 class RatingInputView extends StatefulWidget {

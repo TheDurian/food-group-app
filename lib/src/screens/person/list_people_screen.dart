@@ -147,11 +147,6 @@ class _ListPeopleScreenState extends State<ListPeopleScreen> {
                   onPressed: showSortModal,
                   icon: const Icon(Icons.sort),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.settings),
-                  onPressed: () =>
-                      Navigator.pushNamed(context, AppRoutes.settings),
-                )
               ],
             ),
             isLoading

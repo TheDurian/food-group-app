@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
+import 'package:food_group_app/src/services/database/database.dart';
 import 'package:food_group_app/src/services/database/restaurant_db.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class RestaurantScreen extends StatefulWidget {
   const RestaurantScreen({super.key});
@@ -16,12 +18,25 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   /// A flag for whether a database call is ongoing or not.
   bool isLoading = false;
+  String? _version;
 
   @override
   void initState() {
     super.initState();
+    getPackageVersion();
     restaurants = [];
     refreshRestaurants();
+  }
+
+  void getPackageVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() => _version = packageInfo.version);
+  }
+
+  @override
+  void dispose() {
+    DatabaseService.instance.close();
+    super.dispose();
   }
 
   /// Refresh the active restaurants.
@@ -34,17 +49,45 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(
+              child: Container(),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('People'),
+              onTap: () => Navigator.pushNamed(context, AppRoutes.listPeople),
+            ),
+            ListTile(
+              leading: const Icon(Icons.label),
+              title: const Text('Labels'),
+              onTap: () => Navigator.pushNamed(context, AppRoutes.listLabels),
+            ),
+            const Divider(),
+            const ListTile(
+              leading: Icon(Icons.auto_graph),
+              title: Text('Reports'),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () => Navigator.pushNamed(context, AppRoutes.settings),
+            ),
+            const Spacer(),
+            ListTile(
+              title: Text('App Version: $_version'),
+            ),
+          ],
+        ),
+      ),
       body: CustomScrollView(
         slivers: [
-          SliverAppBar.large(
-            title: const Text('Restaurants'),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () =>
-                    Navigator.pushNamed(context, AppRoutes.settings),
-              )
-            ],
+          const SliverAppBar.large(
+            title: Text('Restaurants'),
+            pinned: true,
           ),
           SliverToBoxAdapter(
             child: isLoading

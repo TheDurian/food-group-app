@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:food_group_app/src/themes/app_themes.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 
 class StarInputView extends StatefulWidget {

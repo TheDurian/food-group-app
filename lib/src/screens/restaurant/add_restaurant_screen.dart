@@ -410,7 +410,7 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
       Navigator.popUntil(
         context,
         ModalRoute.withName(
-          AppRoutes.home,
+          AppRoutes.listRestaurants,
         ),
       );
     }

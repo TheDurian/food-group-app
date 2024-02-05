@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+
+      # Installs + Setups
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -34,7 +36,12 @@ jobs:
           java-version: "12.x"
           cache: 'gradle'
         id: java
-      
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: "5.x"
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -43,7 +50,23 @@ jobs:
       
       - name: Create android secrets.properties file
         run: echo "${{ secrets.APP_ANDROID_SECRETS_PROPERTIES_DEVELOPMENT }}" > android/secrets.properties
-      
+
+      # Version code
+      - name: Use GitVersion
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0
+
+      - name: Update version in YAML
+        run: sed -i 's/99.99.99+99/${{ steps.gitversion.outputs.semVer }}+${{ github.run_number }}/g' pubspec.yaml
+
+      - name: Commit report
+        run: |
+          git config --global user.name 'Github Action'
+          git config --global user.email 'action@github.com'
+          git add pubspec.yaml
+          git commit -m "Updating pubspec version to new release"
+          git push
+
       - name: Build Android APK
         run: flutter build apk
       
@@ -57,15 +80,6 @@ jobs:
           path: |
             build/app/outputs/apk/release/app-release.apk
             build/app/outputs/bundle/release/app-release.aab 
-
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
-        with:
-          versionSpec: "5.x"
-      
-      - name: Use GitVersion
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v0
 
       - name: Tag release
         uses: ncipollo/release-action@v1

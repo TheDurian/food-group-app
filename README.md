@@ -1,16 +1,12 @@
 # food_group_app
 
-A new Flutter project.
+A group restaurant rating app, build in Flutter.
 
-## Getting Started
+## Building
 
-This project is a starting point for a Flutter application.
+The app requires two files to be created by the user when building.
 
-A few resources to get you started if this is your first Flutter project:
+`.env` should be filled with valid details, see `.env.example` for an example .env file.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+`/android/secrets.properties` should be populated to allow Google Maps access **Note: This is not currently used**
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
