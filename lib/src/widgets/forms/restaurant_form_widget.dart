@@ -120,7 +120,6 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         initialValue: widget.name,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 24,
           color: context.colorScheme.onPrimaryContainer,
         ),
         textCapitalization: TextCapitalization.words,
@@ -140,7 +139,6 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         maxLines: 1,
         initialValue: widget.address,
         style: TextStyle(
-          fontSize: 18,
           color: context.colorScheme.onPrimaryContainer,
         ),
         textCapitalization: TextCapitalization.words,
@@ -205,7 +203,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
 
   /// Builds the select people input field.
   Widget buildSelectPeople() => MultiSelectInput<Person>(
-        inputHintText: "Anyone involved?",
+        inputHintText: "Add people",
         labelAvatar: const Icon(Icons.person_2_outlined),
         selectedItems: widget.selectedPeople,
         onChangedSelectedItems: widget.onChangedSelectedPeople,
@@ -222,7 +220,9 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         ),
         refreshAllItems: PersonDatabase.readAllPersons,
         inputDecoration: BoxDecoration(
-          border: Border.all(),
+          border: Border.all(
+            color: context.colorScheme.outline,
+          ),
           borderRadius: const BorderRadius.all(
             Radius.circular(5),
           ),
@@ -248,7 +248,9 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         chipColor: (label) => label.color,
         refreshAllItems: LabelDatabase.readAllLabels,
         inputDecoration: BoxDecoration(
-          border: Border.all(),
+          border: Border.all(
+            color: context.colorScheme.outline,
+          ),
           borderRadius: const BorderRadius.all(
             Radius.circular(5),
           ),
@@ -258,12 +260,9 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
   /// Builds the save button.
   Widget buildSave(BuildContext context) => SizedBox(
         width: double.maxFinite,
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            backgroundColor: context.colorScheme.primaryContainer,
-          ),
+        child: FilledButton(
           onPressed: widget.onSubmit,
-          child: const Text("Save"),
+          child: const Text('Save'),
         ),
       );
 }

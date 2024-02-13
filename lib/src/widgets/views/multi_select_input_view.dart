@@ -131,9 +131,9 @@ class _MultiSelectInputViewState<T> extends State<MultiSelectInputView<T>> {
               refreshAllItems: widget.refreshAllItems,
               onChipLongPress: widget.onChipLongPress,
               chipColor: widget.chipColor,
-              inputDecoration: const BoxDecoration(
+              inputDecoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(),
+                  bottom: BorderSide(color: context.colorScheme.outline),
                 ),
               ),
             ),

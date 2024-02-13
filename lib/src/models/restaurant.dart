@@ -12,7 +12,8 @@ const String tableRestaurantsCreate = '''
         ${RestaurantFields.address} ${DbTypes.textTypeNull},
         ${RestaurantFields.dateVisited} ${DbTypes.textTypeNull},
         ${RestaurantFields.dateAdded} ${DbTypes.textType},
-        ${RestaurantFields.dateModified} ${DbTypes.textType}
+        ${RestaurantFields.dateModified} ${DbTypes.textType},
+        ${RestaurantFields.photoReference} ${DbTypes.textType}
       )
     ''';
 
@@ -26,6 +27,7 @@ class RestaurantFields {
     dateVisited,
     dateAdded,
     dateModified,
+    photoReference,
   ];
 
   static const String id = '_id';
@@ -38,6 +40,7 @@ class RestaurantFields {
   static const String labels = 'labels';
   static const String dateAdded = 'dateAdded';
   static const String dateModified = 'dateModified';
+  static const String photoReference = 'photoReference';
 }
 
 class Restaurant {
@@ -71,6 +74,9 @@ class Restaurant {
   /// A list of labels representing this restaurant.
   final List<Label>? labels;
 
+  /// The Google Photo Reference for a photo of this restaurant.
+  final String photoReference;
+
   const Restaurant({
     this.id,
     required this.placeId,
@@ -82,6 +88,7 @@ class Restaurant {
     required this.dateModified,
     this.persons,
     this.labels,
+    required this.photoReference,
   });
 
   Restaurant copy({
@@ -95,6 +102,7 @@ class Restaurant {
     final DateTime? dateModified,
     final List<Person>? persons,
     final List<Label>? labels,
+    final String? photoReference,
   }) =>
       Restaurant(
         id: id ?? this.id,
@@ -107,6 +115,7 @@ class Restaurant {
         dateModified: dateModified ?? this.dateModified,
         persons: persons ?? this.persons,
         labels: labels ?? this.labels,
+        photoReference: photoReference ?? this.photoReference,
       );
 
   Map<String, Object?> toJson() => {
@@ -118,6 +127,7 @@ class Restaurant {
         RestaurantFields.dateVisited: dateVisited.toIso8601String(),
         RestaurantFields.dateAdded: dateAdded.toIso8601String(),
         RestaurantFields.dateModified: dateModified.toIso8601String(),
+        RestaurantFields.photoReference: photoReference,
       };
 
   static Restaurant fromJson(Map<String, Object?> json) => Restaurant(
@@ -141,5 +151,9 @@ class Restaurant {
             .map((labelJson) =>
                 Label.fromJson(labelJson as Map<String, Object?>))
             .toList(),
+        photoReference: json[RestaurantFields.photoReference] as String,
       );
+
+  @override
+  String toString() => toJson().toString();
 }

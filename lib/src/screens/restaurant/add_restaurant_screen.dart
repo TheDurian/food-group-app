@@ -226,35 +226,6 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
                           ? 'The date visited cannot be empty'
                           : null,
                     ),
-                    // TextInputView(
-                    //   centerText: 'Where was it located?',
-                    //   subText: 'Note: This field is optional!',
-                    //   initialValue: address,
-                    //   onChangedValue: (address) =>
-                    //       setState(() => this.address = address),
-                    //   labelText: 'Address',
-                    //   declineButtonText: 'Back',
-                    //   onDeclineButton: () => controller.previousPage(
-                    //     duration: duration,
-                    //     curve: curve,
-                    //   ),
-                    //   confirmButtonText: 'Next',
-                    //   onConfirmButton: () {
-                    //     controller.nextPage(
-                    //       duration: duration,
-                    //       curve: curve,
-                    //     );
-                    //   },
-                    //   validator: (address) => (address == null) || address.isEmpty
-                    //       ? 'The address cannot be empty'
-                    //       : null,
-                    //   onSubmit: (value) {
-                    //     controller.nextPage(
-                    //       duration: duration,
-                    //       curve: curve,
-                    //     );
-                    //   },
-                    // ),
                     MultiSelectInputView<Label>(
                       centerText: 'Would you like to add any labels?',
                       subText:
@@ -436,16 +407,21 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
   /// Adds a new restaurant to database.
   Future<Restaurant> addRestaurant() async {
     final dateAdded = DateTime.now();
+    final place = await GooglePlaceService.getPlaceDetailsFromId(
+      suggestion.placeId,
+      uuid,
+    );
     final restaurant = await RestaurantDatabase.createRestaurant(Restaurant(
-      name: suggestion.name,
+      name: place.name,
       placeId: suggestion.placeId,
       isChain: null, //todo
-      address: address,
+      address: place.address,
       dateVisited: DateTimeHelper.fromDate(dateVisited),
       dateAdded: dateAdded,
       dateModified: dateAdded,
       persons: persons,
       labels: labels,
+      photoReference: place.photoReference,
     ));
     return restaurant;
   }

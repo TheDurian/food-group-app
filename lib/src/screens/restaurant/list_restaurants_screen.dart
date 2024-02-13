@@ -3,6 +3,7 @@ import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/services/database/database.dart';
 import 'package:food_group_app/src/services/database/restaurant_db.dart';
+import 'package:food_group_app/src/widgets/cards/restaurant_card.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class RestaurantScreen extends StatefulWidget {
@@ -89,10 +90,19 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
             title: Text('Restaurants'),
             pinned: true,
           ),
-          SliverToBoxAdapter(
-            child: isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : buildTileList(),
+          isLoading
+              ? const SliverToBoxAdapter(
+                  child: Center(child: CircularProgressIndicator()))
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    childCount: restaurants.length,
+                    (context, index) => RestaurantCard(
+                      restaurant: restaurants[index],
+                    ),
+                  ),
+                ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 80),
           )
         ],
       ),
@@ -111,34 +121,21 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   }
 
   /// Builds the tiles for all saved restaurants in the database.
-  Widget buildTileList() => ListView.builder(
-        itemCount: restaurants.length,
-        prototypeItem: restaurants.isNotEmpty
-            ? Card(
-                child: ListTile(
-                  title: Text(restaurants.first.name),
-                ),
-              )
-            : null,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            child: Card(
-              child: ListTile(
-                title: Text(restaurants[index].name),
-                subtitle: Text(restaurants[index].dateVisited.toString()),
-                trailing: Text('${restaurants[index].id}'),
-              ),
-            ),
-            onLongPress: () async {
-              RestaurantDatabase.deleteRestaurant(restaurants[index].id!);
-              refreshRestaurants();
-            },
-            onTap: () => onAddEditClick(restaurants[index]),
-          );
-        },
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-      );
+  // Widget buildTileList() => ListView.builder(
+  //       itemCount: restaurants.length,
+  //       itemBuilder: (context, index) {
+  //         return GestureDetector(
+  //           child:
+  //           onLongPress: () async {
+  //             RestaurantDatabase.deleteRestaurant(restaurants[index].id!);
+  //             refreshRestaurants();
+  //           },
+  //           onTap: () => onAddEditClick(restaurants[index]),
+  //         );
+  //       },
+  //       shrinkWrap: true,
+  //       scrollDirection: Axis.vertical,
+  //     );
 
   /// Handles navigating to the Add/Edit restaurant screen.
   void onAddEditClick([Restaurant? restaurant]) async {
