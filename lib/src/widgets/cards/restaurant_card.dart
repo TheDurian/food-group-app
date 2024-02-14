@@ -64,7 +64,9 @@ class RestaurantCard extends StatelessWidget {
                               ),
                               const Icon(Icons.star, size: 20),
                               Text(
-                                '3.5',
+                                restaurant
+                                    .getAverageRating()
+                                    .toStringAsFixed(1),
                                 style: context.textTheme.titleSmall?.copyWith(
                                   color:
                                       context.colorScheme.onSecondaryContainer,

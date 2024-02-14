@@ -1,4 +1,5 @@
 import 'package:food_group_app/src/models/person.dart';
+import 'package:food_group_app/src/models/tables/person_table.dart';
 import 'package:food_group_app/src/services/database/database.dart';
 
 class PersonDatabase {

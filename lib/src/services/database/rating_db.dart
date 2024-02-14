@@ -1,4 +1,5 @@
 import 'package:food_group_app/src/models/rating.dart';
+import 'package:food_group_app/src/models/tables/rating_table.dart';
 import 'package:food_group_app/src/services/database/database.dart';
 
 class RatingDatabase {

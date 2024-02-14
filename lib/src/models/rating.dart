@@ -1,56 +1,4 @@
-import 'package:food_group_app/src/models/db_types.dart';
-import 'package:food_group_app/src/models/person.dart';
-import 'package:food_group_app/src/models/restaurant.dart';
-
-const String tableRatings = 'ratings';
-const String tableRatingsCreate = '''
-      CREATE TABLE $tableRatings (
-        ${RatingFields.restaurantId} ${DbTypes.integerType},
-        ${RatingFields.personId} ${DbTypes.integerType},
-        ${RatingFields.tasteRating} ${DbTypes.realNull},
-        ${RatingFields.serviceRating} ${DbTypes.realNull},
-        ${RatingFields.ambianceRating} ${DbTypes.realNull},
-        ${RatingFields.presentationRating} ${DbTypes.realNull},
-        ${RatingFields.costWorthRating} ${DbTypes.realNull},
-        ${RatingFields.notes} ${DbTypes.textTypeNull},
-        ${RatingFields.dateAdded} ${DbTypes.textType},
-        ${RatingFields.dateModified} ${DbTypes.textType},
-        FOREIGN KEY (${RatingFields.restaurantId})
-          REFERENCES $tableRestaurants(${RestaurantFields.id}),
-        FOREIGN KEY (${RatingFields.personId})
-          REFERENCES $tablePersons(${PersonFields.id}),
-        PRIMARY KEY (
-          ${RatingFields.restaurantId},
-          ${RatingFields.personId}
-        )
-      )
-    ''';
-
-class RatingFields {
-  static final List<String> values = [
-    restaurantId,
-    personId,
-    tasteRating,
-    serviceRating,
-    ambianceRating,
-    presentationRating,
-    costWorthRating,
-    notes,
-    dateAdded,
-    dateModified,
-  ];
-
-  static const String restaurantId = 'restaurantId';
-  static const String personId = 'personId';
-  static const String tasteRating = 'tasteRating';
-  static const String serviceRating = 'serviceRating';
-  static const String ambianceRating = 'ambianceRating';
-  static const String presentationRating = 'presentationRating';
-  static const String costWorthRating = 'costWorthRating';
-  static const String notes = 'notes';
-  static const String dateAdded = 'dateAdded';
-  static const String dateModified = 'dateModified';
-}
+import 'package:food_group_app/src/models/tables/rating_table.dart';
 
 class Rating {
   /// The associated restaurant for this rating.
@@ -161,4 +109,12 @@ class Rating {
     result = 31 * result + personId;
     return result;
   }
+
+  /// Retrieves the total combined rating.
+  double totalRating() =>
+      ambianceRating! +
+      costWorthRating! +
+      presentationRating! +
+      serviceRating! +
+      tasteRating!;
 }

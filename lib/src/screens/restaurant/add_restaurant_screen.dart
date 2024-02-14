@@ -111,7 +111,9 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
     setState(() => isLoading = true);
     LocationData? location = await GooglePlaceService.getLocation();
     if (location != null) {
-      setState(() => _currentLocation = location);
+      if (mounted) {
+        setState(() => _currentLocation = location);
+      }
     }
     setState(() => isLoading = false);
   }

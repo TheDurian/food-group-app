@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:food_group_app/src/models/person.dart';
-import 'package:food_group_app/src/models/person_sort.dart';
+import 'package:food_group_app/src/models/sorts/person_sort.dart';
 import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/services/database/person_db.dart';
 import 'package:food_group_app/src/services/database/rating_db.dart';
 import 'package:food_group_app/src/utils/extensions.dart';
+import 'package:food_group_app/src/utils/shared_prefs.dart';
 import 'package:food_group_app/src/widgets/cards/person_card.dart';
 
 class ListPeopleScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _ListPeopleScreenState extends State<ListPeopleScreen> {
   bool isLoading = false;
 
   /// The selected filter.
-  String selectedFilter = PersonSort.mostRatings;
+  PersonSort selectedFilter = SharedPrefs().personSort;
 
   @override
   void initState() {
@@ -54,20 +55,7 @@ class _ListPeopleScreenState extends State<ListPeopleScreen> {
   /// This is to be used if no database call to re-fetch
   /// all people is needed.
   void sortPeople() {
-    setState(() {
-      switch (selectedFilter) {
-        case PersonSort.alphabetical:
-          filteredPeople.sort(PersonSort.alphabeticalSort);
-        case PersonSort.leastRatings:
-          filteredPeople.sort(PersonSort.leastRatingsSort);
-        case PersonSort.mostRatings:
-          filteredPeople.sort(PersonSort.mostRatingsSort);
-        case PersonSort.newlyAdded:
-          filteredPeople.sort(PersonSort.newlyAddedSort);
-        case PersonSort.oldestAdded:
-          filteredPeople.sort(PersonSort.oldestAddedSort);
-      }
-    });
+    setState(() => filteredPeople.sort(selectedFilter.sort));
   }
 
   void showSortModal() => showModalBottomSheet<void>(
@@ -103,22 +91,23 @@ class _ListPeopleScreenState extends State<ListPeopleScreen> {
                     height: 15,
                   ),
                   ...PersonSort.values.map(
-                    (filter) => RadioListTile<String>(
-                      title: Text(filter),
+                    (filter) => RadioListTile<PersonSort>(
+                      title: Text(filter.name),
                       value: filter,
                       groupValue: selectedFilter,
-                      onChanged: (String? value) {
+                      onChanged: (PersonSort? value) {
                         if (value != null) {
                           setState(() {
                             selectedFilter = value;
+                            SharedPrefs().personSort = value;
                           });
                           sortPeople();
                           Navigator.pop(context);
-
+                          ScaffoldMessenger.of(context).removeCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Sorted by $selectedFilter',
+                                'Sorted by ${selectedFilter.name}',
                               ),
                               duration: const Duration(seconds: 2),
                             ),
