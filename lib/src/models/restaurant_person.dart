@@ -1,6 +1,6 @@
-import 'package:food_group_app/src/models/db_types.dart';
-import 'package:food_group_app/src/models/person.dart';
-import 'package:food_group_app/src/models/restaurant.dart';
+import 'package:food_group_app/src/models/tables/db_types.dart';
+import 'package:food_group_app/src/models/tables/person_table.dart';
+import 'package:food_group_app/src/models/tables/restaurant_table.dart';
 
 const String tableRestaurantPersons = 'restaurantPersonLink';
 const String tableRestaurantPersonsCreate = '''

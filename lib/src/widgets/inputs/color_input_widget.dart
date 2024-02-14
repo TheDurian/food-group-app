@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/dialogs/color_dialog.dart';
 
 class ColorInput extends StatefulWidget {
@@ -45,7 +46,7 @@ class _ColorInputState extends State<ColorInput> {
               child: InkWell(
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Theme.of(context).dividerColor),
+                    border: Border.all(color: context.colorScheme.outline),
                     borderRadius: const BorderRadius.all(
                       Radius.circular(5),
                     ),

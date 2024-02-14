@@ -13,6 +13,7 @@ import 'package:food_group_app/src/services/database/rating_db.dart';
 import 'package:food_group_app/src/services/database/restaurant_db.dart';
 import 'package:food_group_app/src/services/google/place_service.dart';
 import 'package:food_group_app/src/utils/datetime_helper.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 import 'package:food_group_app/src/widgets/views/date_input_view.dart';
 import 'package:food_group_app/src/widgets/views/multi_select_input_view.dart';
@@ -110,7 +111,9 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
     setState(() => isLoading = true);
     LocationData? location = await GooglePlaceService.getLocation();
     if (location != null) {
-      setState(() => _currentLocation = location);
+      if (mounted) {
+        setState(() => _currentLocation = location);
+      }
     }
     setState(() => isLoading = false);
   }
@@ -225,35 +228,6 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
                           ? 'The date visited cannot be empty'
                           : null,
                     ),
-                    // TextInputView(
-                    //   centerText: 'Where was it located?',
-                    //   subText: 'Note: This field is optional!',
-                    //   initialValue: address,
-                    //   onChangedValue: (address) =>
-                    //       setState(() => this.address = address),
-                    //   labelText: 'Address',
-                    //   declineButtonText: 'Back',
-                    //   onDeclineButton: () => controller.previousPage(
-                    //     duration: duration,
-                    //     curve: curve,
-                    //   ),
-                    //   confirmButtonText: 'Next',
-                    //   onConfirmButton: () {
-                    //     controller.nextPage(
-                    //       duration: duration,
-                    //       curve: curve,
-                    //     );
-                    //   },
-                    //   validator: (address) => (address == null) || address.isEmpty
-                    //       ? 'The address cannot be empty'
-                    //       : null,
-                    //   onSubmit: (value) {
-                    //     controller.nextPage(
-                    //       duration: duration,
-                    //       curve: curve,
-                    //     );
-                    //   },
-                    // ),
                     MultiSelectInputView<Label>(
                       centerText: 'Would you like to add any labels?',
                       subText:
@@ -344,11 +318,11 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
         builder: (context) => AlertDialog(
           title: Text(
             "Cancel submission?",
-            style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+            style: TextStyle(color: context.colorScheme.onBackground),
           ),
           content: Text(
             "Any unsaved changes will be lost.",
-            style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+            style: TextStyle(color: context.colorScheme.onBackground),
           ),
           actions: [
             TextButton(
@@ -410,7 +384,7 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
       Navigator.popUntil(
         context,
         ModalRoute.withName(
-          AppRoutes.home,
+          AppRoutes.listRestaurants,
         ),
       );
     }
@@ -435,16 +409,21 @@ class _AddRestaurantScreen2State extends State<AddRestaurantScreen2> {
   /// Adds a new restaurant to database.
   Future<Restaurant> addRestaurant() async {
     final dateAdded = DateTime.now();
+    final place = await GooglePlaceService.getPlaceDetailsFromId(
+      suggestion.placeId,
+      uuid,
+    );
     final restaurant = await RestaurantDatabase.createRestaurant(Restaurant(
-      name: suggestion.name,
+      name: place.name,
       placeId: suggestion.placeId,
       isChain: null, //todo
-      address: address,
+      address: place.address,
       dateVisited: DateTimeHelper.fromDate(dateVisited),
       dateAdded: dateAdded,
       dateModified: dateAdded,
       persons: persons,
       labels: labels,
+      photoReference: place.photoReference,
     ));
     return restaurant;
   }

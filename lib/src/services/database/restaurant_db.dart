@@ -4,6 +4,9 @@ import 'package:food_group_app/src/models/rating.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/models/restaurant_label.dart';
 import 'package:food_group_app/src/models/restaurant_person.dart';
+import 'package:food_group_app/src/models/tables/person_table.dart';
+import 'package:food_group_app/src/models/tables/rating_table.dart';
+import 'package:food_group_app/src/models/tables/restaurant_table.dart';
 import 'package:food_group_app/src/services/database/database.dart';
 
 class RestaurantDatabase {
@@ -59,8 +62,10 @@ class RestaurantDatabase {
       final restaurant = Restaurant.fromJson(json);
       final persons = await readPeopleForRestaurant(restaurant.id ?? 0);
       final labels = await readLabelsForRestaurant(restaurant.id ?? 0);
+      final ratings = await readRatingsForRestaurant(restaurant.id ?? 0);
       restaurant.persons?.addAll(persons);
       restaurant.labels?.addAll(labels);
+      restaurant.ratings?.addAll(ratings);
       restaurantsList.add(restaurant);
     }
 

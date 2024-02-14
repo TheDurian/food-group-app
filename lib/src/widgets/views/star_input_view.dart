@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:food_group_app/src/themes/app_themes.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/views/base_view.dart';
 
 class StarInputView extends StatefulWidget {
@@ -70,22 +70,36 @@ class _StarInputViewState extends State<StarInputView> {
   }
 
   /// Builds the central star input bar
-  Widget buildStarInput() => RatingBar.builder(
-        initialRating: widget.initialValue,
-        minRating: 1,
-        direction: Axis.horizontal,
-        allowHalfRating: !widget.showAsInteger,
-        itemCount: 5,
-        itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-        itemBuilder: (context, _) => Icon(
-          Icons.star,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        onRatingUpdate: (rating) {
-          setState(() => value = rating);
-          widget.onChangedValue(rating);
-        },
-        updateOnDrag: true,
+  Widget buildStarInput() => Column(
+        children: [
+          RatingBar.builder(
+            initialRating: widget.initialValue,
+            minRating: 1,
+            direction: Axis.horizontal,
+            allowHalfRating: !widget.showAsInteger,
+            itemCount: 5,
+            itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+            itemBuilder: (context, _) => Icon(
+              Icons.star,
+              color: context.colorScheme.primary,
+            ),
+            onRatingUpdate: (rating) {
+              setState(() => value = rating);
+              widget.onChangedValue(rating);
+            },
+            updateOnDrag: true,
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10),
+          ),
+          Text(
+            'Rating: ${widget.showAsInteger ? '${value.toInt()}' : '$value'}',
+            style: context.textTheme.headlineLarge?.copyWith(
+              color: context.colorScheme.onBackground,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       );
 
   @override

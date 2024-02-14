@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/dialogs/multi_select_dialog.dart';
 
 class MultiSelectInput<T> extends StatefulWidget {
@@ -94,9 +95,9 @@ class _MultiSelectInputState<T> extends State<MultiSelectInput<T>> {
               Expanded(
                 child: Text(
                   widget.inputHintText,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ),
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: context.colorScheme.onBackground,
+                  ),
                 ),
               ),
               const Icon(
@@ -151,7 +152,7 @@ class _MultiSelectInputState<T> extends State<MultiSelectInput<T>> {
                       label: Text(
                         widget.buildSelectedItemText(chipItem),
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: context.colorScheme.onBackground,
                         ),
                       ),
                       avatar: widget.labelAvatar,

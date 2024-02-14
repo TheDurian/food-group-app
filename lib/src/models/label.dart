@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_group_app/src/models/db_types.dart';
+import 'package:food_group_app/src/models/tables/db_types.dart';
 
 const String tableLabels = 'labels';
 const String tableLabelsCreate = '''

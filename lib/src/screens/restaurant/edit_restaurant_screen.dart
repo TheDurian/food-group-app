@@ -4,6 +4,7 @@ import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/models/restaurant.dart';
 import 'package:food_group_app/src/services/database/restaurant_db.dart';
 import 'package:food_group_app/src/utils/datetime_helper.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/forms/restaurant_form_widget.dart';
 
 class AddEditRestaurantScreen extends StatefulWidget {
@@ -103,12 +104,26 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
         Text(
           "Restaurant Added: "
           "${DateTimeHelper.toDateAndTime(widget.restaurant!.dateAdded)}",
-          style: const TextStyle(fontStyle: FontStyle.italic),
+          style: context.textTheme.labelSmall?.copyWith(
+            fontStyle: FontStyle.italic,
+            color: context.colorScheme.onBackground,
+          ),
         ),
         Text(
           "Restaurant Modified: "
           "${DateTimeHelper.toDateAndTime(widget.restaurant!.dateModified)}",
-          style: const TextStyle(fontStyle: FontStyle.italic),
+          style: context.textTheme.labelSmall?.copyWith(
+            fontStyle: FontStyle.italic,
+            color: context.colorScheme.onBackground,
+          ),
+        ),
+        Text(
+          //TODO remove eventually
+          "${widget.restaurant!}",
+          style: context.textTheme.labelSmall?.copyWith(
+            fontStyle: FontStyle.italic,
+            color: context.colorScheme.onBackground,
+          ),
         ),
         const Padding(
           padding: EdgeInsets.fromLTRB(0, 0, 0, 16),
@@ -157,6 +172,7 @@ class _AddEditRestaurantScreenState extends State<AddEditRestaurantScreen> {
       dateModified: dateAdded,
       persons: selectedPeople,
       labels: selectedLabels,
+      photoReference: '', //todo
     );
     await RestaurantDatabase.createRestaurant(restaurant);
   }

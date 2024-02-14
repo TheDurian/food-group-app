@@ -4,6 +4,7 @@ import 'package:food_group_app/src/models/person.dart';
 import 'package:food_group_app/src/routes/app_routes.dart';
 import 'package:food_group_app/src/services/database/label_db.dart';
 import 'package:food_group_app/src/services/database/person_db.dart';
+import 'package:food_group_app/src/utils/extensions.dart';
 import 'package:food_group_app/src/widgets/inputs/multi_select_input_widget.dart';
 
 class RestaurantFormWidget extends StatefulWidget {
@@ -119,8 +120,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         initialValue: widget.name,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 24,
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          color: context.colorScheme.onPrimaryContainer,
         ),
         textCapitalization: TextCapitalization.words,
         decoration: const InputDecoration(
@@ -139,8 +139,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         maxLines: 1,
         initialValue: widget.address,
         style: TextStyle(
-          fontSize: 18,
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          color: context.colorScheme.onPrimaryContainer,
         ),
         textCapitalization: TextCapitalization.words,
         decoration: const InputDecoration(
@@ -157,7 +156,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         controller: _dateController,
         maxLines: 1,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          color: context.colorScheme.onPrimaryContainer,
         ),
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
@@ -204,7 +203,7 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
 
   /// Builds the select people input field.
   Widget buildSelectPeople() => MultiSelectInput<Person>(
-        inputHintText: "Anyone involved?",
+        inputHintText: "Add people",
         labelAvatar: const Icon(Icons.person_2_outlined),
         selectedItems: widget.selectedPeople,
         onChangedSelectedItems: widget.onChangedSelectedPeople,
@@ -221,7 +220,9 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         ),
         refreshAllItems: PersonDatabase.readAllPersons,
         inputDecoration: BoxDecoration(
-          border: Border.all(),
+          border: Border.all(
+            color: context.colorScheme.outline,
+          ),
           borderRadius: const BorderRadius.all(
             Radius.circular(5),
           ),
@@ -247,7 +248,9 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
         chipColor: (label) => label.color,
         refreshAllItems: LabelDatabase.readAllLabels,
         inputDecoration: BoxDecoration(
-          border: Border.all(),
+          border: Border.all(
+            color: context.colorScheme.outline,
+          ),
           borderRadius: const BorderRadius.all(
             Radius.circular(5),
           ),
@@ -257,12 +260,9 @@ class _RestaurantFormWidgetState extends State<RestaurantFormWidget> {
   /// Builds the save button.
   Widget buildSave(BuildContext context) => SizedBox(
         width: double.maxFinite,
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            backgroundColor: Theme.of(context).hoverColor,
-          ),
+        child: FilledButton(
           onPressed: widget.onSubmit,
-          child: const Text("Save"),
+          child: const Text('Save'),
         ),
       );
 }

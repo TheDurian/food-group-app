@@ -6,9 +6,9 @@ class DateTimeHelper {
       "$num".length > 1 ? "$num" : "0$num";
 
   /// Convert a datetime to a common full Date
-  static String toDate(DateTime dt) => "${convertToTwoChars(dt.month)}/"
-      "${convertToTwoChars(dt.day)}/"
-      "${convertToTwoChars(dt.year)}";
+  static String toDate(DateTime dt) => "${convertToTwoChars(dt.year)}/"
+      "${convertToTwoChars(dt.month)}/"
+      "${convertToTwoChars(dt.day)}";
 
   /// Convert a datetime to a common full Date + Time
   static String toDateAndTime(DateTime dt) => "${convertToTwoChars(dt.year)}-"
@@ -19,6 +19,8 @@ class DateTimeHelper {
       "${convertToTwoChars(dt.second)}";
 
   /// Convert a string to a datetime from mm/dd/yyyy
-  static DateTime fromDate(String date) => DateTime.parse(
-      "${date.substring(6, 10)}-${date.substring(3, 5)}-${date.substring(0, 2)}");
+  static DateTime fromDate(String date) =>
+      DateTime.parse("${date.substring(0, 4)}-"
+          "${date.substring(5, 7)}-"
+          "${date.substring(8, 10)}");
 }

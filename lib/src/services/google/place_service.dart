@@ -1,6 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import "package:flutter_dotenv/flutter_dotenv.dart";
 import 'package:food_group_app/src/config/globals.dart';
+import 'package:food_group_app/src/models/google/place.dart';
 import 'package:food_group_app/src/models/google/suggestion.dart';
+import 'package:food_group_app/src/utils/logger.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
@@ -47,6 +51,7 @@ class GooglePlaceService {
     String token,
   ) async {
     await Future<void>.delayed(const Duration(milliseconds: 500));
+    log.i('Returning mock suggestions');
     return [
       Suggestion(
         placeId: '1111',
@@ -79,11 +84,12 @@ class GooglePlaceService {
         '&types=restaurant'
         '&key=${dotenv.env[AppConfig.envGoogleMapsApiKey]}'
         '&sessiontoken=$token';
-    print("Invoking google place autocomplete API");
+    log.i("Invoking google place autocomplete API");
     var response = await http.get(Uri.parse(query));
     if (response.statusCode == 200) {
       var json = convert.jsonDecode(response.body);
       if (json['status'] == 'OK') {
+        log.i(json['predictions']);
         return json['predictions']
             .map<Suggestion>(
               (p) => Suggestion(
@@ -97,44 +103,56 @@ class GooglePlaceService {
       if (json['status'] == 'ZERO_RESULTS') {
         return [];
       }
+      log.e(json['error_message']);
       throw Exception(json['error_message']);
     } else {
+      log.e('Failed to fetch suggestion');
       throw Exception('Failed to fetch suggestion');
     }
   }
 
-  // Future<Place> getPlaceDetailFromId(String placeId) async {
-  //   final request =
-  //       'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=address_component&key=$apiKey&sessiontoken=$sessionToken';
-  //   final response = await client.get(request);
+  static Future<Place> getPlaceDetailsFromId(
+    String placeId,
+    String token,
+  ) async {
+    var query = 'https://maps.googleapis.com/maps/api/place/details/json'
+        '?place_id=$placeId'
+        '&key=${dotenv.env[AppConfig.envGoogleMapsApiKey]}'
+        '&fields=formatted_address,name,photo'
+        '&sessiontoken=$token';
+    log.i("Invoking google place details API");
+    var response = await http.get(Uri.parse(query));
+    if (response.statusCode == 200) {
+      var json = convert.jsonDecode(response.body);
+      if (json['status'] == 'OK') {
+        log.i(json['result']);
+        return Place(
+          address: json['result']['formatted_address'] as String,
+          name: json['result']['name'] as String,
+          photoReference:
+              json['result']['photos'][0]['photo_reference'] as String,
+        );
+      } else {
+        log.e('Failed to fetch place details');
+        throw Exception('Failed to fetch details');
+      }
+    } else {
+      log.e('Failed to fetch place details');
+      throw Exception('Failed to fetch details');
+    }
+  }
 
-  //   if (response.statusCode == 200) {
-  //     final result = json.decode(response.body);
-  //     if (result['status'] == 'OK') {
-  //       final components =
-  //           result['result']['address_components'] as List<dynamic>;
-  //       // build result
-  //       final place = Place();
-  //       components.forEach((c) {
-  //         final List type = c['types'];
-  //         if (type.contains('street_number')) {
-  //           place.streetNumber = c['long_name'];
-  //         }
-  //         if (type.contains('route')) {
-  //           place.street = c['long_name'];
-  //         }
-  //         if (type.contains('locality')) {
-  //           place.city = c['long_name'];
-  //         }
-  //         if (type.contains('postal_code')) {
-  //           place.zipCode = c['long_name'];
-  //         }
-  //       });
-  //       return place;
-  //     }
-  //     throw Exception(result['error_message']);
-  //   } else {
-  //     throw Exception('Failed to fetch suggestion');
-  //   }
-  // }
+  static CachedNetworkImage getPhotoFromReference(
+      String photoReference, int maxWidth) {
+    var query = 'https://maps.googleapis.com/maps/api/place/photo'
+        '?maxwidth=$maxWidth'
+        '&photo_reference=$photoReference'
+        '&key=${dotenv.env[AppConfig.envGoogleMapsApiKey]}';
+    return CachedNetworkImage(
+      imageUrl: query,
+      fit: BoxFit.fill,
+      placeholder: (context, string) =>
+          const Center(child: CircularProgressIndicator()),
+    );
+  }
 }

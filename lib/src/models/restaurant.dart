@@ -1,44 +1,7 @@
 import 'package:food_group_app/src/models/label.dart';
 import 'package:food_group_app/src/models/person.dart';
-import 'package:food_group_app/src/models/db_types.dart';
-
-const String tableRestaurants = 'restaurants';
-const String tableRestaurantsCreate = '''
-      CREATE TABLE $tableRestaurants (
-        ${RestaurantFields.id} ${DbTypes.idType},
-        ${RestaurantFields.placeId} ${DbTypes.textType},
-        ${RestaurantFields.name} ${DbTypes.textType},
-        ${RestaurantFields.isChain} ${DbTypes.boolTypeNull},
-        ${RestaurantFields.address} ${DbTypes.textTypeNull},
-        ${RestaurantFields.dateVisited} ${DbTypes.textTypeNull},
-        ${RestaurantFields.dateAdded} ${DbTypes.textType},
-        ${RestaurantFields.dateModified} ${DbTypes.textType}
-      )
-    ''';
-
-class RestaurantFields {
-  static final List<String> values = [
-    id,
-    placeId,
-    name,
-    isChain,
-    address,
-    dateVisited,
-    dateAdded,
-    dateModified,
-  ];
-
-  static const String id = '_id';
-  static const String placeId = 'placeId';
-  static const String name = 'name';
-  static const String isChain = 'isChain';
-  static const String address = 'address';
-  static const String dateVisited = 'dateVisited';
-  static const String persons = 'persons';
-  static const String labels = 'labels';
-  static const String dateAdded = 'dateAdded';
-  static const String dateModified = 'dateModified';
-}
+import 'package:food_group_app/src/models/rating.dart';
+import 'package:food_group_app/src/models/tables/restaurant_table.dart';
 
 class Restaurant {
   /// The id for a restaurant.
@@ -71,6 +34,12 @@ class Restaurant {
   /// A list of labels representing this restaurant.
   final List<Label>? labels;
 
+  /// A list of ratings for this restaurant.
+  final List<Rating>? ratings;
+
+  /// The Google Photo Reference for a photo of this restaurant.
+  final String photoReference;
+
   const Restaurant({
     this.id,
     required this.placeId,
@@ -82,6 +51,8 @@ class Restaurant {
     required this.dateModified,
     this.persons,
     this.labels,
+    this.ratings,
+    required this.photoReference,
   });
 
   Restaurant copy({
@@ -95,6 +66,8 @@ class Restaurant {
     final DateTime? dateModified,
     final List<Person>? persons,
     final List<Label>? labels,
+    final List<Rating>? ratings,
+    final String? photoReference,
   }) =>
       Restaurant(
         id: id ?? this.id,
@@ -107,6 +80,8 @@ class Restaurant {
         dateModified: dateModified ?? this.dateModified,
         persons: persons ?? this.persons,
         labels: labels ?? this.labels,
+        ratings: ratings ?? this.ratings,
+        photoReference: photoReference ?? this.photoReference,
       );
 
   Map<String, Object?> toJson() => {
@@ -118,6 +93,7 @@ class Restaurant {
         RestaurantFields.dateVisited: dateVisited.toIso8601String(),
         RestaurantFields.dateAdded: dateAdded.toIso8601String(),
         RestaurantFields.dateModified: dateModified.toIso8601String(),
+        RestaurantFields.photoReference: photoReference,
       };
 
   static Restaurant fromJson(Map<String, Object?> json) => Restaurant(
@@ -141,5 +117,21 @@ class Restaurant {
             .map((labelJson) =>
                 Label.fromJson(labelJson as Map<String, Object?>))
             .toList(),
+        ratings: (json[RestaurantFields.ratings] as List<Rating>? ?? [])
+            .map((ratingJson) =>
+                Rating.fromJson(ratingJson as Map<String, Object?>))
+            .toList(),
+        photoReference: json[RestaurantFields.photoReference] as String,
       );
+
+  @override
+  String toString() => toJson().toString();
+
+  /// Gets the average rating for all
+  double getAverageRating() {
+    if (ratings!.isEmpty) return 0;
+    double totalRatings = ratings!
+        .fold(0.0, (prevValue, rating) => prevValue + rating.totalRating());
+    return totalRatings / (ratings!.length * 5);
+  }
 }
