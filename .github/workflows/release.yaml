@@ -57,7 +57,7 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0
 
       - name: Update version in YAML
-        run: sed -i 's/99.99.99+99/${{ steps.gitversion.outputs.semVer }}+${{ github.run_number }}/g' pubspec.yaml
+        run: "sed -i 's/^version: .*/version: ${{ steps.gitversion.outputs.semVer }}+${{ github.run_number }}/g' pubspec.yaml"
 
       - name: Commit report
         run: |
