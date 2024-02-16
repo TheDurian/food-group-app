@@ -59,14 +59,6 @@ jobs:
       - name: Update version in YAML
         run: "sed -i 's/^version: .*/version: ${{ steps.gitversion.outputs.semVer }}+${{ github.run_number }}/g' pubspec.yaml"
 
-      - name: Commit report
-        run: |
-          git config --global user.name 'Github Action'
-          git config --global user.email 'action@github.com'
-          git add pubspec.yaml
-          git commit -m "Updating pubspec version to new release"
-          git push
-
       - name: Build Android APK
         run: flutter build apk
       
